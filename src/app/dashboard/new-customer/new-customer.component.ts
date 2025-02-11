@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { CustomerDataService} from '../../services/customer-data.service';
+import { CustomerDataService } from '../../services/customer-data.service';
 import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
@@ -33,6 +33,9 @@ export class NewCustomerComponent implements OnInit {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<any>();
 
+  @Input() editProfileNumber: string = '';
+  @Input() isEditingProfile: boolean = false;
+
   userId?: string;
   customerList?: any;
   disableSave: boolean = false;
@@ -43,6 +46,7 @@ export class NewCustomerComponent implements OnInit {
     phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10),
     Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
     address: new FormControl(''),
+    shippingAddress: new FormControl(''),
     extraNote: new FormControl('')
   });
 
@@ -61,17 +65,35 @@ export class NewCustomerComponent implements OnInit {
     } else {
       this.customerList = {};
     }
+
+    this.setupForm();
+  }
+
+  setupForm() {
+    const customerData = this.customerList?.[this.editProfileNumber];
+
+    if (customerData && this.isEditingProfile) {
+      const data = customerData.data;
+      this.customerForm = new FormGroup({
+        fullName: new FormControl(data.fullName, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
+        phoneNumber: new FormControl(data.phoneNumber, [Validators.required, Validators.minLength(10), Validators.maxLength(10),
+        Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
+        address: new FormControl(data.address),
+        shippingAddress: new FormControl(data.shippingAddress),
+        extraNote: new FormControl(data.extraNote)
+      });
+    }
   }
 
   getErrorMessage(controlName: string) {
     if (controlName === 'phoneNumber') {
-      if (this.customerForm.controls[controlName].hasError('required'))
+      if (this.customerForm?.controls[controlName].hasError('required'))
         return 'Please enter phone number.';
-      else if (this.customerForm.controls[controlName].hasError('minlength'))
+      else if (this.customerForm?.controls[controlName].hasError('minlength'))
         return 'Please enter 10 digit phone number.';
-      else if (this.customerForm.controls[controlName].hasError('duplicate'))
+      else if (this.customerForm?.controls[controlName].hasError('duplicate'))
         return 'Customer with this number already present in your database.';
-      else if (this.customerForm.controls[controlName].hasError('pattern'))
+      else if (this.customerForm?.controls[controlName].hasError('pattern'))
         return 'Please enter a valid Indian phone number.';
     }
     return '';
@@ -79,7 +101,7 @@ export class NewCustomerComponent implements OnInit {
 
   saveCustomerData() {
     const newCustomer: Customer = {
-      data: this.customerForm.value,
+      data: this.customerForm?.value,
       others: {
         createdBy: this.userId,
         createdTime: Date.now()
@@ -100,7 +122,7 @@ export class NewCustomerComponent implements OnInit {
 
   duplicateNumberValidator(control: AbstractControl) {
     const numberToSearch = control.value;
-    if (this.phoneNumbers?.includes(numberToSearch))
+    if (!this.isEditingProfile && this.phoneNumbers?.includes(numberToSearch))
       return { duplicate: true };
     return null;
   }

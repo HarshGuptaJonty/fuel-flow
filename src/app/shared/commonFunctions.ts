@@ -17,31 +17,16 @@ export function timeAgo(past: number, present: number = Date.now()) {
     return `${Math.floor(diff / 29030400)} year${Math.floor(diff / 29030400) > 1 ? 's' : ''}`;
 }
 
-export function duration(minutes: number) {
-    if (minutes < 60) return `${minutes} mins`;
-
-    let hr = Math.floor(minutes / 60);
-    let min = minutes % 60;
-    return `${hr}${hr > 1 ? 'hrs' : 'hr'}` + (min > 0 ? ` ${min}${min > 1 ? 'mins' : 'min'}` : '');
+export function getNumberInformat(number: string) {
+    if (number && number.length == 10)
+        return number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
+    return number;
 }
 
-export function tuitionModeDescribed(object: any) {
-    if (object) {
-        let tutoringType = '';
-        if (object.offlineTutor)
-            tutoringType = ', Home Tutor';
-        if (object.tuitionCenter)
-            tutoringType += ', Tuition Center';
-        if (object.onlineTutor)
-            tutoringType += ', Online Tutor';
-        return tutoringType.slice(2);
-    }
-    return '';
-}
-
-export function feesDescribed(object: any) {
-    if (object) {
-        return `${object.feeRangeStart} to ${object.feeRangeEnd} per ${object.monthlyFee ? 'month' : 'class'}`
-    }
-    return '';
+export function copyData(data: string) {
+  navigator.clipboard.writeText(data).then(() => {
+    //TODO: show notification for success
+  }).catch((error) => {
+    //TODO: show notification for Error
+  })
 }

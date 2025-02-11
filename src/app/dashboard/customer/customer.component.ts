@@ -7,13 +7,15 @@ import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { NewCustomerComponent } from "../new-customer/new-customer.component";
 import { CustomerCardComponent } from "../../common/customer-card/customer-card.component";
 import { SearchService } from '../../services/search.service';
+import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
 
 @Component({
   selector: 'app-customer',
   imports: [
     CommonModule,
     NewCustomerComponent,
-    CustomerCardComponent
+    CustomerCardComponent,
+    CustomerDetailsComponent
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
@@ -29,6 +31,7 @@ export class CustomerComponent {
   selectedCustomer?: any;
   addNewCustomer: boolean = false;
   isSearching: boolean = false;
+  isEditingProfile: boolean = false;
   selectedIndex: number = 0;
 
   constructor(
@@ -56,6 +59,7 @@ export class CustomerComponent {
           String(item.data?.phoneNumber).includes(searchText)
         );
         this.isSearching = true;
+        this.selectedCustomer = null;
       } else {
         this.computedData.customerList = Object.values(this.customerData.customerList);
         this.isSearching = false;
@@ -71,11 +75,25 @@ export class CustomerComponent {
 
     this.computedData.lastUpdatedStr = timeAgoWithMsg(this.customerData.others.lastFrereshed);
     this.computedData.customerList = Object.values(this.customerData.customerList);
+
+    // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
   }
 
   customerSelected(object: any, index: number) {
+    this.addNewCustomer = false;
     this.selectedIndex = index;
     this.selectedCustomer = object;
+  }
+
+  onProfileEdit() {
+    this.isEditingProfile = true;
+    this.addNewCustomer = true;
+  }
+
+  onAddNewCustomer() {
+    this.addNewCustomer = !this.addNewCustomer;
+    if (this.addNewCustomer)
+      this.isEditingProfile = false;
   }
 
   async refreshCustomerData() {

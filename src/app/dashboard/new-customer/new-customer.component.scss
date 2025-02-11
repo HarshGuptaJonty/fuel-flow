@@ -1,15 +1,22 @@
 @import '../../../assets/styles/color.scss';
 
 .new-customer-container {
-    padding: 30px 0px 0px 40px;
+    padding: 30px 0px 40px 40px;
 
     .heading {
         font-size: 28px;
     }
 
     .limit-textarea {
-        min-height: 40px;
-        max-height: 200px;
+        &-1 {
+            min-height: 40px;
+            max-height: 100px;
+        }
+
+        &-2 {
+            min-height: 40px;
+            max-height: 200px;
+        }
     }
 
     .customer-form {

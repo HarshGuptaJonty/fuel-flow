@@ -1,0 +1,17 @@
+<div class="customer-details-container">
+    <div class="d-flex align-items-top justify-content-between">
+        <span class="large-text bold-text">{{data.fullName}}</span>
+        <span class="live-since medium-text secondary-color">Created {{computedData.createdOn}}</span>
+    </div>
+    <div class="mt-1 align-items-center d-flex">
+        <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy Number"
+            (click)="copyData(data.phoneNumber)">
+        <span class="bold-text letter-spacing-1 ms-1 me-1">{{getNumberInformat(data?.phoneNumber)}}</span>
+        <span *ngIf="data.address" class="me-1"> - {{data.address}}</span>
+        <span *ngIf="data.shippingAddress"> - {{data.shippingAddress}}</span>
+    </div>
+    <div class="mt-1 small-text secondary-color" *ngIf="data.extraNote">{{data.extraNote}}</div>
+    <div class="action-section d-flex">
+        <button class="custom-btn" mat-flat-button (click)="editProfile()">Edit Profile</button>
+    </div>
+</div>

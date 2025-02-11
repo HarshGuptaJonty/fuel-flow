@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { copyData, getNumberInformat } from '../../shared/commonFunctions';
 
 @Component({
   selector: 'app-customer-card',
@@ -22,17 +23,11 @@ export class CustomerCardComponent implements OnInit {
     this.others = this.customerObject?.others;
   }
 
-  getNumberInformat(number: string) {
-    if (number && number.length == 10)
-      return number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
-    return number;
+  copyData(data: string) {
+    copyData(data);
   }
 
-  copyData(data: string) {
-    navigator.clipboard.writeText(data).then(() => {
-      //TODO: show notification for success
-    }).catch((error) => {
-      //TODO: show notification for Error
-    })
+  getNumberInformat(arg0: any) {
+    return getNumberInformat(arg0);
   }
 }
