@@ -19,12 +19,12 @@ export class FirebaseService {
       } else {
         console.log("No data available");
         //TODO: left bottom notification
-        return null;
+        return {};
       }
     } catch (error) {
       console.error("Error fetching data:", error);
       //TODO: left bottom notification
-      return null;
+      return {};
     }
   }
 

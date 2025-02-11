@@ -1,9 +1,12 @@
 <div class="dashboard-container flex-column">
     <div class="top-navbar justify-content-between d-flex">
-        <img src="assets/images/logo/banner_2.png" height="30px" alt="ClassEra Logo" title="ClassEra India"
+        <img src="assets/images/logo/banner_2.png" height="30px" alt="Fuel Flow Logo" title="Fuel Flow India"
             class="align-self-center">
 
         <div class="d-flex">
+            <input class="search-box align-self-center" type="text" placeholder="Search customers"
+                *ngIf="activeNavMenu === 'customers' && hasCustomerData()">
+
             <div class="nav-item-bar d-flex justify-content-between me-4">
                 <ng-container *ngFor="let item of menuItemList">
                     <span *ngIf="item.visibleIn === 'top' && item.visible" class="nav-item"

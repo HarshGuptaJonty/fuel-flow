@@ -1,1 +1,37 @@
-<p>customer works!</p>
+<div class="customer-container d-flex h-100">
+    <div class="list-section">
+        <div class="refresh-section d-flex justify-content-between align-items-center">
+            <div>
+                <div class="line1">{{computedData?.customerList?.length}} Customers</div>
+                <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
+                    <span class="refresh" (click)="refreshCustomerData()" title="Refresh customer list">refresh</span>.
+                </div>
+            </div>
+            <div class="add-customer d-flex justify-content-center align-items-center"
+                (click)="addNewCustomer=!addNewCustomer">
+                <span *ngIf="!addNewCustomer" title="Add Customer">+</span>
+                <span *ngIf="addNewCustomer" title="Cancel">x</span>
+            </div>
+        </div>
+
+        <div *ngIf="computedData.customerList.length > 0" class="customer-list">
+
+        </div>
+        <div *ngIf="computedData.customerList.length == 0"
+            class="customer-list d-flex justify-content-center align-items-center flex-column">
+            <img src="assets/images/banner/no-result.png" alt="">
+            <div class="m-4 text-center bold-text">You have no customers.<br>Add new customers!</div>
+        </div>
+    </div>
+
+    <div *ngIf="addNewCustomer" class="details-section">
+        <app-new-customer (onCancel)="addNewCustomer=false" (onSubmit)="refreshCustomerData()"></app-new-customer>
+    </div>
+    <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section">
+    </div>
+    <div *ngIf="!selectedCustomer && !addNewCustomer"
+        class="details-section d-flex justify-content-center align-items-center flex-column">
+        <img src="assets/images/banner/no-result.png" alt="">
+        <div class="m-4 text-center bold-text">Selected a customer from the list to view its contents!</div>
+    </div>
+</div>

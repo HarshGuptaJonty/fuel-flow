@@ -1,0 +1,33 @@
+@import '../../../assets/styles/color.scss';
+
+.new-customer-container {
+    padding: 30px 0px 0px 40px;
+
+    .heading {
+        font-size: 28px;
+    }
+
+    .limit-textarea {
+        min-height: 40px;
+        max-height: 200px;
+    }
+
+    .customer-form {
+        max-width: 500px;
+
+        .error-msg {
+            font-size: 14px;
+            color: $primary-web-red;
+        }
+
+        .cancel-btn {
+            background-color: #e3e3e4;
+            color: $primary-web-dark;
+
+            &:hover {
+                background-color: $primary-web-red;
+                color: white;
+            }
+        }
+    }
+}

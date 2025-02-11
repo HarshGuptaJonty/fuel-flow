@@ -3,6 +3,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { FirebaseService } from '../services/firebase.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { CustomerDataServiceService } from '../services/customer-data-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -59,6 +60,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private firebaseService: FirebaseService,
+    private customerService: CustomerDataServiceService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -120,5 +122,9 @@ export class DashboardComponent implements OnInit {
 
   visibleMenuItem(key: string, isVisible: boolean) {
     this.menuItemList = this.menuItemList.map(item => item.key === key ? { ...item, visible: isVisible } : item);
+  }
+
+  hasCustomerData() {
+    return Object.keys(this.customerService.getCustomerData()?.customerList).length > 0;
   }
 }

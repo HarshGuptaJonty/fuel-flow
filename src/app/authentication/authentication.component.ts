@@ -11,6 +11,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FirebaseService } from '../services/firebase.service';
+import { Admin } from '../../assets/models/Admin';
 
 @Component({
   selector: 'app-authentication',
@@ -39,13 +40,13 @@ export class AuthenticationComponent implements OnInit {
   };
 
   loginForm: FormGroup = new FormGroup({
-    phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
+    phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[6-9]\d{9}$/)]),
     otp: new FormControl(''),
   });
 
   signupForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-    phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
+    phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[6-9]\d{9}$/)]),
     accessKey: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(20)]),
     otp: new FormControl(''),
   });
@@ -153,7 +154,7 @@ export class AuthenticationComponent implements OnInit {
   }
 
   async authVerifiedCheckAndOpenDashboard() {
-    let data = await this.firebaseService.getData(`admin/${this.authData?.user?.uid}`);
+    let data: Admin = await this.firebaseService.getData(`admin/${this.authData?.user?.uid}`);
     if (data) {
       this.accountService.setAuthData(this.authData);
       this.accountService.setUserData(data);
@@ -203,6 +204,8 @@ export class AuthenticationComponent implements OnInit {
         return 'Something went wrong! Please contact IT Support.';
       else if (this.activeFormGroup.controls[controlName].hasError('access-key-not-generated'))
         return 'No access key generated for this number! Please contact IT Support.';
+      else if (this.activeFormGroup.controls[controlName].hasError('pattern'))
+        return 'Please enter a valid Indian phone number.';
     } else if (controlName === 'accessKey') {
       if (this.activeFormGroup.controls[controlName].hasError('required'))
         return 'Please enter your access key.';

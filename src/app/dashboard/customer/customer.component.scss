@@ -1,0 +1,61 @@
+@import '../../../assets/styles/color.scss';
+
+.customer-container {
+    height: inherit;
+    user-select: none;
+
+    .list-section {
+        width: 20%;
+        min-width: 380px;
+        border-right: 1px solid $border-light;
+
+        .refresh-section {
+            background-color: #ffffff;
+            height: 70px;
+            padding-left: 40px;
+            justify-content: center;
+            font-size: 13px;
+            border-bottom: 1px solid $border-light;
+
+            .line1 {
+                font-weight: bold;
+            }
+
+            .line2 {
+                color: $secondary-color;
+
+                .refresh:hover {
+                    color: $primary-mat-color;
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+            }
+
+            .add-customer {
+                height: 24px;
+                min-width: 24px;
+                margin-right: 25px;
+                font-size: 20px;
+                background-color: $border-very-light;
+                border-radius: 6px;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $border-light;
+                }
+            }
+        }
+
+        .customer-list {
+            height: calc(100vh - 70px - 70px);
+            overflow-y: auto;
+        }
+    }
+
+    .details-section {
+        width: 80%;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+}
