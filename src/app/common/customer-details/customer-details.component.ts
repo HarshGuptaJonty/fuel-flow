@@ -3,6 +3,7 @@ import { Customer } from '../../../assets/models/Customer';
 import { CommonModule } from '@angular/common';
 import { copyData, getNumberInformat, timeAgoWithMsg } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-customer-details',
@@ -14,6 +15,10 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './customer-details.component.scss'
 })
 export class CustomerDetailsComponent implements OnChanges {
+
+  constructor(
+    private notificationService: NotificationService
+  ) { }
 
   @Input() customerObject?: Customer;
   @Input() userId: any;
@@ -38,7 +43,7 @@ export class CustomerDetailsComponent implements OnChanges {
   }
 
   copyData(data: string) {
-    copyData(data);
+    copyData(data, this.notificationService);
   }
 
   editProfile() {

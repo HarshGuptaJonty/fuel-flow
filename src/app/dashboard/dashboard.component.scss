@@ -21,10 +21,6 @@
             outline: none;
         }
 
-        .profie {
-            z-index: 2;
-        }
-
         .profile-image {
             height: 50px;
             width: 50px;
@@ -38,6 +34,7 @@
         }
 
         .other-menu-card {
+            z-index: 3;
             user-select: none;
             min-width: 250px;
             background-color: white;

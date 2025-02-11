@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { copyData, getNumberInformat } from '../../shared/commonFunctions';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-customer-card',
@@ -11,6 +12,10 @@ import { copyData, getNumberInformat } from '../../shared/commonFunctions';
   styleUrl: './customer-card.component.scss'
 })
 export class CustomerCardComponent implements OnInit {
+
+  constructor(
+    private notificationService: NotificationService
+  ) { }
 
   @Input() customerObject: any;
   @Input() selected: boolean = false;
@@ -24,7 +29,7 @@ export class CustomerCardComponent implements OnInit {
   }
 
   copyData(data: string) {
-    copyData(data);
+    copyData(data, this.notificationService);
   }
 
   getNumberInformat(arg0: any) {

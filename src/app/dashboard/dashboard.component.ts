@@ -5,6 +5,7 @@ import { FirebaseService } from '../services/firebase.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CustomerDataService } from '../services/customer-data.service';
 import { SearchService } from '../services/search.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -64,7 +65,8 @@ export class DashboardComponent implements OnInit {
     private customerService: CustomerDataService,
     private route: ActivatedRoute,
     private router: Router,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private notificationService: NotificationService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -89,7 +91,13 @@ export class DashboardComponent implements OnInit {
       this.computeUserData();
     else {
       this.accountService.signOut();
-      //TODO: notification that account not found
+
+      this.notificationService.showNotification({
+        heading: 'Not Authorized.',
+        message: 'Please login again.',
+        duration: 5000,
+        leftBarColor: '#ff0000'
+      });
     }
   }
 
@@ -111,6 +119,12 @@ export class DashboardComponent implements OnInit {
     if (key === 'log-out') {
       //TODO: logout confirmation model popup
       this.accountService.signOut();
+
+      this.notificationService.showNotification({
+        heading: 'Logged Out Successfully.',
+        duration: 5000,
+        leftBarColor: '#3A7D44'
+      });
     } else if (key === 'profile') {
       this.router.navigate(['/profile']);
     } else {

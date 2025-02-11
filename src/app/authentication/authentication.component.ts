@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FirebaseService } from '../services/firebase.service';
 import { Admin } from '../../assets/models/Admin';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-authentication',
@@ -66,7 +67,8 @@ export class AuthenticationComponent implements OnInit {
     private router: Router,
     private afAuth: AngularFireAuth,
     private accountService: AccountService,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private notificationService: NotificationService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -143,8 +145,13 @@ export class AuthenticationComponent implements OnInit {
         this.activeFormGroup.get('otp')?.setErrors({ invalidOTP: true });
         this.activeFormGroup.updateValueAndValidity();
         this.disableButtons = false;
-        console.log('Failed to verify OTP. Error:', error);
-        //TODO: left bottom notification
+
+        this.notificationService.showNotification({
+          heading: 'Invalid OTP.',
+          message: 'Please try again.',
+          duration: 3000,
+          leftBarColor: '#ff0000'
+        });
       });
   }
 
@@ -158,7 +165,13 @@ export class AuthenticationComponent implements OnInit {
       if (this.isLogin) {
         this.isOtpSent = false;
         this.createNewAccBtnClick();
-        //TODO: left bottom notification
+
+        this.notificationService.showNotification({
+          heading: 'No Account found!',
+          message: 'Please create an account first!',
+          duration: 5000,
+          leftBarColor: '#FBA518'
+        });
       } else {
         data = {
           data: {
@@ -184,7 +197,12 @@ export class AuthenticationComponent implements OnInit {
           this.accountService.setUserData(data);
           this.router?.navigate(['/dashboard']);
         }).catch((error) => {
-          //TODO: left bottom notification
+          this.notificationService.showNotification({
+            heading: 'Something Went Wrong!',
+            message: 'Please Contact IT Support!',
+            duration: 5000,
+            leftBarColor: '#ff0000'
+          });
         });
       }
     }

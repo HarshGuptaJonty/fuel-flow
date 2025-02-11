@@ -10,6 +10,7 @@ import { CustomerDataService } from '../../services/customer-data.service';
 import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-new-customer',
@@ -54,7 +55,8 @@ export class NewCustomerComponent implements OnInit {
     private afAuth: AngularFireAuth,
     private accountService: AccountService,
     private firebaseService: FirebaseService,
-    private customerService: CustomerDataService
+    private customerService: CustomerDataService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -112,7 +114,12 @@ export class NewCustomerComponent implements OnInit {
       this.onSubmit.emit();
       this.onCancel.emit();
     }).catch((error) => {
-      //TODO: left bottom notification
+      this.notificationService.showNotification({
+        heading: 'Something Went Wrong!',
+        message: 'Please Contact IT Support!',
+        duration: 5000,
+        leftBarColor: '#ff0000'
+      });
     })
   }
 
