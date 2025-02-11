@@ -14,10 +14,13 @@
             </div>
         </div>
 
-        <div *ngIf="computedData.customerList.length > 0" class="customer-list">
-
+        <div *ngIf="computedData.customerList?.length > 0" class="customer-list">
+            <app-customer-card *ngFor="let obj of computedData.customerList; let i = index" [customerObject]="obj"
+                [selected]="selectedIndex === i" (click)="customerSelected(obj,i)">
+            </app-customer-card>
         </div>
-        <div *ngIf="computedData.customerList.length == 0"
+        
+        <div *ngIf="computedData.customerList?.length == 0"
             class="customer-list d-flex justify-content-center align-items-center flex-column">
             <img src="assets/images/banner/no-result.png" alt="">
             <div class="m-4 text-center bold-text">You have no customers.<br>Add new customers!</div>

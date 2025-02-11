@@ -1,0 +1,36 @@
+@import '../../../assets/styles/color.scss';
+
+.customer-card-container {
+    padding: 20px 20px 20px 40px;
+    background-color: white;
+    border-bottom: 2px dotted $border-light;
+    border-left: 3px solid white;
+
+    &.active {
+        border-left: 3px solid $primary-mat-color;
+    }
+
+    &:hover {
+        background-color: $light-color;
+    }
+
+    .ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+
+        &:hover {
+            white-space: unset;
+        }
+    }
+
+    .copy-icon {
+        height: 18px;
+        width: 18px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

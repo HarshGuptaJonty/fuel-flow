@@ -1,0 +1,10 @@
+<div class="customer-card-container" [ngClass]="{'active':selected}">
+    <div class="bold-text">{{data.fullName}}</div>
+    <div class="mt-1 letter-spacing-1 d-flex justify-content-between">
+        {{getNumberInformat(data.phoneNumber)}}
+        <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy Number"
+            (click)="copyData(data.phoneNumber)">
+    </div>
+    <div *ngIf="data.address" class="mt-1 secondary-color small-text ellipsis">{{data.address}}</div>
+    <div *ngIf="data.extraNote" class="secondary-color small-text ellipsis">{{data.extraNote}}</div>
+</div>
