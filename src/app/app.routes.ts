@@ -6,6 +6,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { authGuard } from './guards/auth.guard';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
     {
@@ -16,6 +17,11 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard],
         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
+        path: 'profile',
+        canActivate: [authGuard],
+        component: ProfileComponent
     },
     { path: '', redirectTo: 'auth', pathMatch: 'full' },
     { path: '**', redirectTo: 'auth' }

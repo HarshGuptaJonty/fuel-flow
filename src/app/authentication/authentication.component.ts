@@ -57,6 +57,7 @@ export class AuthenticationComponent implements OnInit {
   recaptchaVerifier?: any;
   activeFormGroup: FormGroup = this.loginForm;
   accessKey: any;
+  authData: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -137,7 +138,7 @@ export class AuthenticationComponent implements OnInit {
     this.disableButtons = true;
     this.confirmationResult?.confirm(verificationCode)
       .then((result: any) => {
-        this.accountService.setAuthData(result);
+        this.authData = result;
         this.disableButtons = false;
         this.authVerifiedCheckAndOpenDashboard();
       })
@@ -146,37 +147,47 @@ export class AuthenticationComponent implements OnInit {
         this.activeFormGroup.updateValueAndValidity();
         this.disableButtons = false;
         console.log('Failed to verify OTP. Error:', error);
+        //TODO: left bottom notification
       });
   }
 
   async authVerifiedCheckAndOpenDashboard() {
-    let data = await this.firebaseService.getData(`admin/${this.accountService.getUserId()}`);
+    let data = await this.firebaseService.getData(`admin/${this.authData?.user?.uid}`);
     if (data) {
+      this.accountService.setAuthData(this.authData);
       this.accountService.setUserData(data);
       this.router?.navigate(['/dashboard']);
     } else {
-      let result = this.firebaseService.setData(`admin/${this.accountService.getUserId()}`, this.accountService.getUserId(), {
-        data: {
-          fullName: this.activeFormGroup.get('fullName')?.value,
-          contact: {
-            countryCode: '91',
-            phoneNumber: this.activeFormGroup.get('phoneNumber')?.value,
-          },
-          importantTimes: {
-            lastSeen: Date.now()
-          },
-          permission: {
-            verified: false,
-            blocked: false
-          },
-          userID: this.accountService.getUserId()
-        }
-      })
-
-      if (result.success) {
-        this.router?.navigate(['/dashboard']);
+      if (this.isLogin) {
+        this.createNewAccBtnClick();
+        //TODO: left bottom notification
       } else {
-        console.log(result);
+        data = {
+          data: {
+            fullName: this.activeFormGroup.get('fullName')?.value,
+            male: true,
+            contact: {
+              countryCode: '91',
+              phoneNumber: this.activeFormGroup.get('phoneNumber')?.value,
+            },
+            importantTimes: {
+              lastSeen: Date.now()
+            },
+            permission: {
+              verified: false,
+              blocked: false
+            },
+            userID: this.authData?.user?.uid
+          }
+        };
+
+        this.firebaseService.setData(`admin/${this.authData?.user?.uid}`, data).then((result) => {
+          this.accountService.setAuthData(this.authData);
+          this.accountService.setUserData(data);
+          this.router?.navigate(['/dashboard']);
+        }).catch((error) => {
+          //TODO: left bottom notification
+        });
       }
     }
   }

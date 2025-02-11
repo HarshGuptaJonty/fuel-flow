@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { child, Database, get, ref } from '@angular/fire/database';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { child, Database, get, ref, set } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +7,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 export class FirebaseService {
 
   constructor(
-    private db: Database,
-    private database: AngularFireDatabase
+    private db: Database
   ) { }
 
   async getData(path: string) {
@@ -20,25 +18,17 @@ export class FirebaseService {
         return snapshot.val();
       } else {
         console.log("No data available");
+        //TODO: left bottom notification
         return null;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      //TODO: left bottom notification
       return null;
     }
   }
 
-  setData(path: string, key: string, data: any):any {
-    this.database.list(path).set(key, data).then(() => {
-      return {
-        success: true,
-        error: null
-      };
-    }).catch((error) => {
-      return {
-        success: false,
-        error: error
-      };
-    })
+  setData(path: string, data: any) {
+    return set(ref(this.db, path), data);
   }
 }
