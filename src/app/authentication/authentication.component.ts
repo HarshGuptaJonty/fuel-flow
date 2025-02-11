@@ -56,6 +56,7 @@ export class AuthenticationComponent implements OnInit {
   confirmationResult?: any;
   recaptchaVerifier?: any;
   activeFormGroup: FormGroup = this.loginForm;
+  isMaleGender: boolean = true;
   accessKey: any;
   authData: any;
 
@@ -165,7 +166,7 @@ export class AuthenticationComponent implements OnInit {
         data = {
           data: {
             fullName: this.activeFormGroup.get('fullName')?.value,
-            male: true,
+            male: this.isMaleGender,
             contact: {
               countryCode: '91',
               phoneNumber: this.activeFormGroup.get('phoneNumber')?.value,

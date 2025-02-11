@@ -63,6 +63,14 @@
                     </mat-form-field>
                 </div>
                 <div class="mt-3" *ngIf="!isOtpSent">
+                    <div class="d-flex">
+                        <button class="action-btn-half action-btn-right-margin" mat-flat-button
+                            (click)="isMaleGender=true" [ngClass]="{'secondary-btn-color':!isMaleGender}">Male</button>
+                        <button class="action-btn-half" mat-flat-button (click)="isMaleGender=false"
+                            [ngClass]="{'secondary-btn-color':isMaleGender}">Female</button>
+                    </div>
+                </div>
+                <div class="mt-3" *ngIf="!isOtpSent">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Access Key.</mat-label>
                         <input matInput placeholder="ABCXXXXXXXXXX12" autocomplete="off"
