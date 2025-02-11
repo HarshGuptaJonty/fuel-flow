@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerDataServiceService {
+export class CustomerDataService {
 
   private customerData = new BehaviorSubject<any>(null);
   customerData$ = this.customerData.asObservable();

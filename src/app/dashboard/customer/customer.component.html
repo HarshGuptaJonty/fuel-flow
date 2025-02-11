@@ -2,7 +2,8 @@
     <div class="list-section">
         <div class="refresh-section d-flex justify-content-between align-items-center">
             <div>
-                <div class="line1">{{computedData?.customerList?.length}} Customers</div>
+                <div class="line1">{{computedData?.customerList?.length}} {{isSearching? 'Results found':'Customers'}}
+                </div>
                 <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
                     <span class="refresh" (click)="refreshCustomerData()" title="Refresh customer list">refresh</span>.
                 </div>
@@ -19,11 +20,13 @@
                 [selected]="selectedIndex === i" (click)="customerSelected(obj,i)">
             </app-customer-card>
         </div>
-        
+
         <div *ngIf="computedData.customerList?.length == 0"
             class="customer-list d-flex justify-content-center align-items-center flex-column">
             <img src="assets/images/banner/no-result.png" alt="">
-            <div class="m-4 text-center bold-text">You have no customers.<br>Add new customers!</div>
+            <div *ngIf="isSearching" class="m-4 text-center bold-text">No search results found!</div>
+            <div *ngIf="!isSearching" class="m-4 text-center bold-text">You have no customers.<br>Add new customers!
+            </div>
         </div>
     </div>
 

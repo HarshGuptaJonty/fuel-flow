@@ -3,7 +3,8 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { FirebaseService } from '../services/firebase.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { CustomerDataServiceService } from '../services/customer-data-service.service';
+import { CustomerDataService } from '../services/customer-data.service';
+import { SearchService } from '../services/search.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,9 +61,10 @@ export class DashboardComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private firebaseService: FirebaseService,
-    private customerService: CustomerDataServiceService,
+    private customerService: CustomerDataService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private searchService: SearchService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -110,6 +112,11 @@ export class DashboardComponent implements OnInit {
     } else {
       this.router.navigate(['/dashboard/' + key]);
     }
+  }
+
+  onSearch(event: any) {
+    const searchValue = (event.target as HTMLInputElement).value;
+    this.searchService.updateSearchText(searchValue);
   }
 
   enableMenuItem(key: string, isEnable: boolean) {

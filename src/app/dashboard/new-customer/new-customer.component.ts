@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { CustomerDataServiceService } from '../../services/customer-data-service.service';
+import { CustomerDataService} from '../../services/customer-data.service';
 import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
@@ -50,7 +50,7 @@ export class NewCustomerComponent implements OnInit {
     private afAuth: AngularFireAuth,
     private accountService: AccountService,
     private firebaseService: FirebaseService,
-    private customerService: CustomerDataServiceService
+    private customerService: CustomerDataService
   ) { }
 
   ngOnInit(): void {
