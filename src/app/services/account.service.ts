@@ -10,10 +10,10 @@ import { Router } from '@angular/router';
 })
 export class AccountService {
 
-  private authData = new BehaviorSubject<any>(null); // Holds auth data
-  authData$ = this.authData.asObservable(); // Observable for components to subscribe
+  private authData = new BehaviorSubject<any>(null);
+  authData$ = this.authData.asObservable();
 
-  private userData = new BehaviorSubject<any>(null); // Holds user data from realtime database
+  private userData = new BehaviorSubject<any>(null);
   userData$ = this.userData.asObservable();
 
   constructor(
@@ -30,12 +30,12 @@ export class AccountService {
   }
 
   setAuthData(data: any) {
-    this.authData?.next(data); // Update auth data
+    this.authData?.next(data);
     localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_PROFILE, JSON.stringify(data));
   }
 
   getAuthData() {
-    return this.authData?.value; // Get current auth data
+    return this.authData?.value;
   }
 
   hasAuthData() {

@@ -45,7 +45,6 @@ export class CustomerComponent {
     this.userId = this.accountService.getUserId();
     if (this.customerService.hasCustomerData()) {
       this.customerData = this.customerService.getCustomerData();
-      this.customerData.from = 'LOCAL_STORAGE';
 
       this.computeCustomerData();
     } else {
@@ -97,6 +96,8 @@ export class CustomerComponent {
   }
 
   async refreshCustomerData() {
+    this.selectedCustomer = null;
+
     let data = {
       customerList: await this.firebaseService.getData('customer/bucket'),
       others: {
@@ -105,7 +106,6 @@ export class CustomerComponent {
     }
     this.customerService.setCustomerData(data);
     this.customerData = data;
-    this.customerData.others.from = 'REMOTE_STORAGE';
 
     this.computeCustomerData();
   }

@@ -70,14 +70,9 @@ export class AuthenticationComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    if (this.accountService.hasAuthData()) {
+    if (this.accountService.hasUserData()) {
       this.router?.navigate(['/dashboard']);
     }
-
-    this.route.firstChild?.url.subscribe((url) => {
-      this.isLogin = url[0]?.path === 'login';
-      this.activeFormGroup = this.isLogin ? this.loginForm : this.signupForm;
-    });
 
     this.accessKey = await this.firebaseService.getData('others/accessKey');
   }
@@ -155,12 +150,13 @@ export class AuthenticationComponent implements OnInit {
 
   async authVerifiedCheckAndOpenDashboard() {
     let data: Admin = await this.firebaseService.getData(`admin/${this.authData?.user?.uid}`);
-    if (data) {
+    if (Object.keys(data).length > 0) {
       this.accountService.setAuthData(this.authData);
       this.accountService.setUserData(data);
       this.router?.navigate(['/dashboard']);
     } else {
       if (this.isLogin) {
+        this.isOtpSent = false;
         this.createNewAccBtnClick();
         //TODO: left bottom notification
       } else {

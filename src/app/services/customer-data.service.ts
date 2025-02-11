@@ -29,7 +29,7 @@ export class CustomerDataService {
   }
 
   getCustomerList() {
-    return this.customerData?.value?.customerList;
+    return this.customerData?.value?.customerList || {};
   }
 
   hasCustomerData() {

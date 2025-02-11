@@ -12,7 +12,7 @@ export class authGuard {
   ) { }
 
   canActivate() {
-    if (this.accountService.hasAuthData()) {
+    if (this.accountService.hasUserData()) {
       return true;
     } else {
       this.router.navigate(['/auth']);

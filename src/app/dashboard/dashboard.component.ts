@@ -76,17 +76,21 @@ export class DashboardComponent implements OnInit {
 
     if (this.accountService.hasUserData()) {
       this.userData = this.accountService.getUserData();
-      this.userData.from = 'LOCAL_STORAGE';
+      // this.userData.from = 'LOCAL_STORAGE';
     } else {
       let data = await this.firebaseService.getData(`admint/${this.accountService.getUserId()}`);
       this.accountService.setUserData(data);
       this.userData = data;
-      this.userData.from = 'REMOTE_STORAGE';
+      // this.userData.from = 'REMOTE_STORAGE';
     }
     this.adminProfileData = this.userData?.data;
 
-    if (this.userData)
+    if (this.userData?.data?.userID)
       this.computeUserData();
+    else {
+      this.accountService.signOut();
+      //TODO: notification that account not found
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -132,6 +136,6 @@ export class DashboardComponent implements OnInit {
   }
 
   hasCustomerData() {
-    return Object.keys(this.customerService.getCustomerData()?.customerList).length > 0;
+    return Object.keys(this.customerService.getCustomerList()).length > 0;
   }
 }
