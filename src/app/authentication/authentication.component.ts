@@ -161,6 +161,12 @@ export class AuthenticationComponent implements OnInit {
       this.accountService.setAuthData(this.authData);
       this.accountService.setUserData(data);
       this.router?.navigate(['/dashboard']);
+
+      this.notificationService.showNotification({
+        heading: 'Log in successful.',
+        duration: 5000,
+        leftBarColor: '#3A7D44'
+      });
     } else {
       if (this.isLogin) {
         this.isOtpSent = false;

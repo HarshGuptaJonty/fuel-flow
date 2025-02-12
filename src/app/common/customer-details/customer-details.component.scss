@@ -13,6 +13,12 @@
         }
     }
 
+    .label-span{
+        background-color: $border-light;
+        padding: 3px 10px;
+        border-radius: 5px;
+    }
+
     .action-section {
         position: absolute;
         top: 75px;

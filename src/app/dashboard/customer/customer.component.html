@@ -5,7 +5,8 @@
                 <div class="line1">{{computedData?.customerList?.length}} {{isSearching? 'Results found':'Customers'}}
                 </div>
                 <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
-                    <span class="refresh" (click)="refreshCustomerData()" title="Refresh customer list">refresh</span>.
+                    <span class="refresh" (click)="refreshCustomerData(true)"
+                        title="Refresh customer list">refresh</span>.
                 </div>
             </div>
             <div class="add-customer d-flex justify-content-center align-items-center" (click)="onAddNewCustomer()">
@@ -43,4 +44,6 @@
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">Selected a customer from the list to view its contents!</div>
     </div>
+
+
 </div>

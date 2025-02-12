@@ -84,7 +84,8 @@ export class NewCustomerComponent implements OnInit {
         shippingAddress: new FormControl(data.shippingAddress),
         extraNote: new FormControl(data.extraNote)
       });
-    }
+    } else
+      this.isEditingProfile = false;
   }
 
   getErrorMessage(controlName: string) {
@@ -113,6 +114,13 @@ export class NewCustomerComponent implements OnInit {
     this.firebaseService.setData(`customer/bucket/${newCustomer.data?.phoneNumber}`, newCustomer).then((result) => {
       this.onSubmit.emit();
       this.onCancel.emit();
+
+      this.notificationService.showNotification({
+        heading: this.isEditingProfile ? 'Customer profile updated.' : 'New customer added.',
+        message: 'Customer details saved successfully.',
+        duration: 5000,
+        leftBarColor: '#3A7D44'
+      });
     }).catch((error) => {
       this.notificationService.showNotification({
         heading: 'Something Went Wrong!',

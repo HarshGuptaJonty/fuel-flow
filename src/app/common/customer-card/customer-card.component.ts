@@ -28,7 +28,8 @@ export class CustomerCardComponent implements OnInit {
     this.others = this.customerObject?.others;
   }
 
-  copyData(data: string) {
+  copyData(event: any, data: string) {
+    event.stopPropagation();
     copyData(data, this.notificationService);
   }
 

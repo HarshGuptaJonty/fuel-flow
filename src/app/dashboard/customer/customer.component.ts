@@ -8,6 +8,7 @@ import { NewCustomerComponent } from "../new-customer/new-customer.component";
 import { CustomerCardComponent } from "../../common/customer-card/customer-card.component";
 import { SearchService } from '../../services/search.service';
 import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-customer',
@@ -38,7 +39,8 @@ export class CustomerComponent {
     private accountService: AccountService,
     private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private notificationService: NotificationService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -95,18 +97,35 @@ export class CustomerComponent {
       this.isEditingProfile = false;
   }
 
-  async refreshCustomerData() {
+  async refreshCustomerData(showNotification: boolean = false) {
     this.selectedCustomer = null;
+    const latestData = await this.firebaseService.getData('customer/bucket');
 
-    let data = {
-      customerList: await this.firebaseService.getData('customer/bucket'),
-      others: {
-        lastFrereshed: Date.now()
+    if (Object.keys(latestData).length > 0) {
+      let data = {
+        customerList: latestData,
+        others: {
+          lastFrereshed: Date.now()
+        }
       }
-    }
-    this.customerService.setCustomerData(data);
-    this.customerData = data;
+      this.customerService.setCustomerData(data);
+      this.customerData = data;
 
-    this.computeCustomerData();
+      this.computeCustomerData();
+
+      if (showNotification)
+        this.notificationService.showNotification({
+          heading: 'Customer Data Refreshed.',
+          duration: 5000,
+          leftBarColor: '#3A7D44' //FBA518
+        });
+    } else {
+      this.notificationService.showNotification({
+        heading: 'Something Went Wrong!',
+        message: 'Please Contact IT Support!',
+        duration: 5000,
+        leftBarColor: '#ff0000'
+      });
+    }
   }
 }
