@@ -4,7 +4,8 @@ export interface Customer {
         phoneNumber?: string,
         address?: string,
         shippingAddress?: string,
-        extraNote?: string
+        extraNote?: string,
+        userId?: string
     },
     others: {
         createdBy?: string,

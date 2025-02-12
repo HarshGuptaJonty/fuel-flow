@@ -32,7 +32,7 @@
 
     <div *ngIf="addNewCustomer" class="details-section">
         <app-new-customer (onCancel)="addNewCustomer=false" (onSubmit)="refreshCustomerData()"
-            [editProfileNumber]="selectedCustomer?.data?.phoneNumber" [isEditingProfile]="isEditingProfile">
+            [editProfileId]="selectedCustomer?.data?.userId" [isEditingProfile]="isEditingProfile">
         </app-new-customer>
     </div>
     <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section">

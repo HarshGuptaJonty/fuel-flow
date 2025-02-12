@@ -11,6 +11,7 @@ import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
 import { NotificationService } from '../../services/notification.service';
+import { generateRandomString } from '../../shared/commonFunctions';
 
 @Component({
   selector: 'app-new-customer',
@@ -34,10 +35,11 @@ export class NewCustomerComponent implements OnInit {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<any>();
 
-  @Input() editProfileNumber: string = '';
+  @Input() editProfileId: string = '';
   @Input() isEditingProfile: boolean = false;
 
   userId?: string;
+  customerId?: string;
   customerList?: any;
   disableSave: boolean = false;
   phoneNumbers: string[] = [];
@@ -48,7 +50,8 @@ export class NewCustomerComponent implements OnInit {
     Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
     address: new FormControl(''),
     shippingAddress: new FormControl(''),
-    extraNote: new FormControl('')
+    extraNote: new FormControl(''),
+    userId: new FormControl('')
   });
 
   constructor(
@@ -69,10 +72,15 @@ export class NewCustomerComponent implements OnInit {
     }
 
     this.setupForm();
+
+    if (this.isEditingProfile)
+      this.customerId = this.editProfileId;
+    else
+      this.customerId = generateRandomString();
   }
 
   setupForm() {
-    const customerData = this.customerList?.[this.editProfileNumber];
+    const customerData = this.customerList?.[this.editProfileId];
 
     if (customerData && this.isEditingProfile) {
       const data = customerData.data;
@@ -82,7 +90,8 @@ export class NewCustomerComponent implements OnInit {
         Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
         address: new FormControl(data.address),
         shippingAddress: new FormControl(data.shippingAddress),
-        extraNote: new FormControl(data.extraNote)
+        extraNote: new FormControl(data.extraNote),
+        userId: new FormControl(data.userId)
       });
     } else
       this.isEditingProfile = false;
@@ -103,6 +112,9 @@ export class NewCustomerComponent implements OnInit {
   }
 
   saveCustomerData() {
+    if (!this.isEditingProfile)
+      this.customerForm.get('userId')?.setValue(this.customerId);
+
     const newCustomer: Customer = {
       data: this.customerForm?.value,
       others: {
@@ -111,7 +123,7 @@ export class NewCustomerComponent implements OnInit {
       }
     }
 
-    this.firebaseService.setData(`customer/bucket/${newCustomer.data?.phoneNumber}`, newCustomer).then((result) => {
+    this.firebaseService.setData(`customer/bucket/${newCustomer.data?.userId}`, newCustomer).then((result) => {
       this.onSubmit.emit();
       this.onCancel.emit();
 
