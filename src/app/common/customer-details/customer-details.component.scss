@@ -1,7 +1,7 @@
 @import '../../../assets/styles/color.scss';
 
 .customer-details-container {
-    padding: 40px 50px 40px 50px;
+    padding: 40px 50px 20px 50px;
     position: relative;
 
     .copy-icon {
@@ -13,7 +13,7 @@
         }
     }
 
-    .label-span{
+    .label-span {
         background-color: $border-light;
         padding: 3px 10px;
         border-radius: 5px;
@@ -27,7 +27,7 @@
         .custom-btn {
             font-family: "Comfortaa", serif;
             border-radius: 5px;
-            
+
             background-color: #e3e3e4;
             color: $primary-web-dark;
 

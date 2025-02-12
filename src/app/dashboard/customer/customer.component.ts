@@ -9,6 +9,7 @@ import { CustomerCardComponent } from "../../common/customer-card/customer-card.
 import { SearchService } from '../../services/search.service';
 import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
 import { NotificationService } from '../../services/notification.service';
+import { DataTableComponent } from "../../common/data-table/data-table.component";
 
 @Component({
   selector: 'app-customer',
@@ -16,7 +17,8 @@ import { NotificationService } from '../../services/notification.service';
     CommonModule,
     NewCustomerComponent,
     CustomerCardComponent,
-    CustomerDetailsComponent
+    CustomerDetailsComponent,
+    DataTableComponent
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
@@ -62,7 +64,7 @@ export class CustomerComponent {
         this.isSearching = true;
         this.selectedCustomer = null;
       } else {
-        this.computedData.customerList = Object.values(this.customerData.customerList);
+        this.computedData.customerList = Object.values(this.customerData.customerList || {});
         this.isSearching = false;
       }
     });
@@ -116,13 +118,13 @@ export class CustomerComponent {
         heading: 'No customer data!',
         message: 'Please add a customer.',
         duration: 5000,
-        leftBarColor: '#ff0000'
+        leftBarColor: this.notificationService.color.red
       });
     else if (showNotification)
       this.notificationService.showNotification({
-        heading: 'Customer Data Refreshed.',
+        heading: 'Customer data refreshed.',
         duration: 5000,
-        leftBarColor: '#3A7D44'
+        leftBarColor: this.notificationService.color.green
       });
   }
 }

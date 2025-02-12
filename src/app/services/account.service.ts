@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LOCAL_STORAGE_KEYS } from '../shared/constants';
-import { Database } from '@angular/fire/database';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,8 @@ export class AccountService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {
     const storedAuth = localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH_PROFILE);
     if (storedAuth)
@@ -57,7 +58,11 @@ export class AccountService {
 
   //extra functions
   getUserId() {
-    return this.authData?.value?.user?.uid;
+    if (!this.authData?.value?.user?.uid) {
+      this.signOut();
+      this.notificationService.notAuthorized();
+    } else
+      return this.authData?.value?.user?.uid
   }
 
   signOut() {
@@ -65,6 +70,7 @@ export class AccountService {
 
     localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTH_PROFILE);
     sessionStorage.removeItem(LOCAL_STORAGE_KEYS.USER_PROFILE);
+    sessionStorage.removeItem(LOCAL_STORAGE_KEYS.CUSTOMER_DATA);
 
     this.authData?.next(null);
     this.userData?.next(null);

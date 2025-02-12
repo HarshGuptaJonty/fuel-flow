@@ -35,15 +35,15 @@
             [editProfileId]="selectedCustomer?.data?.userId" [isEditingProfile]="isEditingProfile">
         </app-new-customer>
     </div>
-    <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section">
+    <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section d-flex flex-column">
         <app-customer-details *ngIf="selectedCustomer" [customerObject]="selectedCustomer" [userId]="userId"
             (onProfileEdit)="onProfileEdit()"></app-customer-details>
+
+        <app-data-table [customerObject]="selectedCustomer" class="flex-grow-1"></app-data-table>
     </div>
     <div *ngIf="!selectedCustomer && !addNewCustomer"
         class="details-section d-flex justify-content-center align-items-center flex-column">
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">Selected a customer from the list to view its contents!</div>
     </div>
-
-
 </div>

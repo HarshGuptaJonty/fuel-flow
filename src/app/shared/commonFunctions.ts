@@ -53,3 +53,10 @@ export function generateRandomString(length: number = 14) {
   }
   return result;
 }
+
+export function dateConverter(inputDate: string): string { // convert 'dd/MM/yyyy' to 'dd MMMM yyyy'
+  const [day, month, year] = inputDate.split('/');
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+}

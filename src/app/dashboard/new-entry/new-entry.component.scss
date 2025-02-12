@@ -1,0 +1,61 @@
+@import '../../../assets/styles/color.scss';
+
+.new-entry-container {
+    position: relative;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+
+    .heading {
+        font-size: 28px;
+    }
+
+    .limit-textarea {
+        &-1 {
+            min-height: 40px;
+            max-height: 100px;
+        }
+
+        &-2 {
+            min-height: 40px;
+            max-height: 200px;
+        }
+    }
+
+    .customer-form {
+
+        .gap {
+            gap: 10px;
+        }
+
+        .box-input {
+            flex: 1 0 17%;
+        }
+
+        .box-input-half {
+            flex: 1 0 45%;
+        }
+
+        .error-msg {
+            font-size: 14px;
+            color: $primary-web-red;
+        }
+    }
+
+    .custom-btn {
+        font-family: "Comfortaa", serif;
+        border-radius: 5px;
+        min-width: 200px;
+    }
+
+    .cancel-btn {
+        background-color: #e3e3e4;
+        color: $primary-web-dark;
+
+        &:hover {
+            background-color: $primary-web-red;
+            color: white;
+        }
+    }
+}

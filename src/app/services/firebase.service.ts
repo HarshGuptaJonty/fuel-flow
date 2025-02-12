@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { child, Database, get, ref, set } from '@angular/fire/database';
 import { NotificationService } from './notification.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import { NotificationService } from './notification.service';
 export class FirebaseService {
 
   constructor(
+    private afAuth: AngularFireAuth,
     private db: Database,
     private notificationService: NotificationService
   ) { }
@@ -32,14 +34,7 @@ export class FirebaseService {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-
-      this.notificationService.showNotification({
-        heading: 'Something Went Wrong!',
-        message: 'Please Contact IT Support!',
-        duration: 5000,
-        leftBarColor: '#ff0000'
-      });
-
+      this.notificationService.somethingWentWrong();
       return {};
     }
   }

@@ -1,0 +1,81 @@
+@import '../../../assets/styles/color.scss';
+
+.data-table-container {
+    padding: 0px 50px 40px 50px;
+
+    .detail-section {
+        margin-bottom: 20px;
+
+        .data-card {
+            padding: 15px 20px 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+
+            &:hover {
+                background-color: $border-very-light;
+            }
+        }
+
+        .entry-btn {
+            padding: 0px 20px;
+
+            &:hover {
+                background-color: $primary-mat-color;
+                cursor: pointer;
+                color: white;
+            }
+        }
+
+        .custom-btn {
+            font-family: "Comfortaa", serif;
+            border-radius: 5px;
+            align-self: center;
+        }
+    }
+
+    .custom-table {
+        .custom-header-row {
+            background-color: $border-light;
+        }
+
+        .custom-row:nth-child(even) {
+            background-color: $border-very-light;
+        }
+
+        .custom-header-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .custom-mat-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .text-right {
+            text-align: end
+        }
+
+        .witdh-limit-200 {
+            max-width: 200px;
+        }
+
+        .name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: $primary-mat-color;
+
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+    }
+
+    .no-data {
+        height: calc(100% - 60px);
+    }
+}

@@ -1,15 +1,10 @@
-export interface Customer {
+export interface DeliveryBoy {
     data?: {
         fullName?: string,
         phoneNumber?: string,
         address?: string,
-        shippingAddress?: string,
         extraNote?: string,
         userId?: string
-    },
-    entry?: {
-        pendingCount?: number,
-        dueAmount?: number
     },
     others?: {
         createdBy?: string,

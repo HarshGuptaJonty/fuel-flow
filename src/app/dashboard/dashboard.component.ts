@@ -78,12 +78,11 @@ export class DashboardComponent implements OnInit {
 
     if (this.accountService.hasUserData()) {
       this.userData = this.accountService.getUserData();
-      // this.userData.from = 'LOCAL_STORAGE';
     } else {
+      //fetch admin data from account service
       let data = await this.firebaseService.getData(`admint/${this.accountService.getUserId()}`);
       this.accountService.setUserData(data);
       this.userData = data;
-      // this.userData.from = 'REMOTE_STORAGE';
     }
     this.adminProfileData = this.userData?.data;
 
@@ -91,13 +90,7 @@ export class DashboardComponent implements OnInit {
       this.computeUserData();
     else {
       this.accountService.signOut();
-
-      this.notificationService.showNotification({
-        heading: 'Not Authorized.',
-        message: 'Please login again.',
-        duration: 5000,
-        leftBarColor: '#ff0000'
-      });
+      this.notificationService.notAuthorized();
     }
   }
 
@@ -119,12 +112,7 @@ export class DashboardComponent implements OnInit {
     if (key === 'log-out') {
       //TODO: logout confirmation model popup
       this.accountService.signOut();
-
-      this.notificationService.showNotification({
-        heading: 'Logged Out Successfully.',
-        duration: 5000,
-        leftBarColor: '#3A7D44'
-      });
+      this.notificationService.loggedOut();
     } else if (key === 'profile') {
       this.router.navigate(['/profile']);
     } else {

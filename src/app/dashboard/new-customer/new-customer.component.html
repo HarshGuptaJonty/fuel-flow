@@ -46,8 +46,9 @@
         </div>
     </form>
     <div class="mt-3 justify-content-between d-flex customer-form">
-        <button mat-flat-button (click)="saveCustomerData()"
+        <button mat-flat-button (click)="saveCustomerData()" class="custom-btn"
             [disabled]="disableSave || customerForm.invalid">Save</button>
-        <button class="cancel-btn" mat-flat-button (click)="cancelClicked()" [disabled]="disableSave">Cancel</button>
+        <button class="cancel-btn custom-btn" mat-flat-button (click)="cancelClicked()"
+            [disabled]="disableSave">Cancel</button>
     </div>
 </div>
