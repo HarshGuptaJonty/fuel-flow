@@ -33,6 +33,10 @@
         }
     }
 
+    .table-div {
+        overflow-y: auto;
+    }
+
     .custom-table {
         .custom-header-row {
             background-color: $border-light;
