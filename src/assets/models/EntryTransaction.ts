@@ -7,7 +7,8 @@ export interface EntryTransaction {
         recieved?: number,
         rate?: number,
         payment?: number,
-        transactionId: string;
+        transactionId: string,
+        extraDetails?: string
     }, others?: {
         createdBy?: string,
         createdTime?: number,

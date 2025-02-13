@@ -10,6 +10,7 @@ import { EntryDataService } from '../../services/entry-data.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
+import { ConfirmationModelService } from '../../services/confirmation-model.service';
 
 @Component({
   selector: 'app-data-table',
@@ -29,6 +30,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   @ViewChild('plainText', { static: true }) plainText!: TemplateRef<any>;
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
   @ViewChild('nameText', { static: true }) nameText!: TemplateRef<any>;
+  @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
 
   tableStructure = [
     {
@@ -75,6 +77,11 @@ export class DataTableComponent implements OnInit, OnChanges {
       label: 'Due Amount',
       customClass: 'text-right',
       dataType: 'amountText'
+    }, {
+      key: 'action',
+      label: 'Action',
+      customClass: 'text-right',
+      dataType: 'actionText'
     }
   ]
 
@@ -82,13 +89,15 @@ export class DataTableComponent implements OnInit, OnChanges {
   dueAmount: number = 0;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
-  addNewEntry: boolean = false;
+  newEntry: boolean = false;
   entryDataAvaliable: boolean = false;
+  openTransaction?: EntryTransaction;
 
   constructor(
     private afAuth: AngularFireAuth,
     private enterDataService: EntryDataService,
     private notificationService: NotificationService,
+    private confirmationModelService: ConfirmationModelService,
     private router: Router
   ) { }
 
@@ -100,7 +109,7 @@ export class DataTableComponent implements OnInit, OnChanges {
       if (flag) {
         this.entryDataAvaliable = true;
         this.refreshEntryData();
-        this.addNewEntry = false;
+        this.newEntry = false;
       }
     });
   }
@@ -111,14 +120,13 @@ export class DataTableComponent implements OnInit, OnChanges {
 
     if (this.entryDataAvaliable) {
       this.refreshEntryData();
-      this.addNewEntry = false;
+      this.newEntry = false;
     }
   }
 
   refreshData() {
     if (this.entryDataAvaliable) {
       this.refreshEntryData();
-      this.addNewEntry = false;
       this.notificationService.transactionListRefreshed();
     } else {
       this.enterDataService.hardRefresh();
@@ -133,10 +141,12 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   async refreshEntryData() {
+    this.newEntry = false;
     this.pendingUnit = 0;
     this.dueAmount = 0;
     this.rawTransactionList = [];
     this.processedTableData = null;
+    this.openTransaction = undefined;
 
     this.rawTransactionList = this.enterDataService.getCustomerTransactionList(this.customerObject?.data?.userId);
     this.processedTableData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
@@ -164,12 +174,34 @@ export class DataTableComponent implements OnInit, OnChanges {
       rate: rate > 0 ? rate : '',
       totamAmt: totalAmt > 0 ? totalAmt : '',
       paymentAmt: payment > 0 ? payment : '',
-      dueAmt: this.dueAmount
+      dueAmt: this.dueAmount,
+      transactionId: item.data?.transactionId
     };
   }
 
   saveEntry(event: EntryTransaction) {
-    this.enterDataService.addNewEntry(event);
+    this.enterDataService.addNewEntry(event, !!this.openTransaction);
+  }
+
+  editEntry(object: any) {
+    this.confirmationModelService.showModel({
+      heading: 'Edit Entry?',
+      message: 'You are trying to edit an existing entry, are you sure?',
+      leftButton: {
+        text: 'Yes',
+        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_BLUE,
+      }, rightButton: {
+        text: 'Cancel',
+        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+      }
+    }).subscribe(result => {
+      if (result === 'left') {
+        this.confirmationModelService.hideModel();
+        this.openTransaction = this.enterDataService.getTransactionList()?.[object?.transactionId];
+        this.newEntry = true;
+      } else
+        this.confirmationModelService.hideModel();
+    });
   }
 
   openDeliveryBoyProfile(obj: any) {
@@ -188,6 +220,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   getTemplate(dataType: string) {
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'nameText') return this.nameText;
+    if (dataType === 'actionText') return this.actionText;
     return this.plainText;
   }
 

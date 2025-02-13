@@ -62,16 +62,23 @@ export class EntryDataService {
     return [];
   }
 
-  addNewEntry(entry: EntryTransaction) {
+  addNewEntry(entry: EntryTransaction, isEditing: boolean = false) {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, entry)
       .then((result) => {
-        let list = Object.values(this.transactionList.getValue() || {}) || [];
-        list = [...list, entry];
+        let objects = this.transactionList.getValue() || {};
+        let list;
+        if (isEditing && objects[entry.data.transactionId]) {
+          objects[entry.data.transactionId] = entry;
+          list = Object.values(objects) || [];
+        } else {
+          list = Object.values(objects) || [];
+          list = [...list, entry];
+        }
         this.transactionList.next(list);
         this.isDataChanged.next(true);
 
         this.notificationService.showNotification({
-          heading: 'New enter added.',
+          heading: isEditing ? 'Entry edited.' : 'New entry added.',
           message: 'Data saved successfully.',
           duration: 5000,
           leftBarColor: this.notificationService.color.green

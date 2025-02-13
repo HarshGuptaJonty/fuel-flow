@@ -29,12 +29,14 @@ import { EntryDataService } from '../../services/entry-data.service';
 export class NewEntryComponent implements OnInit {
 
   @Input() customerObject?: Customer;
-  @Input() pendingCount?: number;
+  @Input() pendingCount: number = 0;
+  @Input() openTransaction?: EntryTransaction;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
   disableSave: boolean = true;
+  isEditing: boolean = false;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(this.getDateInFormat()),
@@ -45,7 +47,7 @@ export class NewEntryComponent implements OnInit {
     deliveryBoyName: new FormControl(''),
     deliveryBoyNumber: new FormControl(''),
     deliveryBoyAddress: new FormControl(''),
-    extraDetails: new FormControl(''),
+    extraDetails: new FormControl('')
   });
 
   constructor(
@@ -54,6 +56,22 @@ export class NewEntryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isEditing = !!this.openTransaction;
+    if (this.isEditing) {
+      this.entryForm = new FormGroup({
+        date: new FormControl(this.openTransaction?.data.date?.replaceAll('/', '')),
+        unitsSent: new FormControl(this.openTransaction?.data.sent),
+        unitsRecieved: new FormControl(this.openTransaction?.data.recieved),
+        rate: new FormControl(this.openTransaction?.data.rate),
+        paidAmt: new FormControl(this.openTransaction?.data.payment),
+        deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName),
+        deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber),
+        deliveryBoyAddress: new FormControl(this.openTransaction?.data.deliveryBoy?.userId), // fetch address deom delivery boy service by passing userid
+        extraDetails: new FormControl(this.openTransaction?.data.extraDetails)
+      });
+      this.pendingCount += this.openTransaction?.data.recieved || 0;
+    }
+
     this.entryForm.valueChanges.subscribe((value) => {
       this.checkForDataValidation(value);
     });
@@ -72,6 +90,10 @@ export class NewEntryComponent implements OnInit {
     const month = value.date.slice(2, 4); // MM
     const year = value.date.slice(4); // yyyy
 
+    let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
+    let createdTime = this.openTransaction?.others?.createdTime || Date.now();
+    let transactionId = this.openTransaction?.data.transactionId || year + month + day + '_' + this.generateDateTimeKey();
+
     let data: EntryTransaction = {
       data: {
         date: day + '/' + month + '/' + year,
@@ -89,10 +111,11 @@ export class NewEntryComponent implements OnInit {
         recieved: value.unitsRecieved,
         rate: value.rate,
         payment: value.paidAmt,
-        transactionId: year + month + day + '_' + this.generateDateTimeKey(),
+        transactionId: transactionId,
+        extraDetails: value.extraDetails
       }, others: {
-        createdBy: this.accountService.getUserId(),
-        createdTime: Date.now(),
+        createdBy: createdBy,
+        createdTime: createdTime,
         editedBy: this.accountService.getUserId(),
         editedTime: Date.now(),
       }

@@ -9,8 +9,8 @@
             <span class="bold-text">Due Amount</span>
             <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
         </div>
-        <div *ngIf="!addNewEntry" class="data-card d-flex flex-column justify-content-center entry-btn me-3"
-            (click)="addNewEntry=!addNewEntry">
+        <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn me-3"
+            (click)="newEntry=!newEntry">
             <span class="bold-text">New Entry</span>
         </div>
         <div class="data-card d-flex flex-column justify-content-center entry-btn" (click)="refreshData()">
@@ -18,9 +18,9 @@
         </div>
     </div>
 
-    <div *ngIf="addNewEntry">
-        <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit" (onCancel)="addNewEntry = false"
-            (onSubmit)="saveEntry($event)">
+    <div *ngIf="newEntry">
+        <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit"
+            [openTransaction]="openTransaction" (onCancel)="newEntry = false" (onSubmit)="saveEntry($event)">
         </app-new-entry>
     </div>
 
@@ -41,7 +41,7 @@
         </table>
     </div>
 
-    <div *ngIf="(!processedTableData || processedTableData.length === 0) && !addNewEntry"
+    <div *ngIf="(!processedTableData || processedTableData.length === 0) && !newEntry"
         class="no-data d-flex justify-content-center align-items-center flex-column">
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">
@@ -62,6 +62,11 @@
 
     <ng-template #nameText let-value let-column="column">
         <span class="name-text nowrap"
-            (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}</span>
+            (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
+        </span>
+    </ng-template>
+
+    <ng-template #actionText let-value let-column="column">
+        <span class="name-text nowrap" (click)="editEntry(value)">Edit</span>
     </ng-template>
 </div>

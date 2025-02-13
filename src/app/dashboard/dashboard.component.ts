@@ -125,6 +125,7 @@ export class DashboardComponent implements OnInit {
         }
       }).subscribe(result => {
         if (result === 'left') {
+          this.confirmationModelService.hideModel();
           this.accountService.signOut();
           this.notificationService.loggedOut();
         } else
