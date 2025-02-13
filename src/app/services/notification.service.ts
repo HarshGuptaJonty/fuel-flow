@@ -12,13 +12,17 @@ export class NotificationService {
 
   color = {
     green: '#3A7D44',
-    red: '#ff0000'
+    red: '#ff0000',
+    yellow: '#FBA518'
   }
+  timeoutId: any;
 
   showNotification(data: Notification) {
     this.notificationData.next(data);
 
-    setTimeout(() => {
+    clearTimeout(this.timeoutId);
+
+    this.timeoutId = setTimeout(() => {
       this.notificationData.next(null);
     }, data?.duration || 3000);
   }

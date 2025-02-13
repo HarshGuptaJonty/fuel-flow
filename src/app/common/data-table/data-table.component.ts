@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { NewEntryComponent } from "../../dashboard/new-entry/new-entry.component";
 import { EntryDataService } from '../../services/entry-data.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { NotificationService } from '../../services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-data-table',
@@ -20,7 +22,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss'
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent implements OnInit, OnChanges {
 
   @Input() customerObject?: Customer;
 
@@ -81,10 +83,13 @@ export class DataTableComponent implements OnInit {
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
   addNewEntry: boolean = false;
+  entryDataAvaliable: boolean = false;
 
   constructor(
     private afAuth: AngularFireAuth,
-    private enterDataService: EntryDataService
+    private enterDataService: EntryDataService,
+    private notificationService: NotificationService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -93,10 +98,21 @@ export class DataTableComponent implements OnInit {
 
     this.enterDataService.isDataChanged.subscribe(flag => {
       if (flag) {
+        this.entryDataAvaliable = true;
         this.refreshEntryData();
         this.addNewEntry = false;
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.pendingUnit = this.customerObject?.entry?.pendingCount || 0;
+    this.dueAmount = this.customerObject?.entry?.dueAmount || 0;
+
+    if (this.entryDataAvaliable) {
+      this.refreshEntryData();
+      this.addNewEntry = false;
+    }
   }
 
   async refreshEntryData() {
@@ -139,8 +155,17 @@ export class DataTableComponent implements OnInit {
     this.enterDataService.addNewEntry(event);
   }
 
-  openDeliveryBoyProfile(userId: any) {
-    throw new Error('Method not implemented.');
+  openDeliveryBoyProfile(obj: any) {
+    if (obj.userId) {
+      this.router.navigate(['/deliveryBoy'], { queryParams: { userId: obj.userId } });
+    } else {
+      this.notificationService.showNotification({
+        heading: 'Profile not setup.',
+        message: obj.fullName + "'s profile is not complete!",
+        duration: 5000,
+        leftBarColor: this.notificationService.color.yellow
+      });
+    }
   }
 
   getTemplate(dataType: string) {

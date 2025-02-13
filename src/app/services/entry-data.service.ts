@@ -50,7 +50,7 @@ export class EntryDataService {
   addNewEntry(entry: EntryTransaction) {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, entry)
       .then((result) => {
-        let list = this.transactionList.getValue() || [];
+        let list = Object.values(this.transactionList.getValue() || {}) || [];
         list = [...list, entry];
         this.transactionList.next(list);
         this.isDataChanged.next(true);
@@ -69,6 +69,7 @@ export class EntryDataService {
   }
 }
 
+//TODO remove this
 export const transactionMock = [
   {
     data: {

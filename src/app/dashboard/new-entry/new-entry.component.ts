@@ -2,13 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
-import { generateRandomString } from '../../shared/commonFunctions';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MatButtonModule } from '@angular/material/button';
 import { AccountService } from '../../services/account.service';
+import { EntryDataService } from '../../services/entry-data.service';
 
 @Component({
   selector: 'app-new-entry',
@@ -29,6 +29,7 @@ import { AccountService } from '../../services/account.service';
 export class NewEntryComponent implements OnInit {
 
   @Input() customerObject?: Customer;
+  @Input() pendingCount?: number;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
@@ -48,7 +49,8 @@ export class NewEntryComponent implements OnInit {
   });
 
   constructor(
-    private accountService: AccountService
+    private accountService: AccountService,
+    private entryDataService: EntryDataService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +61,12 @@ export class NewEntryComponent implements OnInit {
 
   onSaveClick() {
     const value = this.entryForm.value;
+
+    this.disableSave = true; // to prevent multiple save of same entry
+    this.entryDataService.isDataChanged.subscribe((result) => {
+      if (result === false) // if save entry failed then enable save for retry but by checking the values
+        this.checkForDataValidation(value);
+    });
 
     const day = value.date.slice(0, 2); // dd
     const month = value.date.slice(2, 4); // MM
@@ -118,22 +126,38 @@ export class NewEntryComponent implements OnInit {
   checkForDataValidation(value: any) {
     this.disableSave = false;
 
-    if (value.date?.length == 0)
+    if (value.date?.length == 0) {
       this.disableSave = true;
-    else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0)
+      console.log('stopped by 1'); // TODO remove these consoles
+    }
+    else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
-    else if (parseInt(value.unitsRecieved) > (this.customerObject?.entry?.pendingCount || 0))
+      console.log('stopped by 2');
+    }
+    else if (parseInt(value.unitsRecieved) > (this.pendingCount || 0)) {
       this.disableSave = true;
-    else if (value.unitsSent > 0 && value.rate == 0)
+      console.log('stopped by 3');
+    }
+    else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;
-    else if (value.deliveryBoyName.length == 0)
+      console.log('stopped by 4');
+    }
+    else if (value.deliveryBoyName.length == 0) {
       this.disableSave = true;
-    else if (value.deliveryBoyNumber.length > 0 && value.deliveryBoyNumber.length != 10)
+      console.log('stopped by 5');
+    }
+    else if (value.deliveryBoyNumber.length > 0 && value.deliveryBoyNumber.length != 10) {
       this.disableSave = true;
-    else if (value.deliveryBoyNumber.length > 0 && parseInt(String(value.deliveryBoyNumber).charAt(0)) < 6)
+      console.log('stopped by 6');
+    }
+    else if (value.deliveryBoyNumber.length > 0 && parseInt(String(value.deliveryBoyNumber).charAt(0)) < 6) {
       this.disableSave = true;
-    else if (value.deliveryBoyAddress.length > 0 && value.deliveryBoyAddress.length < 5)
+      console.log('stopped by 7');
+    }
+    else if (value.deliveryBoyAddress.length > 0 && value.deliveryBoyAddress.length < 5) {
       this.disableSave = true;
+      console.log('stopped by 8');
+    }
   }
 
   onCancelClick() {

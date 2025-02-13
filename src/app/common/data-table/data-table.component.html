@@ -16,12 +16,13 @@
     </div>
 
     <div *ngIf="addNewEntry">
-        <app-new-entry [customerObject]="customerObject" (onCancel)="addNewEntry = false"
+        <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit" (onCancel)="addNewEntry = false"
             (onSubmit)="saveEntry($event)">
         </app-new-entry>
     </div>
 
-    <table *ngIf="processedTableData" mat-table [dataSource]="processedTableData" class="custom-table">
+    <table *ngIf="processedTableData && processedTableData.length>0" mat-table [dataSource]="processedTableData"
+        class="custom-table">
         <tr mat-header-row *matHeaderRowDef="displayedColumns()" class="custom-header-row nowrap"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns();" class="custom-row"></tr>
 
@@ -36,7 +37,7 @@
 
     </table>
 
-    <div *ngIf="!processedTableData && !addNewEntry"
+    <div *ngIf="(!processedTableData || processedTableData.length === 0) && !addNewEntry"
         class="no-data d-flex justify-content-center align-items-center flex-column">
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">
@@ -57,6 +58,6 @@
 
     <ng-template #nameText let-value let-column="column">
         <span class="name-text nowrap"
-            (click)="openDeliveryBoyProfile(value?.[column.key]?.userId)">{{value?.[column.key]?.fullName}}</span>
+            (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}</span>
     </ng-template>
 </div>
