@@ -1,11 +1,11 @@
 <div class="data-table-container h-100">
 
     <div class="detail-section d-flex">
-        <div class="data-card d-flex flex-column me-3">
+        <div class="data-card d-flex flex-column me-3" [ngClass]="{'danger':pendingUnit>0}">
             <span class="bold-text">Pending Units</span>
             <span class="secondary-color mt-1">{{pendingUnit}} Units</span>
         </div>
-        <div class="data-card d-flex flex-column me-3">
+        <div class="data-card d-flex flex-column me-3" [ngClass]="{'danger':dueAmount>0}">
             <span class="bold-text">Due Amount</span>
             <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
         </div>
