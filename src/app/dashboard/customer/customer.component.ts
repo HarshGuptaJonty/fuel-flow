@@ -58,8 +58,7 @@ export class CustomerComponent {
     this.searchService.searchText$.subscribe(searchText => {
       if (searchText && searchText.length > 0) {
         this.computedData.customerList = Object.values(this.customerData.customerList).filter((item: any) =>
-          String(item.data?.fullName).toLowerCase().includes(searchText.toLowerCase()) ||
-          String(item.data?.phoneNumber).includes(searchText)
+          Object.values(item.data).toString().toLowerCase().includes(searchText.toLowerCase())
         );
         this.isSearching = true;
         this.selectedCustomer = null;
