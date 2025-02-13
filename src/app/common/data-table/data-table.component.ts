@@ -11,6 +11,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
+import { EntryDetailModelService } from '../../services/entry-detail-model.service';
 
 @Component({
   selector: 'app-data-table',
@@ -98,6 +99,7 @@ export class DataTableComponent implements OnInit, OnChanges {
     private enterDataService: EntryDataService,
     private notificationService: NotificationService,
     private confirmationModelService: ConfirmationModelService,
+    private entryDetailModelService: EntryDetailModelService,
     private router: Router
   ) { }
 
@@ -202,6 +204,11 @@ export class DataTableComponent implements OnInit, OnChanges {
       } else
         this.confirmationModelService.hideModel();
     });
+  }
+
+  showMore(object: any) {
+    let expandView = this.enterDataService.getTransactionList()?.[object?.transactionId];
+    this.entryDetailModelService.showModel(expandView);
   }
 
   deleteEntry(object: any) {

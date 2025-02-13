@@ -78,7 +78,7 @@ export class CustomerComponent {
     this.computedData.lastUpdatedStr = timeAgoWithMsg(this.customerData.others.lastFrereshed);
     this.computedData.customerList = Object.values(this.customerData.customerList);
 
-    // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
+    this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
   }
 
   customerSelected(object: any, index: number) {

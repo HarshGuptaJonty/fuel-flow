@@ -1,0 +1,64 @@
+@import '../../../assets/styles/color.scss';
+
+.entry-detail-container {
+    z-index: 9999;
+    font-family: "Comfortaa", serif;
+
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    background-color: rgb(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+
+    .model-box {
+        width: 50%;
+        background-color: white;
+        border-radius: 20px;
+        padding: 20px 30px 20px 30px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .heading {
+        font-size: 28px;
+    }
+
+    .custom-btn {
+        font-family: "Comfortaa", serif;
+        border-radius: 5px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+
+        background-color: $border-light;
+        color: $primary-web-dark;
+
+        &:hover {
+            background-color: $primary-web-red;
+            color: white;
+        }
+    }
+
+    .details-section {
+        border-top: 1px dotted $secondary-color;
+
+        .label {
+            font-weight: bold;
+            min-width: 25%;
+        }
+
+        .data {
+            margin-left: 10px;
+            flex-grow: 1;
+            background-color: $border-very-light;
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+
+        .top-border {
+            border-top: 1px dotted $secondary-color;
+        }
+    }
+
+}

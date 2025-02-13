@@ -68,6 +68,9 @@
     </ng-template>
 
     <ng-template #actionText let-value let-column="column">
-        <span class="name-text nowrap" (click)="editEntry(value)">Edit</span>
+        <div class="nowrap">
+            <span class="name-text" (click)="editEntry(value)">Edit</span> |
+            <span class="name-text" (click)="showMore(value)">More</span>
+        </div>
     </ng-template>
 </div>
