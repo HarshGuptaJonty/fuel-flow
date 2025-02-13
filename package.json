@@ -25,6 +25,7 @@
     "ce-website-angular": "file:",
     "firebase": "^11.2.0",
     "fuel-flow-web": "file:",
+    "moment": "^2.30.1",
     "ngx-mask": "^19.0.6",
     "rxjs": "^7.8.1",
     "tslib": "^2.3.0",

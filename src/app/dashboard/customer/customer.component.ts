@@ -63,7 +63,7 @@ export class CustomerComponent {
         this.isSearching = true;
         this.selectedCustomer = null;
       } else {
-        this.computedData.customerList = Object.values(this.customerData.customerList || {});
+        this.computedData.customerList = Object.values(this.customerService.getCustomerList());
         this.isSearching = false;
       }
     });
@@ -96,11 +96,13 @@ export class CustomerComponent {
     this.addNewCustomer = !this.addNewCustomer;
     if (this.addNewCustomer)
       this.isEditingProfile = false;
+    else
+      this.selectedCustomer = null;
   }
 
   async refreshCustomerData(showNotification: boolean = false) {
     this.selectedCustomer = null;
-    const latestData = await this.firebaseService.getData('customer/bucket');
+    const latestData = await this.firebaseService.getData('customer/bucket'); // todo increase database efficiency
     let data = {
       customerList: latestData,
       others: {

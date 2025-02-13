@@ -44,10 +44,10 @@ export class NotificationService {
     });
   }
 
-  somethingWentWrong() {
+  somethingWentWrong(code: string) {
     this.showNotification({
       heading: 'Something Went Wrong!',
-      message: 'Please Contact IT Support!',
+      message: 'Please Contact IT Support!' + (code ? ' Code:' + code : ''),
       duration: 5000,
       leftBarColor: this.color.red
     });

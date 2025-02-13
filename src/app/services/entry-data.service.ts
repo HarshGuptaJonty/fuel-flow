@@ -66,15 +66,8 @@ export class EntryDataService {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, entry)
       .then((result) => {
         let objects = this.transactionList.getValue() || {};
-        let list;
-        if (isEditing && objects[entry.data.transactionId]) {
-          objects[entry.data.transactionId] = entry;
-          list = Object.values(objects) || [];
-        } else {
-          list = Object.values(objects) || [];
-          list = [...list, entry];
-        }
-        this.transactionList.next(list);
+        objects[entry.data.transactionId] = entry;
+        this.transactionList.next(objects);
         this.isDataChanged.next(true);
 
         this.notificationService.showNotification({
@@ -85,67 +78,27 @@ export class EntryDataService {
         });
       }).catch((error) => {
         this.isDataChanged.next(false);
-        this.notificationService.somethingWentWrong();
-        console.log(error);
+        this.notificationService.somethingWentWrong('102');
+      });
+  }
+
+  deleteEntry(entry: EntryTransaction) {
+    this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, null)
+      .then((result) => {
+        let objects = this.transactionList.getValue() || {};
+        delete objects[entry.data.transactionId];
+        this.transactionList.next(objects);
+        this.isDataChanged.next(true);
+
+        this.notificationService.showNotification({
+          heading: 'Entry deleted!',
+          message: 'Data erased successfully.',
+          duration: 5000,
+          leftBarColor: this.notificationService.color.green
+        });
+      }).catch((error) => {
+        this.notificationService.somethingWentWrong('103');
+        this.isDataChanged.next(false);
       });
   }
 }
-
-//TODO remove this
-export const transactionMock = [
-  {
-    data: {
-      date: '28/01/2025',
-      customer: {
-        fullName: 'Harsh Gupta',
-        phoneNumber: '6291444925',
-        userId: 'bXQ7CXuASpwpwy'
-      }, deliveryBoy: {
-        fullName: 'Kabir Singh',
-        phoneNumber: '7278886803',
-        userId: 'XbQC7XAuSowpyw'
-      },
-      sent: 0,
-      recieved: 3,
-      rate: 0,
-      payment: 2000,
-      transactionId: '20250128_000000'
-    }
-  }, {
-    data: {
-      date: '24/01/2025',
-      customer: {
-        fullName: 'Harsh Gupta',
-        phoneNumber: '6291444925',
-        userId: 'bXQ7CXuASpwpwy'
-      }, deliveryBoy: {
-        fullName: 'Dubey Sinha',
-        phoneNumber: '7278886803',
-        userId: 'XbQC7XAuSowpyw'
-      },
-      sent: 0,
-      recieved: 2,
-      rate: 0,
-      payment: 3000,
-      transactionId: '20250124_000000'
-    }
-  }, {
-    data: {
-      date: '01/01/2025',
-      customer: {
-        fullName: 'Harsh Gupta',
-        phoneNumber: '6291444925',
-        userId: 'bXQ7CXuASpwpwy'
-      }, deliveryBoy: {
-        fullName: 'Sekhar Gupta',
-        phoneNumber: '8017428696',
-        userId: 'XbQC7XuASpwpyw'
-      },
-      sent: 5,
-      recieved: 0,
-      rate: 1400,
-      payment: 2000,
-      transactionId: '20250101_000000'
-    }
-  }
-]

@@ -20,7 +20,8 @@
 
     <div *ngIf="newEntry">
         <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit"
-            [openTransaction]="openTransaction" (onCancel)="newEntry = false" (onSubmit)="saveEntry($event)">
+            [openTransaction]="openTransaction" (onCancel)="newEntry = false; openTransaction = undefined"
+            (onSubmit)="saveEntry($event)" (onDelete)="deleteEntry(openTransaction)">
         </app-new-entry>
     </div>
 

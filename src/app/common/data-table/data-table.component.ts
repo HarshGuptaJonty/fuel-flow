@@ -204,6 +204,14 @@ export class DataTableComponent implements OnInit, OnChanges {
     });
   }
 
+  deleteEntry(object: any) {
+    if (!object) {
+      this.notificationService.somethingWentWrong('101');
+      return;
+    }
+    this.enterDataService.deleteEntry(object);
+  }
+
   openDeliveryBoyProfile(obj: any) {
     if (obj.userId) {
       this.router.navigate(['/deliveryBoy'], { queryParams: { userId: obj.userId } });

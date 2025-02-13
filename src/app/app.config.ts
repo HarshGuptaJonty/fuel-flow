@@ -8,6 +8,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         subscriptSizing: 'dynamic'
       }
-    }
+    },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ]
 };

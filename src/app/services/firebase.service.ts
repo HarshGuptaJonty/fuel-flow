@@ -34,7 +34,7 @@ export class FirebaseService {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      this.notificationService.somethingWentWrong();
+      this.notificationService.somethingWentWrong('104');
       return {};
     }
   }
