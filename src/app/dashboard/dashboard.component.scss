@@ -11,6 +11,10 @@
         min-height: 70px;
         border-bottom: 1px solid $border-light;
 
+        .fire-icon {
+            margin-left: -10px;
+        }
+
         .search-box {
             height: 40px;
             max-width: 200px;
