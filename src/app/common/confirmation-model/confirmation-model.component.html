@@ -1,0 +1,19 @@
+<div class="confirmation-model-container"
+    *ngIf="confirmationModelService.confirmationModelData$ | async as confirmation">
+    <div class="model-box">
+        <div class="heading bold-text">{{confirmation.heading}}</div>
+        <div>{{confirmation.message}}</div>
+        <div class="justify-content-between d-flex button-box">
+            <button mat-flat-button (click)="onleftButtonClick()" class="custom-btn"
+                [ngClass]="confirmation.leftButton.customClass" [disabled]="confirmation.leftButton.disabled"
+                *ngIf="confirmation.leftButton">
+                {{confirmation.leftButton.text}}
+            </button>
+            <button mat-flat-button (click)="onRightButtonClick()" class="custom-btn grey-btn"
+                [ngClass]="confirmation.rightButton.customClass" [disabled]="confirmation.rightButton.disabled"
+                *ngIf="confirmation.rightButton">
+                {{confirmation.rightButton.text}}
+            </button>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,8 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CustomerDataService } from '../services/customer-data.service';
 import { SearchService } from '../services/search.service';
 import { NotificationService } from '../services/notification.service';
+import { ConfirmationModelService } from '../services/confirmation-model.service';
+import { ConfirmationModel } from '../../assets/models/ConfirmationModel';
 
 @Component({
   selector: 'app-dashboard',
@@ -66,7 +68,8 @@ export class DashboardComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private confirmationModelService: ConfirmationModelService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -110,9 +113,23 @@ export class DashboardComponent implements OnInit {
     this.activeNavMenu = key;
     this.showMenuCardInfo = false;
     if (key === 'log-out') {
-      //TODO: logout confirmation model popup
-      this.accountService.signOut();
-      this.notificationService.loggedOut();
+      this.confirmationModelService.showModel({
+        heading: 'Log out?',
+        message: 'You are trying to logout, are you sure?',
+        leftButton: {
+          text: 'Logout',
+          customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_RED,
+        }, rightButton: {
+          text: 'Cancel',
+          customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+        }
+      }).subscribe(result => {
+        if (result === 'left') {
+          this.accountService.signOut();
+          this.notificationService.loggedOut();
+        } else
+          this.confirmationModelService.hideModel();
+      });
     } else if (key === 'profile') {
       this.router.navigate(['/profile']);
     } else {
