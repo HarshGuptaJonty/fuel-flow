@@ -23,15 +23,30 @@ export class EntryDataService {
     this.initialize();
   }
 
-  private async initialize() {
+  private async initialize(showNotification: boolean = false) {
     let data = await this.firebaseService.getData('transactionList');
     if (Object.keys(data).length > 0) {
       this.transactionList.next(data);
       this.isDataChanged.next(true);
+
+      if (showNotification)
+        this.notificationService.transactionListRefreshed();
     } else {
       this.transactionList.next(null);
       this.isDataChanged.next(false);
+
+      if (showNotification) {
+        this.notificationService.showNotification({
+          heading: 'No transaction to show!',
+          duration: 5000,
+          leftBarColor: this.notificationService.color.red
+        });
+      }
     }
+  }
+
+  hardRefresh() {
+    this.initialize(true);
   }
 
   getTransactionList() {

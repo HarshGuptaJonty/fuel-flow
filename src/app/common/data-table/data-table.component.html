@@ -9,9 +9,12 @@
             <span class="bold-text">Due Amount</span>
             <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
         </div>
-        <div *ngIf="!addNewEntry" class="data-card d-flex flex-column justify-content-center entry-btn"
+        <div *ngIf="!addNewEntry" class="data-card d-flex flex-column justify-content-center entry-btn me-3"
             (click)="addNewEntry=!addNewEntry">
             <span class="bold-text">New Entry</span>
+        </div>
+        <div class="data-card d-flex flex-column justify-content-center entry-btn" (click)="refreshData()">
+            <span class="bold-text">Refresh</span>
         </div>
     </div>
 

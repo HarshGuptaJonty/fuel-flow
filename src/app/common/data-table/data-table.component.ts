@@ -115,6 +115,23 @@ export class DataTableComponent implements OnInit, OnChanges {
     }
   }
 
+  refreshData() {
+    if (this.entryDataAvaliable) {
+      this.refreshEntryData();
+      this.addNewEntry = false;
+      this.notificationService.transactionListRefreshed();
+    } else {
+      this.enterDataService.hardRefresh();
+
+      this.notificationService.showNotification({
+        heading: 'No data found!',
+        message: 'Iniciating hard refresh.',
+        duration: 5000,
+        leftBarColor: this.notificationService.color.yellow
+      });
+    }
+  }
+
   async refreshEntryData() {
     this.pendingUnit = 0;
     this.dueAmount = 0;

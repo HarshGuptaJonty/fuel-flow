@@ -52,4 +52,12 @@ export class NotificationService {
       leftBarColor: this.color.red
     });
   }
+
+  transactionListRefreshed() {
+    this.showNotification({
+      heading: 'Transaction list refreshed.',
+      duration: 5000,
+      leftBarColor: this.color.green
+    });
+  }
 }
