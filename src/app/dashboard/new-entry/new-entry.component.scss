@@ -36,11 +36,11 @@
         .box-input-half {
             flex: 1 0 45%;
         }
+    }
 
-        .error-msg {
-            font-size: 14px;
-            color: $primary-web-red;
-        }
+    .error-msg {
+        font-size: 14px;
+        color: $primary-web-red;
     }
 
     .custom-btn {

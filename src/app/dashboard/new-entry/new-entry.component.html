@@ -15,29 +15,25 @@
             <div class="pt-2 box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Units Sent</mat-label>
-                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsSent"
-                        pattern="[0-9]*">
+                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsSent">
                 </mat-form-field>
             </div>
             <div class="pt-2 box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Units Recieved</mat-label>
-                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsRecieved"
-                        pattern="[0-9]*">
+                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsRecieved">
                 </mat-form-field>
             </div>
             <div class="pt-2 box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Rate/Unit</mat-label>
-                    <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="rate"
-                        pattern="[0-9]*">
+                    <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="rate">
                 </mat-form-field>
             </div>
             <div class="pt-2 box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Paid Amount</mat-label>
-                    <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="paidAmt"
-                        pattern="[0-9]*">
+                    <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="paidAmt">
                 </mat-form-field>
             </div>
         </div>
@@ -73,6 +69,7 @@
             </mat-form-field>
         </div>
     </form>
+    <div class="error-msg mt-2 bold-text" *ngIf="errorMessage">{{errorMessage}}</div>
     <div class="mt-3 justify-content-between d-flex customer-form">
         <button mat-flat-button (click)="onSaveClick()" class="custom-btn" [disabled]="disableSave">Save Entry
             Details</button>

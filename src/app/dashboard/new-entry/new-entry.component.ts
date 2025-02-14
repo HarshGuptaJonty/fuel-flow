@@ -13,6 +13,7 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import moment from 'moment';
+import { generateRandomString } from '../../shared/commonFunctions';
 
 @Component({
   selector: 'app-new-entry',
@@ -44,6 +45,7 @@ export class NewEntryComponent implements OnInit {
 
   disableSave: boolean = true;
   isEditing: boolean = false;
+  errorMessage?: string;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(this.getDateInFormat()),
@@ -108,7 +110,8 @@ export class NewEntryComponent implements OnInit {
 
     let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
     let createdTime = this.openTransaction?.others?.createdTime || Date.now();
-    let transactionId = this.openTransaction?.data.transactionId || this.getFormattedDate('YYYYMMDD') + '_' + this.generateDateTimeKey();
+    let transactionId = this.openTransaction?.data.transactionId ||
+      this.getFormattedDate('YYYYMMDD') + '_' + this.generateDateTimeKey() + '_' + generateRandomString(5);
 
     let data: EntryTransaction = {
       data: {
@@ -165,46 +168,47 @@ export class NewEntryComponent implements OnInit {
 
   checkForDataValidation(value: any) {
     this.disableSave = false;
+    this.errorMessage = undefined;
 
-    if (value.date?.length == 0) {
+    if (this.getFormattedDate('DD/MM/YYYY').length == 0) {
       this.disableSave = true;
-      console.log('stopped by 1: Date empty'); // TODO remove these consoles
+      this.errorMessage = 'Please enter date of entry.';
     }
     else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
-      console.log('stopped by 2: each of three fields are empty');
+      this.errorMessage = 'Any of Sent, Recieved and Payment is required.';
     }
-    else if (parseInt(value.unitsRecieved) > (this.pendingCount || 0)) {
+    else if (parseInt(value.unitsRecieved) > ((this.pendingCount || 0) + (value.unitsSent || 0))) {
       this.disableSave = true;
-      console.log('stopped by 3: units recieved more than pending');
+      this.errorMessage = `Units recieved(${value.unitsRecieved}) cannot be more than pending(${this.pendingCount || 0}) units.`;
     }
     else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;
-      console.log('stopped by 4: units sent but rate is 0');
+      this.errorMessage = 'Rate is required if units are sent.';
     }
     else if (value.deliveryBoyName.length == 0) {
       this.disableSave = true;
-      console.log('stopped by 5: delivery biy name is empty');
+      this.errorMessage = "Please enter delivery boy's name.";
     }
     else if (value.deliveryBoyNumber.length > 0 && value.deliveryBoyNumber.length != 10) {
       this.disableSave = true;
-      console.log('stopped by 6: invalid delivery boy number');
+      this.errorMessage = 'Delivery boy number is not 10 digits.';
     }
     else if (value.deliveryBoyNumber.length > 0 && parseInt(String(value.deliveryBoyNumber).charAt(0)) < 6) {
       this.disableSave = true;
-      console.log('stopped by 7: invalid indian number');
+      this.errorMessage = 'Invalid delivery boy number.';
     }
     else if (value.deliveryBoyAddress.length > 0 && value.deliveryBoyAddress.length < 5) {
       this.disableSave = true;
-      console.log('stopped by 8: invalid addres length');
+      this.errorMessage = 'Please enter atlest 5 character for address.';
     }
   }
 
   generateDateTimeKey() { // HHmmss
     let today = new Date();
-    let sec: any = today.getSeconds();
-    let min: any = today.getMinutes();
     let hour: any = today.getHours();
+    let min: any = today.getMinutes();
+    let sec: any = today.getSeconds();
 
     sec = sec < 10 ? '0' + sec : sec;
     min = min < 10 ? '0' + min : min;
