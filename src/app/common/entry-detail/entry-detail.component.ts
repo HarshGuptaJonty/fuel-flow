@@ -29,8 +29,8 @@ export class EntryDetailComponent {
   openDeliveryBoyProfile() {
     const deliveryBoy = this.entryDetailModelService.getDeliveryBoyData();
     if (deliveryBoy) {
-      this.entryDetailModelService.hideModel();
       if (deliveryBoy.userId) {
+        this.entryDetailModelService.hideModel();
         this.router.navigate(['/deliveryBoy'], { queryParams: { userId: deliveryBoy.userId } });
       } else {
         this.notificationService.showNotification({

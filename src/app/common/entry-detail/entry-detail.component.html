@@ -38,6 +38,10 @@
                 <div class="label">Payment Receieved</div>
                 <div class="data">{{formatData.paymentAmt | number:'1.2-2'}} Rs</div>
             </div>
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.paymentDueAmt">
+                <div class="label">Payment Due</div>
+                <div class="data">{{formatData.paymentDueAmt | number:'1.2-2'}} Rs</div>
+            </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Delivery Boy Name</div>
                 <div class="data link-text" (click)="openDeliveryBoyProfile()">{{formatData.dName}}</div>

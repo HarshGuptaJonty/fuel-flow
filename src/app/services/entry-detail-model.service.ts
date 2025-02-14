@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EntryTransaction, UserData } from '../../assets/models/EntryTransaction';
+import { AdminDataService } from './admin-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,10 @@ export class EntryDetailModelService {
   entryData$ = this.entryData.asObservable();
 
   deliveryBoyData?: UserData;
+
+  constructor(
+    private adminDataService: AdminDataService
+  ) { }
 
   showModel(data: EntryTransaction) {
     this.deliveryBoyData = data.data.deliveryBoy;
@@ -36,13 +41,14 @@ export class EntryDetailModelService {
       rate: entry.data.rate,
       totalAmt: (entry.data?.rate || 0) * (entry.data?.sent || 0),
       paymentAmt: entry.data.payment,
+      paymentDueAmt: (entry.data?.rate || 0) * (entry.data?.sent || 0) - (entry.data.payment || 0),
       dName: entry.data.deliveryBoy?.fullName,
       dNumber: entry.data.deliveryBoy?.phoneNumber?.toString().replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3'),
       dId: entry.data.deliveryBoy?.userId,
       extraDetails: entry.data.extraDetails,
-      createdBy: entry.others?.createdBy,
+      createdBy: this.adminDataService.getAdminName(entry.others?.createdBy),
       createdTime: this.formatDateAndTime(entry.others?.createdTime),
-      editedBy: entry.others?.editedBy,
+      editedBy: this.adminDataService.getAdminName(entry.others?.editedBy),
       editedTime: this.formatDateAndTime(entry.others?.editedTime)
     }
   }
