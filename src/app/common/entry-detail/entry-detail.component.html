@@ -1,70 +1,70 @@
-<div class="entry-detail-container" *ngIf="entryDetailModelService.entryData$ | async as entryData">
+<div class="entry-detail-container" *ngIf="entryDetailModelService.entryData$ | async as formatData">
     <div class="model-box">
         <div class="justify-content-between d-flex">
             <span class="heading bold-text">Transaction details</span>
             <button mat-flat-button class="custom-btn" (click)="onClose()">Close</button>
         </div>
-        <div class="secondary-color">Transaction ID: {{entryData.data?.transactionId}}</div>
+        <div class="secondary-color">Transaction ID: {{formatData.transactionId}}</div>
         <div class="details-section mt-3 pt-2">
             <div class="d-flex align-items-center">
                 <div class="label">Customer Name</div>
-                <div class="data">{{entryData.data?.customer?.fullName}}</div>
+                <div class="data">{{formatData.cName}}</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Customer Number</div>
-                <div class="data">+91 {{entryData.data?.customer?.phoneNumber}}</div>
+                <div class="data">+91 {{formatData.cNumber}}</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Date</div>
-                <div class="data">{{entryData.data?.date}}</div>
+                <div class="data">{{formatData.date}}</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.sent">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.sent">
                 <div class="label">Sent</div>
-                <div class="data">{{entryData.data?.sent}} {{entryData.data?.sent>1?'Units':'Unit'}}</div>
+                <div class="data">{{formatData.sent}} {{formatData.sent > 1 ? 'Units' : 'Unit'}}</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.recieved">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.recieved">
                 <div class="label">Recieved</div>
-                <div class="data">{{entryData.data?.recieved}} {{entryData.data?.recieved>1?'Units':'Unit'}}</div>
+                <div class="data">{{formatData.recieved}} {{formatData.recieved > 1 ? 'Units' : 'Unit'}}</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.rate">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.rate">
                 <div class="label">Rate/Unit</div>
-                <div class="data">{{entryData.data?.rate | number:'1.2-2'}} Rs</div>
+                <div class="data">{{formatData.rate | number:'1.2-2'}} Rs</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.rate && entryData.data?.sent">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.rate && formatData.sent">
                 <div class="label">Total Amount</div>
-                <div class="data">{{entryData.data?.rate * entryData.data?.sent | number:'1.2-2'}} Rs</div>
+                <div class="data">{{formatData.totalAmt | number:'1.2-2'}} Rs</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.payment">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.paymentAmt">
                 <div class="label">Payment Receieved</div>
-                <div class="data">{{entryData.data?.payment | number:'1.2-2'}} Rs</div>
+                <div class="data">{{formatData.paymentAmt | number:'1.2-2'}} Rs</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Delivery Boy Name</div>
-                <div class="data">{{entryData.data?.deliveryBoy?.fullName}}</div>
+                <div class="data link-text" (click)="openDeliveryBoyProfile()">{{formatData.dName}}</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.deliveryBoy?.phoneNumber">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.dNumber">
                 <div class="label">Delivery Boy Number</div>
-                <div class="data">+91 {{entryData.data?.deliveryBoy?.phoneNumber}}</div>
+                <div class="data">+91 {{formatData.dNumber}}</div>
             </div>
-            <div class="d-flex align-items-center mt-2" *ngIf="entryData.data?.extraDetails">
+            <div class="d-flex align-items-center mt-2" *ngIf="formatData.extraDetails">
                 <div class="label">Extra details</div>
-                <div class="data">{{entryData.data?.extraDetails}}</div>
+                <div class="data">{{formatData.extraDetails}}</div>
             </div>
             <div class="d-flex align-items-center mt-2 top-border pt-2">
                 <div class="label">Entry made by</div>
-                <div class="data">{{entryData.others?.createdBy}}</div>
+                <div class="data">{{formatData.createdBy}}</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Entry Date & Time</div>
-                <div class="data">{{entryData.others?.createdTime}}</div>
+                <div class="data">{{formatData.createdTime}}</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Entry last edited by</div>
-                <div class="data">{{entryData.others?.editedBy}}</div>
+                <div class="data">{{formatData.editedBy}}</div>
             </div>
             <div class="d-flex align-items-center mt-2">
                 <div class="label">Last Edit Date & Time</div>
-                <div class="data">{{entryData.others?.editedTime}}</div>
+                <div class="data">{{formatData.editedTime}}</div>
             </div>
         </div>
     </div>

@@ -49,3 +49,12 @@ body {
 .large-text {
   font-size: 26px;
 }
+
+.link-text {
+  color: $primary-mat-color;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

@@ -17,7 +17,7 @@ export interface EntryTransaction {
     }
 }
 
-interface UserData {
+export interface UserData {
     fullName?: string,
     phoneNumber?: string,
     userId?: string
