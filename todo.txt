@@ -1,0 +1,25 @@
+Todo: ************************************************
+show warning when user decrease sent amout less than pending units like if user sent 5 and recieved 4, 
+     - pending is 1, and if he edit the sent to 3 then penidng will be 01, in this case show error
+
+add pagination
+hard refresh if user click twice in 1 sec
+auto generate delivery boy profile if not present
+shpw drop down in delivery boy name field
+resend otp feature
+remove shipping address when saving delivery bpy
+
+In-Progress: *****************************************
+make delivery boy profile
+
+
+Done: ************************************************
+custom confirmation model
+date picker
+edit entries - edit button in table
+make pending badge green and red
+make due amount badge green and red
+add new thin logo
+add icon in logo
+validations
+show admin name in entry-detail model
