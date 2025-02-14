@@ -4,28 +4,26 @@ import { copyData, getNumberInformat } from '../../shared/commonFunctions';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-customer-card',
+  selector: 'app-user-card',
   imports: [
     CommonModule
   ],
-  templateUrl: './customer-card.component.html',
-  styleUrl: './customer-card.component.scss'
+  templateUrl: './user-card.component.html',
+  styleUrl: './user-card.component.scss'
 })
-export class CustomerCardComponent implements OnInit {
+export class UserCardComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService
   ) { }
 
-  @Input() customerObject: any;
+  @Input() userObject: any;
   @Input() selected: boolean = false;
 
   data: any;
-  others: any;
 
   ngOnInit(): void {
-    this.data = this.customerObject?.data;
-    this.others = this.customerObject?.others;
+    this.data = this.userObject?.data;
   }
 
   copyData(event: any, data: string) {

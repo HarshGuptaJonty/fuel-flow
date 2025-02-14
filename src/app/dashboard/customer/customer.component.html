@@ -16,9 +16,9 @@
         </div>
 
         <div *ngIf="computedData.customerList?.length > 0" class="customer-list">
-            <app-customer-card *ngFor="let obj of computedData.customerList; let i = index" [customerObject]="obj"
+            <app-user-card *ngFor="let obj of computedData.customerList; let i = index" [userObject]="obj"
                 [selected]="selectedIndex === i" (click)="customerSelected(obj,i)">
-            </app-customer-card>
+            </app-user-card>
         </div>
 
         <div *ngIf="computedData.customerList?.length == 0"

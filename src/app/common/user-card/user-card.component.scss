@@ -1,6 +1,6 @@
 @import '../../../assets/styles/color.scss';
 
-.customer-card-container {
+.user-card-container {
     padding: 20px 20px 20px 40px;
     background-color: white;
     border-bottom: 2px dotted $border-light;
@@ -11,7 +11,7 @@
     }
 
     &:hover {
-        background-color: $light-color;
+        background-color: $border-very-light2;
     }
 
     .ellipsis {
@@ -19,10 +19,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         width: 100%;
-
-        &:hover {
-            white-space: unset;
-        }
     }
 
     .copy-icon {

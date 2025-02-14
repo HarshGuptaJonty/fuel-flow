@@ -5,7 +5,7 @@ import { FirebaseService } from '../../services/firebase.service';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { NewCustomerComponent } from "../new-customer/new-customer.component";
-import { CustomerCardComponent } from "../../common/customer-card/customer-card.component";
+import { UserCardComponent } from "../../common/user-card/user-card.component";
 import { SearchService } from '../../services/search.service';
 import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
 import { NotificationService } from '../../services/notification.service';
@@ -16,7 +16,7 @@ import { DataTableComponent } from "../../common/data-table/data-table.component
   imports: [
     CommonModule,
     NewCustomerComponent,
-    CustomerCardComponent,
+    UserCardComponent,
     CustomerDetailsComponent,
     DataTableComponent
   ],
@@ -76,9 +76,9 @@ export class CustomerComponent {
     }
 
     this.computedData.lastUpdatedStr = timeAgoWithMsg(this.customerData.others.lastFrereshed);
-    this.computedData.customerList = Object.values(this.customerData.customerList);
+    this.computedData.customerList = Object.values(this.customerData.customerList || {});
 
-    this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
+    // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
   }
 
   customerSelected(object: any, index: number) {

@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
-import { FirebaseService } from '../services/firebase.service';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { CustomerDataService } from '../services/customer-data.service';
 import { SearchService } from '../services/search.service';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmationModelService } from '../services/confirmation-model.service';
-import { ConfirmationModel } from '../../assets/models/ConfirmationModel';
+import { filter, Subscription } from 'rxjs';
+import { AdminDataService } from '../services/admin-data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,6 +24,12 @@ export class DashboardComponent implements OnInit {
     {
       title: 'Customers',
       key: 'customers',
+      visibleIn: 'top',
+      visible: true,
+      enable: true
+    }, {
+      title: 'Delivery',
+      key: 'delivery',
       visibleIn: 'top',
       visible: true,
       enable: true
@@ -60,30 +66,40 @@ export class DashboardComponent implements OnInit {
   screenWidth: number = 0;
   userData?: any;
   adminProfileData?: any;
+  private routeSub: Subscription = new Subscription();
 
   constructor(
     private accountService: AccountService,
-    private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
     private notificationService: NotificationService,
-    private confirmationModelService: ConfirmationModelService
+    private confirmationModelService: ConfirmationModelService,
+    private adminDataService: AdminDataService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.route.firstChild?.url.subscribe((url) => {
-      this.activeNavMenu = url[0]?.path;
-    });
+    this.route.firstChild?.url.subscribe((url) => this.activeNavMenu = url[0]?.path);
+    this.routeSub.add(
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+        const child = this.route.firstChild;
+        if (child) {
+          child.url.subscribe((url) => {
+            this.activeNavMenu = url[0]?.path;
+          });
+        }
+      })
+    );
 
     this.onResize();
 
     if (this.accountService.hasUserData()) {
       this.userData = this.accountService.getUserData();
     } else {
-      //fetch admin data from account service
-      let data = await this.firebaseService.getData(`admint/${this.accountService.getUserId()}`);
+      // fetch admin data from account service
+      let data = this.adminDataService.getAdminData(this.accountService.getUserId());
+      // let data = await this.firebaseService.getData(`admint/${this.accountService.getUserId()}`);
       this.accountService.setUserData(data);
       this.userData = data;
     }
@@ -100,8 +116,9 @@ export class DashboardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
-    this.visibleInMenuItem('setting', this.screenWidth <= 750 ? 'side' : 'top');
-    this.visibleInMenuItem('inventory', this.screenWidth <= 650 ? 'side' : 'top');
+    this.visibleInMenuItem('setting', this.screenWidth <= 870 ? 'side' : 'top');
+    this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
+    this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
     this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
   }
 

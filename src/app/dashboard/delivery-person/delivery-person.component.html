@@ -1,0 +1,38 @@
+<div class="delivery-person-container d-flex h-100">
+    <div class="list-section">
+        <div class="refresh-section d-flex justify-content-between align-items-center">
+            <div>
+                <div class="line1">{{computedData?.deliveryPersonList?.length}}
+                    {{isSearching? 'Results found':'Delivery Boys'}}
+                </div>
+                <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
+                    <span class="refresh" (click)="refreshDeliveryPersonData(true)"
+                        title="Refresh delivery person list">refresh</span>.
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="computedData.deliveryPersonList?.length > 0" class="delivery-person-list">
+            <app-user-card *ngFor="let obj of computedData.deliveryPersonList; let i = index" [userObject]="obj"
+                [selected]="selectedIndex === i" (click)="userSelected(obj,i)">
+            </app-user-card>
+        </div>
+
+        <div *ngIf="computedData.deliveryPersonList?.length == 0"
+            class="delivery-person-list d-flex justify-content-center align-items-center flex-column">
+            <img src="assets/images/banner/no-result.png" alt="">
+            <div *ngIf="isSearching" class="m-4 text-center bold-text">No search results found!</div>
+            <div *ngIf="!isSearching" class="m-4 text-center bold-text">You have no delivery person.
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="selectedDeliveryPerson" class="details-section d-flex flex-column">
+        <app-customer-details [customerObject]="selectedDeliveryPerson" [userId]="userId"></app-customer-details>
+    </div>
+    <div *ngIf="!selectedDeliveryPerson"
+        class="details-section d-flex justify-content-center align-items-center flex-column">
+        <img src="assets/images/banner/no-result.png" alt="">
+        <div class="m-4 text-center bold-text">Selected a delivery person from the list to view its contents!</div>
+    </div>
+</div>

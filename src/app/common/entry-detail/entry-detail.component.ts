@@ -31,7 +31,7 @@ export class EntryDetailComponent {
     if (deliveryBoy) {
       if (deliveryBoy.userId) {
         this.entryDetailModelService.hideModel();
-        this.router.navigate(['/deliveryBoy'], { queryParams: { userId: deliveryBoy.userId } });
+        this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: deliveryBoy.userId } });
       } else {
         this.notificationService.showNotification({
           heading: 'Profile not setup.',

@@ -221,7 +221,7 @@ export class DataTableComponent implements OnInit, OnChanges {
 
   openDeliveryBoyProfile(obj: any) {
     if (obj.userId) {
-      this.router.navigate(['/deliveryBoy'], { queryParams: { userId: obj.userId } });
+      this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: obj.userId } });
     } else {
       this.notificationService.showNotification({
         heading: 'Profile not setup.',

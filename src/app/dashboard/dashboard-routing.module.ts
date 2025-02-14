@@ -4,6 +4,7 @@ import { NgModule } from "@angular/core";
 import { CustomerComponent } from "./customer/customer.component";
 import { InventoryComponent } from "./inventory/inventory.component";
 import { SettingComponent } from "./setting/setting.component";
+import { DeliveryPersonComponent } from "./delivery-person/delivery-person.component";
 
 const routes: Routes = [
     {
@@ -13,6 +14,7 @@ const routes: Routes = [
             { path: 'customers', component: CustomerComponent },
             { path: 'inventory', component: InventoryComponent },
             { path: 'setting', component: SettingComponent },
+            { path: 'delivery', component: DeliveryPersonComponent },
             { path: '', redirectTo: 'customers', pathMatch: 'full' }
         ]
     }
