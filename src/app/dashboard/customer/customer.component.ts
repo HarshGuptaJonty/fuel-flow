@@ -4,7 +4,7 @@ import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
-import { NewCustomerComponent } from "../new-customer/new-customer.component";
+import { NewAccountComponent } from "../new-account/new-account.component";
 import { UserCardComponent } from "../../common/user-card/user-card.component";
 import { SearchService } from '../../services/search.service';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
@@ -15,7 +15,7 @@ import { DataTableComponent } from "../../common/data-table/data-table.component
   selector: 'app-customer',
   imports: [
     CommonModule,
-    NewCustomerComponent,
+    NewAccountComponent,
     UserCardComponent,
     UserDetailsComponent,
     DataTableComponent

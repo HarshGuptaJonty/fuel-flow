@@ -12,9 +12,10 @@ import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
 import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
+import { DeliveryBoy } from '../../../assets/models/DeliveryBoy';
 
 @Component({
-  selector: 'app-new-customer',
+  selector: 'app-new-account',
   imports: [
     CommonModule,
     NgxMaskDirective,
@@ -27,24 +28,26 @@ import { generateRandomString } from '../../shared/commonFunctions';
     provideNgxMask(),
     AngularFireAuth
   ],
-  templateUrl: './new-customer.component.html',
-  styleUrl: './new-customer.component.scss'
+  templateUrl: './new-account.component.html',
+  styleUrl: './new-account.component.scss'
 })
-export class NewCustomerComponent implements OnInit {
+export class NewAccountComponent implements OnInit {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<any>();
 
   @Input() editProfileId: string = '';
+  @Input() userType: string = '';
   @Input() isEditingProfile: boolean = false;
 
   userId?: string;
-  customerId?: string;
-  customerList?: any;
+  accountId?: string;
+  accountList?: any;
   disableSave: boolean = false;
   phoneNumbers: string[] = [];
+  userLabel: string = '';
 
-  customerForm: FormGroup = new FormGroup({
+  accountForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
     phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10),
     Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
@@ -63,28 +66,30 @@ export class NewCustomerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.userLabel = this.userType === 'customer' ? 'Customer' : 'Delivery Person';
+
     this.userId = this.accountService.getUserId();
     if (this.customerService.hasCustomerData()) {
-      this.customerList = this.customerService.getCustomerList();
-      this.phoneNumbers = Object.values(this.customerList).map((user: any) => user?.data?.phoneNumber);
+      this.accountList = this.customerService.getCustomerList();
+      this.phoneNumbers = Object.values(this.accountList).map((user: any) => user?.data?.phoneNumber);
     } else {
-      this.customerList = {};
+      this.accountList = {};
     }
 
     this.setupForm();
 
     if (this.isEditingProfile)
-      this.customerId = this.editProfileId;
+      this.accountId = this.editProfileId;
     else
-      this.customerId = generateRandomString();
+      this.accountId = generateRandomString();
   }
 
   setupForm() {
-    const customerData = this.customerList?.[this.editProfileId];
+    const accountData = this.accountList?.[this.editProfileId];
 
-    if (customerData && this.isEditingProfile) {
-      const data = customerData.data;
-      this.customerForm = new FormGroup({
+    if (accountData && this.isEditingProfile) {
+      const data = accountData.data;
+      this.accountForm = new FormGroup({
         fullName: new FormControl(data.fullName, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
         phoneNumber: new FormControl(data.phoneNumber, [Validators.required, Validators.minLength(10), Validators.maxLength(10),
         Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
@@ -99,37 +104,37 @@ export class NewCustomerComponent implements OnInit {
 
   getErrorMessage(controlName: string) {
     if (controlName === 'phoneNumber') {
-      if (this.customerForm?.controls[controlName].hasError('required'))
+      if (this.accountForm?.controls[controlName].hasError('required'))
         return 'Please enter phone number.';
-      else if (this.customerForm?.controls[controlName].hasError('minlength'))
+      else if (this.accountForm?.controls[controlName].hasError('minlength'))
         return 'Please enter 10 digit phone number.';
-      else if (this.customerForm?.controls[controlName].hasError('duplicate'))
-        return 'Customer with this number already present in your database.';
-      else if (this.customerForm?.controls[controlName].hasError('pattern'))
+      else if (this.accountForm?.controls[controlName].hasError('duplicate'))
+        return 'Account with this number already present in your database.';
+      else if (this.accountForm?.controls[controlName].hasError('pattern'))
         return 'Please enter a valid Indian phone number.';
     }
     return '';
   }
 
-  saveCustomerData() {
+  saveAccountData() {
     if (!this.isEditingProfile)
-      this.customerForm.get('userId')?.setValue(this.customerId);
+      this.accountForm.get('userId')?.setValue(this.accountId);
 
-    const newCustomer: Customer = {
-      data: this.customerForm?.value,
+    const newAccount: Customer | DeliveryBoy = {
+      data: this.accountForm?.value,
       others: {
         createdBy: this.userId,
         createdTime: Date.now()
       }
     }
 
-    this.firebaseService.setData(`customer/bucket/${newCustomer.data?.userId}`, newCustomer).then((result) => {
+    this.firebaseService.setData(`${this.userType}/bucket/${newAccount.data?.userId}`, newAccount).then((result) => {
       this.onSubmit.emit();
       this.onCancel.emit();
 
       this.notificationService.showNotification({
-        heading: this.isEditingProfile ? 'Customer profile updated.' : 'New customer added.',
-        message: 'Customer details saved successfully.',
+        heading: this.isEditingProfile ? this.userLabel + ' profile updated.' : `New ${this.userLabel} added.`,
+        message: this.userLabel + ' details saved successfully.',
         duration: 5000,
         leftBarColor: '#3A7D44'
       });

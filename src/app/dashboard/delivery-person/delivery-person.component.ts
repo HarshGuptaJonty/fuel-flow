@@ -8,13 +8,15 @@ import { DeliveryPersonDataService } from '../../services/delivery-person-data.s
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { UserCardComponent } from '../../common/user-card/user-card.component';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
+import { NewAccountComponent } from "../new-account/new-account.component";
 
 @Component({
   selector: 'app-delivery-person',
   imports: [
     CommonModule,
     UserCardComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    NewAccountComponent
   ],
   templateUrl: './delivery-person.component.html',
   styleUrl: './delivery-person.component.scss'
@@ -29,7 +31,9 @@ export class DeliveryPersonComponent implements OnInit {
   }
   userId: string = '';
   selectedDeliveryPerson?: any;
+  addNewDeliveryBoy: boolean = false;
   isSearching: boolean = false;
+  isEditingProfile: boolean = false;
   selectedIndex: number = 0;
 
   constructor(
@@ -41,7 +45,6 @@ export class DeliveryPersonComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('yes');
     this.route.queryParams.subscribe(params => {
       this.deliveryPersonUserId = params['userId'];  // Extracts 'userId' from the URL, if it exists
     });
@@ -54,7 +57,6 @@ export class DeliveryPersonComponent implements OnInit {
     } else {
       this.refreshDeliveryPersonData();
     }
-    console.log('yes2');
   }
 
   computeDeliveryPersonData() {
@@ -79,6 +81,19 @@ export class DeliveryPersonComponent implements OnInit {
   userSelected(object: any, index: number) {
     this.selectedIndex = index;
     this.selectedDeliveryPerson = object;
+  }
+
+  onProfileEdit() {
+    this.isEditingProfile = true;
+    this.addNewDeliveryBoy = true;
+  }
+
+  onAddNewDeliveryBoy() {
+    this.addNewDeliveryBoy = !this.addNewDeliveryBoy;
+    if (this.addNewDeliveryBoy)
+      this.isEditingProfile = false;
+    else
+      this.selectedDeliveryPerson = null;
   }
 
   async refreshDeliveryPersonData(showNotification: boolean = false) {

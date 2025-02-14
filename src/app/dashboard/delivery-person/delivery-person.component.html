@@ -10,6 +10,11 @@
                         title="Refresh delivery person list">refresh</span>.
                 </div>
             </div>
+            <div class="add-delivery-boy d-flex justify-content-center align-items-center"
+                (click)="onAddNewDeliveryBoy()">
+                <span *ngIf="!addNewDeliveryBoy" title="Add Customer">+</span>
+                <span *ngIf="addNewDeliveryBoy" title="Cancel">x</span>
+            </div>
         </div>
 
         <div *ngIf="computedData.deliveryPersonList?.length > 0" class="delivery-person-list">
@@ -22,15 +27,22 @@
             class="delivery-person-list d-flex justify-content-center align-items-center flex-column">
             <img src="assets/images/banner/no-result.png" alt="">
             <div *ngIf="isSearching" class="m-4 text-center bold-text">No search results found!</div>
-            <div *ngIf="!isSearching" class="m-4 text-center bold-text">You have no delivery person.
+            <div *ngIf="!isSearching" class="m-4 text-center bold-text">You have no delivery person.<br>
+                Add new delivery boys!
             </div>
         </div>
     </div>
 
-    <div *ngIf="selectedDeliveryPerson" class="details-section d-flex flex-column">
+    <div *ngIf="addNewDeliveryBoy" class="details-section">
+        <app-new-account (onCancel)="addNewDeliveryBoy=false" (onSubmit)="refreshDeliveryPersonData()"
+            userType="deliveryPerson" [editProfileId]="selectedDeliveryPerson?.data?.userId"
+            [isEditingProfile]="isEditingProfile">
+        </app-new-account>
+    </div>
+    <div *ngIf="selectedDeliveryPerson && !addNewDeliveryBoy" class="details-section d-flex flex-column">
         <app-user-details [userObject]="selectedDeliveryPerson" [userId]="userId"></app-user-details>
     </div>
-    <div *ngIf="!selectedDeliveryPerson"
+    <div *ngIf="!selectedDeliveryPerson && !addNewDeliveryBoy"
         class="details-section d-flex justify-content-center align-items-center flex-column">
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">Selected a delivery person from the list to view its contents!</div>
