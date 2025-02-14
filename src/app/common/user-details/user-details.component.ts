@@ -4,23 +4,24 @@ import { CommonModule } from '@angular/common';
 import { copyData, getNumberInformat, timeAgoWithMsg } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
 import { NotificationService } from '../../services/notification.service';
+import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
 @Component({
-  selector: 'app-customer-details',
+  selector: 'app-user-details',
   imports: [
     CommonModule,
     MatButtonModule,
   ],
-  templateUrl: './customer-details.component.html',
-  styleUrl: './customer-details.component.scss'
+  templateUrl: './user-details.component.html',
+  styleUrl: './user-details.component.scss'
 })
-export class CustomerDetailsComponent implements OnChanges {
+export class UserDetailsComponent implements OnChanges {
 
   constructor(
     private notificationService: NotificationService
   ) { }
 
-  @Input() customerObject?: Customer;
+  @Input() userObject?: Customer | DeliveryPerson;
   @Input() userId: any;
 
   @Output() onProfileEdit = new EventEmitter<any>();
@@ -32,8 +33,8 @@ export class CustomerDetailsComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.data = this.customerObject?.data;
-    this.others = this.customerObject?.others;
+    this.data = this.userObject?.data;
+    this.others = this.userObject?.others;
 
     this.computedData.createdOn = timeAgoWithMsg(this.others?.createdTime)
   }

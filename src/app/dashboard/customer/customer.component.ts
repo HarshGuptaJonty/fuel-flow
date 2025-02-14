@@ -7,7 +7,7 @@ import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { NewCustomerComponent } from "../new-customer/new-customer.component";
 import { UserCardComponent } from "../../common/user-card/user-card.component";
 import { SearchService } from '../../services/search.service';
-import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
+import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NotificationService } from '../../services/notification.service';
 import { DataTableComponent } from "../../common/data-table/data-table.component";
 
@@ -17,7 +17,7 @@ import { DataTableComponent } from "../../common/data-table/data-table.component
     CommonModule,
     NewCustomerComponent,
     UserCardComponent,
-    CustomerDetailsComponent,
+    UserDetailsComponent,
     DataTableComponent
   ],
   templateUrl: './customer.component.html',

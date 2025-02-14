@@ -4,18 +4,17 @@ import { ActivatedRoute } from '@angular/router';
 import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { NotificationService } from '../../services/notification.service';
-import { SearchService } from '../../services/search.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { UserCardComponent } from '../../common/user-card/user-card.component';
-import { CustomerDetailsComponent } from "../../common/customer-details/customer-details.component";
+import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 
 @Component({
   selector: 'app-delivery-person',
   imports: [
     CommonModule,
     UserCardComponent,
-    CustomerDetailsComponent
+    UserDetailsComponent
   ],
   templateUrl: './delivery-person.component.html',
   styleUrl: './delivery-person.component.scss'

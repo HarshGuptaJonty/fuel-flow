@@ -36,8 +36,8 @@
         </app-new-customer>
     </div>
     <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section d-flex flex-column">
-        <app-customer-details *ngIf="selectedCustomer" [customerObject]="selectedCustomer" [userId]="userId"
-            (onProfileEdit)="onProfileEdit()"></app-customer-details>
+        <app-user-details *ngIf="selectedCustomer" [userObject]="selectedCustomer" [userId]="userId"
+            (onProfileEdit)="onProfileEdit()"></app-user-details>
 
         <app-data-table [customerObject]="selectedCustomer" class="flex-grow-1"></app-data-table>
     </div>

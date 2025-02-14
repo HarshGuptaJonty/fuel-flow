@@ -28,7 +28,7 @@
     </div>
 
     <div *ngIf="selectedDeliveryPerson" class="details-section d-flex flex-column">
-        <app-customer-details [customerObject]="selectedDeliveryPerson" [userId]="userId"></app-customer-details>
+        <app-user-details [userObject]="selectedDeliveryPerson" [userId]="userId"></app-user-details>
     </div>
     <div *ngIf="!selectedDeliveryPerson"
         class="details-section d-flex justify-content-center align-items-center flex-column">
