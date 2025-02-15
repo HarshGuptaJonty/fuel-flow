@@ -40,7 +40,7 @@
         <app-user-details *ngIf="selectedCustomer" [userObject]="selectedCustomer" [userId]="userId"
             (onProfileEdit)="onProfileEdit()"></app-user-details>
 
-        <app-data-table [customerObject]="selectedCustomer" class="flex-grow-1"></app-data-table>
+        <app-entry-data-table [customerObject]="selectedCustomer" class="flex-grow-1"></app-entry-data-table>
     </div>
     <div *ngIf="!selectedCustomer && !addNewCustomer"
         class="details-section d-flex justify-content-center align-items-center flex-column">

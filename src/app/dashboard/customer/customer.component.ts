@@ -9,7 +9,7 @@ import { UserCardComponent } from "../../common/user-card/user-card.component";
 import { SearchService } from '../../services/search.service';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NotificationService } from '../../services/notification.service';
-import { DataTableComponent } from "../../common/data-table/data-table.component";
+import { EntryDataTableComponent } from "../entry-data-table/entry-data-table.component";
 import { EntryDataService } from '../../services/entry-data.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { EntryDataService } from '../../services/entry-data.service';
     NewAccountComponent,
     UserCardComponent,
     UserDetailsComponent,
-    DataTableComponent
+    EntryDataTableComponent
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'

@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { dateConverter } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
-import { NewEntryComponent } from "../../dashboard/new-entry/new-entry.component";
+import { NewEntryComponent } from "../new-entry/new-entry.component";
 import { EntryDataService } from '../../services/entry-data.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NotificationService } from '../../services/notification.service';
@@ -14,17 +14,17 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
 import { EntryDetailModelService } from '../../services/entry-detail-model.service';
 
 @Component({
-  selector: 'app-data-table',
+  selector: 'app-entry-data-table',
   imports: [
     CommonModule,
     MatTableModule,
     MatButtonModule,
     NewEntryComponent
   ],
-  templateUrl: './data-table.component.html',
-  styleUrl: './data-table.component.scss'
+  templateUrl: './entry-data-table.component.html',
+  styleUrl: './entry-data-table.component.scss'
 })
-export class DataTableComponent implements OnChanges {
+export class EntryDataTableComponent implements OnChanges {
 
   @Input() customerObject?: Customer;
 
