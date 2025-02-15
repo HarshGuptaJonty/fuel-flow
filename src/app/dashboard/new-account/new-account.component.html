@@ -9,7 +9,7 @@
         <div class="mt-3 pt-2">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Name</mat-label>
-                <input matInput placeholder="Harsh Gupta" [maxLength]="30" autocomplete="off"
+                <input matInput #nameInput placeholder="Harsh Gupta" [maxLength]="30" autocomplete="off"
                     formControlName="fullName">
                 <mat-hint class="error-msg"
                     *ngIf="accountForm.get('fullName')?.touched && accountForm.get('fullName')?.invalid">

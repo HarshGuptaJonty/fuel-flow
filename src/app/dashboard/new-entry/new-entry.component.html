@@ -7,7 +7,8 @@
             <div class="pt-2 box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="date" (focus)="onfocus('date')">
+                    <input matInput [matDatepicker]="picker" #dateInput formControlName="date"
+                        (focus)="onfocus('date')">
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>

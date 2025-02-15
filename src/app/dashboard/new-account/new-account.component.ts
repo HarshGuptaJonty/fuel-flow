@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,7 +31,7 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
   templateUrl: './new-account.component.html',
   styleUrl: './new-account.component.scss'
 })
-export class NewAccountComponent implements OnInit {
+export class NewAccountComponent implements OnInit, AfterViewInit {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<any>();
@@ -40,6 +40,8 @@ export class NewAccountComponent implements OnInit {
   @Input() editProfileId: string = '';
   @Input() userType: string = '';
   @Input() isEditingProfile: boolean = false;
+
+  @ViewChild('nameInput') nameInput!: ElementRef;
 
   userId?: string;
   accountId?: string;
@@ -88,6 +90,10 @@ export class NewAccountComponent implements OnInit {
       this.accountId = this.editProfileId;
     else
       this.accountId = generateRandomString();
+  }
+
+  ngAfterViewInit(): void {
+    this.nameInput.nativeElement.focus();
   }
 
   setupForm() {

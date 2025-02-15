@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
@@ -35,7 +35,7 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
   templateUrl: './new-entry.component.html',
   styleUrl: './new-entry.component.scss'
 })
-export class NewEntryComponent implements OnInit {
+export class NewEntryComponent implements OnInit, AfterViewInit {
 
   @Input() customerObject?: Customer;
   @Input() pendingCount: number = 0;
@@ -44,6 +44,8 @@ export class NewEntryComponent implements OnInit {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
+
+  @ViewChild('dateInput') dateInput!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(this.getDateInFormat()),
@@ -128,7 +130,7 @@ export class NewEntryComponent implements OnInit {
         this.entryForm.get('deliveryBoyUserId')?.setValue(generateRandomString());
       }
 
-      if (value.length == 0)
+      if (value?.length == 0)
         this.deliveryBoysSearchList = this.deliveryBoysList;
       else
         this.deliveryBoysSearchList = this.deliveryBoysList.filter((item) =>
@@ -141,13 +143,17 @@ export class NewEntryComponent implements OnInit {
         this.entryForm.get('deliveryBoyUserId')?.setValue(generateRandomString());
       }
 
-      if (value.length == 0)
+      if (value?.length == 0)
         this.deliveryBoysSearchList = this.deliveryBoysList;
       else
         this.deliveryBoysSearchList = this.deliveryBoysList.filter((item) =>
-          Object.values(item.data || {}).toString().toLowerCase().includes(value.toLowerCase())
+          Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
         );
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dateInput.nativeElement.focus();
   }
 
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {
@@ -178,7 +184,7 @@ export class NewEntryComponent implements OnInit {
       phoneNumber: value.deliveryBoyNumber,
       userId: value.deliveryBoyUserId,
     }
-    
+
     if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
 
@@ -241,9 +247,8 @@ export class NewEntryComponent implements OnInit {
     } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
       this.errorMessage = 'Any of Sent, Recieved and Payment is required.';
-    } else if (parseInt(value.unitsRecieved) > ((this.pendingCount || 0) + (value.unitsSent || 0))) {
-      this.disableSave = true;
-      this.errorMessage = `Units recieved(${value.unitsRecieved}) cannot be more than pending(${this.pendingCount || 0}) units.`;
+    } else if (parseInt(value.unitsRecieved) > (this.pendingCount + parseInt(value.unitsSent || '0'))) {
+      this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${this.pendingCount + parseInt(value.unitsSent || '0')}] units.`;
     } else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;
       this.errorMessage = 'Rate is required if units are sent.';
