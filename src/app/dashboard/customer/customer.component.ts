@@ -10,6 +10,8 @@ import { SearchService } from '../../services/search.service';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NotificationService } from '../../services/notification.service';
 import { DataTableComponent } from "../../common/data-table/data-table.component";
+import { Customer } from '../../../assets/models/Customer';
+import { EntryDataService } from '../../services/entry-data.service';
 
 @Component({
   selector: 'app-customer',
@@ -42,7 +44,8 @@ export class CustomerComponent {
     private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
     private searchService: SearchService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private entryDataService: EntryDataService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -79,6 +82,38 @@ export class CustomerComponent {
     this.computedData.customerList = Object.values(this.customerData.customerList || {});
 
     // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
+  }
+
+  onDeleteProfile(userId: string) {
+    if (this.entryDataService.customerHasData(userId)) {
+      this.notificationService.showNotification({
+        heading: 'Process denied.',
+        message: 'Customer with entries cannot be deleted, please delete the entries first!',
+        duration: 7000,
+        leftBarColor: this.notificationService.color.yellow
+      });
+      return;
+    }
+    this.firebaseService.setData(`customer/bucket/${userId}`, null)
+      .then(() => {
+        let objects = this.customerService.getCustomerList();
+        delete objects[userId];
+        this.customerService.setCustomerData({
+          customerList: objects,
+          others: {
+            lastFrereshed: Date.now()
+          }
+        });
+
+        this.notificationService.showNotification({
+          heading: 'Customer profile deleted successfully.',
+          duration: 5000,
+          leftBarColor: this.notificationService.color.green
+        });
+        this.refreshCustomerData();
+      }).catch((error) => {
+        this.notificationService.somethingWentWrong('107');
+      });
   }
 
   customerSelected(object: any, index: number) {

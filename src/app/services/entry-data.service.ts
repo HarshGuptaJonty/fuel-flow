@@ -53,6 +53,14 @@ export class EntryDataService {
     return this.transactionList.value;
   }
 
+  customerHasData(customerId?: string) {
+    if (this.isDataChanged && this.getTransactionList()) {
+      return (Object.values(this.getTransactionList()) as EntryTransaction[])
+        .filter((obj: any) => obj?.data?.customer?.userId === customerId).length > 0;
+    }
+    return false;
+  }
+
   getCustomerTransactionList(customerId?: string): EntryTransaction[] {
     if (this.isDataChanged && this.getTransactionList()) {
       return (Object.values(this.getTransactionList()) as EntryTransaction[])

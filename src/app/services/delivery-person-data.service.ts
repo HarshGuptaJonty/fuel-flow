@@ -70,6 +70,29 @@ export class DeliveryPersonDataService {
     });
   }
 
+  deleteDeliveryPerson(userId: string) {
+    this.firebaseService.setData(`deliveryPerson/bucket/${userId}`, null)
+      .then(() => {
+        let objects = this.getDeliveryPersonList();
+        delete objects[userId];
+        this.setDeliveryPersonData({
+          deliveryPersonList: objects,
+          others: {
+            lastFrereshed: Date.now()
+          }
+        });
+        this.isDataChanged.next(true);
+
+        this.notificationService.showNotification({
+          heading: 'Delivery person profile deleted successfully.',
+          duration: 5000,
+          leftBarColor: this.notificationService.color.green
+        });
+      }).catch((error) => {
+        this.notificationService.somethingWentWrong('108');
+      });
+  }
+
   getAddress(userId: string) {
     return this.getDeliveryPersonList()[userId]?.data?.address || '';
   }

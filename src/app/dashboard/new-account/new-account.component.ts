@@ -9,11 +9,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { AccountService } from '../../services/account.service';
 import { FirebaseService } from '../../services/firebase.service';
-import { Customer } from '../../../assets/models/Customer';
 import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
-import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
+import { ConfirmationModelService } from '../../services/confirmation-model.service';
 
 @Component({
   selector: 'app-new-account',
@@ -36,6 +35,7 @@ export class NewAccountComponent implements OnInit {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<any>();
 
   @Input() editProfileId: string = '';
   @Input() userType: string = '';
@@ -46,7 +46,7 @@ export class NewAccountComponent implements OnInit {
   accountList?: any;
   disableSave: boolean = false;
   phoneNumbers: string[] = [];
-  userLabel: string = '';
+  isCustomerType: boolean = false;
 
   accountForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
@@ -64,11 +64,12 @@ export class NewAccountComponent implements OnInit {
     private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
     private notificationService: NotificationService,
-    private deliveryPersonDataService: DeliveryPersonDataService
+    private deliveryPersonDataService: DeliveryPersonDataService,
+    private confirmationModelService: ConfirmationModelService
   ) { }
 
   ngOnInit(): void {
-    this.userLabel = this.userType === 'customer' ? 'Customer' : 'Delivery Person';
+    this.isCustomerType = this.userType === 'customer';
 
     this.accountList = {};
     this.userId = this.accountService.getUserId();
@@ -141,16 +142,52 @@ export class NewAccountComponent implements OnInit {
       this.onCancel.emit();
 
       this.notificationService.showNotification({
-        heading: this.isEditingProfile ? this.userLabel + ' profile updated.' : `New ${this.userLabel} added.`,
-        message: this.userLabel + ' details saved successfully.',
+        heading: this.getAccountMessage(),
+        message: 'Details saved successfully.',
         duration: 5000,
         leftBarColor: '#3A7D44'
       });
     }).catch((error) => this.notificationService.somethingWentWrong('105'));
   }
 
+  getAccountMessage(): string {
+    if (this.isEditingProfile && this.isCustomerType)
+      return 'Updated customer profile';
+    else if (this.isEditingProfile && !this.isCustomerType)
+      return 'Updated delivery person account';
+    else if (this.isCustomerType)
+      return 'New customer added';
+    else
+      return 'New delivery person added';
+  }
+
   cancelClicked() {
     this.onCancel.emit();
+  }
+
+  deleteClicked() {
+    let message = 'You are trying to delete an account, once done, cannot be retrived, are you sure?';
+    if (!this.isCustomerType)
+      message = 'You are trying to delete a delivery person account, once deleted, cannot be retrived, are you sure? All the entries having this delivery person wont be affected!';
+
+    this.confirmationModelService.showModel({
+      heading: 'Delete account?',
+      message: message,
+      leftButton: {
+        text: 'Confirm',
+        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_RED,
+      }, rightButton: {
+        text: 'Cancel',
+        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+      }
+    }).subscribe(result => {
+      if (result === 'left') {
+        this.confirmationModelService.hideModel();
+        this.onCancel.emit();
+        this.onDelete.emit();
+      } else
+        this.confirmationModelService.hideModel();
+    });
   }
 
   duplicateNumberValidator(control: AbstractControl) {

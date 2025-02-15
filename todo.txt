@@ -4,16 +4,21 @@ show warning when user decrease sent amout less than pending units like if user 
 
 add pagination
 hard refresh if user click twice in 1 sec
-auto generate delivery boy profile if not present
-shpw drop down in delivery boy name field
 resend otp feature
-remove shipping address when saving delivery bpy
+show multiple notifictions
+search in delivery person
+remove add-account when delivery person selected changes
 
 In-Progress: *****************************************
-make delivery boy profile
+delete accounts system
 
 
 Done: ************************************************
+design the delivery person drop down
+remove shipping address when saving delivery bpy
+shpw drop down in delivery boy name field
+auto generate delivery boy profile if not present
+make delivery boy profile
 custom confirmation model
 date picker
 edit entries - edit button in table

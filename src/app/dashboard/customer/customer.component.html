@@ -32,7 +32,8 @@
 
     <div *ngIf="addNewCustomer" class="details-section">
         <app-new-account (onCancel)="addNewCustomer=false" (onSubmit)="refreshCustomerData()" userType="customer"
-            [editProfileId]="selectedCustomer?.data?.userId" [isEditingProfile]="isEditingProfile">
+            [editProfileId]="selectedCustomer?.data?.userId" [isEditingProfile]="isEditingProfile"
+            (onDelete)="onDeleteProfile(selectedCustomer?.data?.userId)">
         </app-new-account>
     </div>
     <div *ngIf="selectedCustomer && !addNewCustomer" class="details-section d-flex flex-column">

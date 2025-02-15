@@ -178,9 +178,9 @@ export class NewEntryComponent implements OnInit {
       phoneNumber: value.deliveryBoyNumber,
       userId: value.deliveryBoyUserId,
     }
-    if (!this.deliveryBoySelected) {
+    
+    if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
-    }
 
     let data: EntryTransaction = {
       data: {

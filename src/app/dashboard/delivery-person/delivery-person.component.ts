@@ -57,6 +57,11 @@ export class DeliveryPersonComponent implements OnInit {
     } else {
       this.refreshDeliveryPersonData();
     }
+
+    this.deliveryPersonDataService.isDataChanged.subscribe((isChanged) => {
+      if (isChanged)
+        this.refreshDeliveryPersonData();
+    });
   }
 
   computeDeliveryPersonData() {
@@ -78,6 +83,10 @@ export class DeliveryPersonComponent implements OnInit {
         this.selectedIndex = Object.values(this.deliveryPersonData.deliveryPersonList).findIndex((obj: any) => obj?.data?.userId === this.deliveryPersonUserId);
       }
     }
+  }
+
+  onDeleteProfile(userId: string) {
+    this.deliveryPersonDataService.deleteDeliveryPerson(userId);
   }
 
   userSelected(object: any, index: number) {
