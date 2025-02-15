@@ -125,13 +125,16 @@ export class NewAccountComponent implements OnInit {
     if (!this.isEditingProfile)
       this.accountForm.get('userId')?.setValue(this.accountId);
 
-    const newAccount: Customer | DeliveryPerson = {
+    const newAccount: any = {
       data: this.accountForm?.value,
       others: {
         createdBy: this.userId,
         createdTime: Date.now()
       }
     }
+
+    if (this.userType !== 'customer')
+      newAccount.data.shippingAddress = null;
 
     this.firebaseService.setData(`${this.userType}/bucket/${newAccount.data?.userId}`, newAccount).then((result) => {
       this.onSubmit.emit();

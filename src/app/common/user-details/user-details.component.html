@@ -3,7 +3,7 @@
         <span class="large-text bold-text">{{data.fullName}}</span>
         <span class="live-since medium-text secondary-color">Created {{computedData.createdOn}}</span>
     </div>
-    <div class="d-flex align-items-center mt-1">
+    <div class="d-flex align-items-center mt-1" *ngIf="data.phoneNumber">
         <span class="me-3 label-span small-text">Phone Number</span>
         <span class="bold-text letter-spacing-1 me-2">{{getNumberInformat(data?.phoneNumber)}}</span>
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy number"
