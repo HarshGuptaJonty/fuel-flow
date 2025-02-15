@@ -6,13 +6,14 @@ add pagination
 hard refresh if user click twice in 1 sec
 resend otp feature
 show multiple notifictions
-remove add-account when delivery person selected changes
+auto focus on name on adding new account
 
 In-Progress: *****************************************
-search in delivery person
+remove add-account when delivery person selected changes
 
 
 Done: ************************************************
+search in delivery person
 delete accounts system
 design the delivery person drop down
 remove shipping address when saving delivery bpy

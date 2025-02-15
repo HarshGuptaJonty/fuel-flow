@@ -105,6 +105,7 @@ export class DeliveryPersonComponent implements OnInit {
   }
 
   userSelected(object: any, index: number) {
+    this.addNewDeliveryBoy = false;
     this.selectedIndex = index;
     this.selectedDeliveryPerson = object;
   }
