@@ -7,48 +7,31 @@ import { Notification } from '../../assets/models/Notification';
 })
 export class NotificationService {
 
-  private notificationData = new BehaviorSubject<any>(null);
+  private notificationData = new BehaviorSubject<Notification[]>([]);
   notification$ = this.notificationData.asObservable();
 
   private notificationQueue: Notification[] = [];
-  private isNotificationVisible: boolean = false;
 
   color = {
     green: '#3A7D44',
     red: '#ff0000',
     yellow: '#FBA518'
   }
-  timeoutId: any;
 
   showNotification(data: Notification) {
-    // this.notificationData.next(data);
-
-    // clearTimeout(this.timeoutId);
-
-    // this.timeoutId = setTimeout(() => {
-    //   this.notificationData.next(null);
-    // }, data?.duration || 3000);
-
+    const id = new Date().getTime();
+    data.id = id;
     this.notificationQueue.push(data);
-    if (!this.isNotificationVisible) {
-      this.processQueue();
-    }
-  }
-
-  private processQueue() {
-    if (this.notificationQueue.length === 0) {
-      this.isNotificationVisible = false;
-      return;
-    }
-
-    this.isNotificationVisible = true;
-    const currentNotification = this.notificationQueue.shift();
-    this.notificationData.next(currentNotification);
+    this.notificationData.next([...this.notificationQueue]);
 
     setTimeout(() => {
-      this.notificationData.next(null);
-      this.processQueue();
-    }, currentNotification?.duration || 3000);
+      this.removeNotification(id);
+    }, data?.duration || 3000);
+  }
+
+  removeNotification(id: number) {
+    this.notificationQueue = this.notificationQueue.filter((notification) => notification.id !== id);
+    this.notificationData.next([...this.notificationQueue]);
   }
 
   loggedOut() {

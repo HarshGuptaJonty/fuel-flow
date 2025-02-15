@@ -5,14 +5,14 @@ show warning when user decrease sent amout less than pending units like if user 
 add pagination
 hard refresh if user click twice in 1 sec
 resend otp feature
-show multiple notifictions
 auto focus on name on adding new account
 
 In-Progress: *****************************************
-remove add-account when delivery person selected changes
 
 
 Done: ************************************************
+show multiple notifictions
+remove add-account when delivery person selected changes
 search in delivery person
 delete accounts system
 design the delivery person drop down
