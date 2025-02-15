@@ -67,11 +67,13 @@ export class DeliveryPersonComponent implements OnInit {
 
     this.computedData.lastUpdatedStr = timeAgoWithMsg(this.deliveryPersonData.others.lastFrereshed);
     this.computedData.deliveryPersonList = Object.values(this.deliveryPersonData.deliveryPersonList || {});
+
+    this.openProfileOnLoad();
   }
 
   openProfileOnLoad() {
     if (this.deliveryPersonUserId) {
-      this.selectedDeliveryPerson = this.deliveryPersonData?.[this.deliveryPersonUserId];
+      this.selectedDeliveryPerson = this.deliveryPersonData?.deliveryPersonList?.[this.deliveryPersonUserId];
       if (this.selectedDeliveryPerson) {
         this.selectedIndex = Object.values(this.deliveryPersonData.deliveryPersonList).findIndex((obj: any) => obj?.data?.userId === this.deliveryPersonUserId);
       }
@@ -100,7 +102,7 @@ export class DeliveryPersonComponent implements OnInit {
     this.selectedDeliveryPerson = null;
     const latestData = await this.firebaseService.getData('deliveryPerson/bucket'); // todo increase database efficiency
     let data = {
-      customerList: latestData,
+      deliveryPersonList: latestData,
       others: {
         lastFrereshed: Date.now()
       }
@@ -109,7 +111,6 @@ export class DeliveryPersonComponent implements OnInit {
     this.deliveryPersonData = data;
 
     this.computeDeliveryPersonData();
-    this.openProfileOnLoad();
 
     if (Object.keys(latestData).length === 0)
       this.notificationService.showNotification({

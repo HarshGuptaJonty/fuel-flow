@@ -13,6 +13,7 @@ import { Customer } from '../../../assets/models/Customer';
 import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
 import { DeliveryBoy } from '../../../assets/models/DeliveryBoy';
+import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 
 @Component({
   selector: 'app-new-account',
@@ -62,18 +63,22 @@ export class NewAccountComponent implements OnInit {
     private accountService: AccountService,
     private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private deliveryPersonDataService: DeliveryPersonDataService
   ) { }
 
   ngOnInit(): void {
     this.userLabel = this.userType === 'customer' ? 'Customer' : 'Delivery Person';
 
+    this.accountList = {};
     this.userId = this.accountService.getUserId();
-    if (this.customerService.hasCustomerData()) {
+
+    if (this.userType === 'customer' && this.customerService.hasCustomerData()) {
       this.accountList = this.customerService.getCustomerList();
       this.phoneNumbers = Object.values(this.accountList).map((user: any) => user?.data?.phoneNumber);
-    } else {
-      this.accountList = {};
+    } else if (this.userType === 'deliveryPerson' && this.deliveryPersonDataService.hasDeliveryPersonData()) {
+      this.accountList = this.deliveryPersonDataService.getDeliveryPersonList();
+      this.phoneNumbers = Object.values(this.accountList).map((user: any) => user?.data?.phoneNumber);
     }
 
     this.setupForm();
@@ -109,7 +114,7 @@ export class NewAccountComponent implements OnInit {
       else if (this.accountForm?.controls[controlName].hasError('minlength'))
         return 'Please enter 10 digit phone number.';
       else if (this.accountForm?.controls[controlName].hasError('duplicate'))
-        return 'Account with this number already present in your database.';
+        return 'Account with this number already present.';
       else if (this.accountForm?.controls[controlName].hasError('pattern'))
         return 'Please enter a valid Indian phone number.';
     }

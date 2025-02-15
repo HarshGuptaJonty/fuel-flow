@@ -40,7 +40,8 @@
         </app-new-account>
     </div>
     <div *ngIf="selectedDeliveryPerson && !addNewDeliveryBoy" class="details-section d-flex flex-column">
-        <app-user-details [userObject]="selectedDeliveryPerson" [userId]="userId"></app-user-details>
+        <app-user-details [userObject]="selectedDeliveryPerson" [userId]="userId"
+            (onProfileEdit)="onProfileEdit()"></app-user-details>
     </div>
     <div *ngIf="!selectedDeliveryPerson && !addNewDeliveryBoy"
         class="details-section d-flex justify-content-center align-items-center flex-column">

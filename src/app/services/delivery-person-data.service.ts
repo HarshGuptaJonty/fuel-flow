@@ -28,6 +28,10 @@ export class DeliveryPersonDataService {
     return this.deliveryPersonData?.value;
   }
 
+  getDeliveryPersonList() {
+    return this.deliveryPersonData?.value?.deliveryPersonList || {};
+  }
+
   hasDeliveryPersonData() {
     return !!this.deliveryPersonData?.value;
   }
