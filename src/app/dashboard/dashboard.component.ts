@@ -8,6 +8,7 @@ import { NotificationService } from '../services/notification.service';
 import { ConfirmationModelService } from '../services/confirmation-model.service';
 import { filter, Subscription } from 'rxjs';
 import { AdminDataService } from '../services/admin-data.service';
+import { DeliveryPersonDataService } from '../services/delivery-person-data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -76,7 +77,8 @@ export class DashboardComponent implements OnInit {
     private searchService: SearchService,
     private notificationService: NotificationService,
     private confirmationModelService: ConfirmationModelService,
-    private adminDataService: AdminDataService
+    private adminDataService: AdminDataService,
+    private deliveryPersonDataService: DeliveryPersonDataService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -174,5 +176,9 @@ export class DashboardComponent implements OnInit {
 
   hasCustomerData() {
     return Object.keys(this.customerService.getCustomerList()).length > 0;
+  }
+
+  hasDeliveryPersonData() {
+    return Object.keys(this.deliveryPersonDataService.getDeliveryPersonList()).length > 0;
   }
 }

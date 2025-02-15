@@ -9,6 +9,7 @@ import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { UserCardComponent } from '../../common/user-card/user-card.component';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NewAccountComponent } from "../new-account/new-account.component";
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-delivery-person',
@@ -41,7 +42,8 @@ export class DeliveryPersonComponent implements OnInit {
     private accountService: AccountService,
     private firebaseService: FirebaseService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private searchService: SearchService
   ) { }
 
   ngOnInit(): void {
@@ -61,6 +63,19 @@ export class DeliveryPersonComponent implements OnInit {
     this.deliveryPersonDataService.isDataChanged.subscribe((isChanged) => {
       if (isChanged)
         this.refreshDeliveryPersonData();
+    });
+
+    this.searchService.searchText$.subscribe(searchText => {
+      if (searchText && searchText.length > 0) {
+        this.computedData.customerList = Object.values(this.deliveryPersonData.deliveryPersonList).filter((item: any) =>
+          Object.values(item.data).toString().toLowerCase().includes(searchText.toLowerCase())
+        );
+        this.isSearching = true;
+        this.selectedDeliveryPerson = null;
+      } else {
+        this.computedData.customerList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
+        this.isSearching = false;
+      }
     });
   }
 

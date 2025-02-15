@@ -10,7 +10,6 @@ import { SearchService } from '../../services/search.service';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NotificationService } from '../../services/notification.service';
 import { DataTableComponent } from "../../common/data-table/data-table.component";
-import { Customer } from '../../../assets/models/Customer';
 import { EntryDataService } from '../../services/entry-data.service';
 
 @Component({

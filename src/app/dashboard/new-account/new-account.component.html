@@ -52,7 +52,7 @@
             [disabled]="disableSave || accountForm.invalid">Save</button>
         <div>
             <button class="cancel-btn custom-btn me-2" mat-flat-button (click)="deleteClicked()"
-                [disabled]="disableSave">Delete</button>
+                [disabled]="disableSave" *ngIf="isEditingProfile">Delete</button>
             <button class="cancel-btn custom-btn" mat-flat-button (click)="cancelClicked()"
                 [disabled]="disableSave">Cancel</button>
         </div>

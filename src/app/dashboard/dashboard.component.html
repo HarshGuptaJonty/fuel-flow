@@ -7,7 +7,8 @@
 
         <div class="d-flex">
             <input class="search-box align-self-center" type="text" placeholder="Search customers"
-                *ngIf="activeNavMenu === 'customers' && hasCustomerData()" (input)="onSearch($event)">
+                *ngIf="(activeNavMenu === 'customers' && hasCustomerData() || activeNavMenu === 'delivery' && hasDeliveryPersonData())"
+                (input)="onSearch($event)">
 
             <div class="nav-item-bar d-flex justify-content-between me-4">
                 <ng-container *ngFor="let item of menuItemList">

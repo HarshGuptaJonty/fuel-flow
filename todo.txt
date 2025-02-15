@@ -6,14 +6,14 @@ add pagination
 hard refresh if user click twice in 1 sec
 resend otp feature
 show multiple notifictions
-search in delivery person
 remove add-account when delivery person selected changes
 
 In-Progress: *****************************************
-delete accounts system
+search in delivery person
 
 
 Done: ************************************************
+delete accounts system
 design the delivery person drop down
 remove shipping address when saving delivery bpy
 shpw drop down in delivery boy name field
@@ -28,3 +28,106 @@ add new thin logo
 add icon in logo
 validations
 show admin name in entry-detail model
+
+*******************************************************
+TESTING THINGS
+
+1.   Add new customer
+     . This will add new customer in database
+     . This will auto refresh the customer list in the left panel of customer page
+     . Data validations:
+          . Name is mandatory with min length of 3 charcters and max length of 30
+          . Contact number is mandatory with length of 10 digits
+          . Contact number must be an indian number (First digit cannot be less the 6)
+          . User wont be able to create new customer account if there is an exisisting customer with the newly provided customer contact number
+     . User Id of new customers will be auto generated of a 14 random characters 
+     . Adding new customer will enable search feature in customer page (if there was no customer previously)
+
+2.   Add new delivery boy
+     . This will add new delivery boy in database
+     . This will auto refresh the delivery boy list in the left panel of delivery page
+     . This will auto refresh the dropdown of delivery boys in New-Entry Component
+     . Data Validations:
+          . Name is mandatory with min length of 3 characters and max length of 30 characters
+          . Contact number is mandatory with length of 10 digits
+          . Contact number must be an indian number (First digit cannot be less the 6)
+          . User wont be able to create new delivery person account if there is an exisisting profile with the newly provided delivery person number
+     . User Id will be auto generate of 14 random characers
+     . Adding new delivery person will enable search feature in delivery page (if there was no delivery person previously)
+
+3.   Add new Entry
+     . This will add new entry in database with the entry details, customer details and delivery boy details*
+     . This will create new delivery boy profile if not selected from the dropdown appeared when typing delivery boy name or number
+     . User wont be able to create new delivery boy account with same number os an exisisting delivery boy
+     . User wont be able to put recieve count more than pending counts
+     . Data validations:
+          . Date is mandatory field
+          . Any of these 3 fields are mandatory [Units sent, Units Recieved, Payment]
+          . Rate field is mandatory if units sent is more than 0
+          . Delivery Boy name is mandatory
+     
+4.   Viewing customer profile
+     . User have to select the customer from the left panel of customer page to view the contents
+     . The content include customer details like name, number, address(if any), shipping address(if any) and extra details(if any), each details can be coppied using copy icon provided
+     . User can see the pending units and due amount in badges just below the basic details
+     . User can see 2 badges named as 'New Entry' and 'Refresh' to add new entry and refresh the entry table respectivery
+     . Just below the details user can see the entries related with this customer in a table
+     . While clicking on 'New Entry' Badge user can see a form opened to allow user enter new entries related to this customer
+     . While clicking on 'Refresh' Badge user can refresh the table contents (success/failure both will show notification int op right corner of screen)
+
+5.   Editing Customer profile
+     . User have to open the customer profile in viewing mode first,
+     . User can see a 'edit profile' button on left side of the screen, clicking which will open the customer profile in edit mode
+     . User can edit any details in the form, but these details wont be changes in the exisisting entries made till date.
+     . Editing any data will update the database and the list presnet in the left panel of the screen in customer page
+
+6.   Deleting customer profile
+     . User have to open the cutomer profile in efiting mode first,
+     . User can delete a customer profile if there is no entries recorded on his account,
+     . If any entries are pending then user wont be able to edlete the profile and a notification will be prompted
+     . After successful deleting the left panel list of customer page will be refresh automatically
+
+7.   Viewing Delivery person profile
+     . User can open delivery person profile from 2 end points
+     . first is from delivery page selecting the profile from the left pannel of ths screen
+     . second is from the entries table shown in customer profile page, user can click on delivery person name to open the profile directly
+     . User can view profile details like name, number(if any), address(if any) and extra note (if any)
+
+8.   Editing delivery perosn profile
+     . User have to open delivery person profile in viewing mode first,
+     . User can see a 'edit profile' button on the left sode of the screen, clicking shich will open the delivery profile in deit mode
+     . User can edit any detail in the form, but these wont be changed in exisisting entries
+     . Editing any data will update the database and the list presnet in the left panel of the screen in delivery page
+
+9.   Deleting delivery person profile
+     . User have to open delivery person profile in edit mode,
+     . After successful deleting the left panel of delivery page will be refreshed automatically
+
+10.  Viewing Entry details
+     . User can view entry details from the customer profile viewing page,
+     . In the table user can view basic entry details
+     . For full details user have to click on 'More' in actions column of the entry table
+     . Clicking on 'More' will open a popup with all entry details
+
+11.  Editing Entry details
+     . User can edit etnry details by clicking 'entry' text on actions column in entry table,
+     . This will oepn entry in edit mode,
+     . User wont be able to edit the date of the entry, as its linked with the entry ID and formatting
+     . User cant increase recieved units more than current pending amount
+     . Editing sent units might effect pending units go negative ***
+     . Users deails will be stored while editing
+
+12.  Deleting entry details
+     . User have to open the etnry in edit mode first,
+     . User can delete the enrty by delete button,
+     . Deleting entry might effect the pending units and due amount go negative and can disrupt the calucations in table, hence not ecoemmended
+     . deleting entry will refresh the table in opened customer profile
+
+13.  Search in customer and delivery page
+     . Search is relatime
+     . User can see the search results in the ;eft panel of the screen
+     . Clearing the search will show all accounts in the list section
+
+14. Acount refresh
+     . User can manually refresh accounts list using the refresh text on the top left of the screen.
+     . This will refresh the data by downloading latest data from remote database
