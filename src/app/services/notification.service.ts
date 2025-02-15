@@ -10,6 +10,9 @@ export class NotificationService {
   private notificationData = new BehaviorSubject<any>(null);
   notification$ = this.notificationData.asObservable();
 
+  private notificationQueue: Notification[] = [];
+  private isNotificationVisible: boolean = false;
+
   color = {
     green: '#3A7D44',
     red: '#ff0000',
@@ -18,13 +21,34 @@ export class NotificationService {
   timeoutId: any;
 
   showNotification(data: Notification) {
-    this.notificationData.next(data);
+    // this.notificationData.next(data);
 
-    clearTimeout(this.timeoutId);
+    // clearTimeout(this.timeoutId);
 
-    this.timeoutId = setTimeout(() => {
+    // this.timeoutId = setTimeout(() => {
+    //   this.notificationData.next(null);
+    // }, data?.duration || 3000);
+
+    this.notificationQueue.push(data);
+    if (!this.isNotificationVisible) {
+      this.processQueue();
+    }
+  }
+
+  private processQueue() {
+    if (this.notificationQueue.length === 0) {
+      this.isNotificationVisible = false;
+      return;
+    }
+
+    this.isNotificationVisible = true;
+    const currentNotification = this.notificationQueue.shift();
+    this.notificationData.next(currentNotification);
+
+    setTimeout(() => {
       this.notificationData.next(null);
-    }, data?.duration || 3000);
+      this.processQueue();
+    }, currentNotification?.duration || 3000);
   }
 
   loggedOut() {
