@@ -12,7 +12,7 @@ import { FirebaseService } from '../../services/firebase.service';
 import { Customer } from '../../../assets/models/Customer';
 import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
-import { DeliveryBoy } from '../../../assets/models/DeliveryBoy';
+import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 
 @Component({
@@ -125,7 +125,7 @@ export class NewAccountComponent implements OnInit {
     if (!this.isEditingProfile)
       this.accountForm.get('userId')?.setValue(this.accountId);
 
-    const newAccount: Customer | DeliveryBoy = {
+    const newAccount: Customer | DeliveryPerson = {
       data: this.accountForm?.value,
       others: {
         createdBy: this.userId,
@@ -143,14 +143,7 @@ export class NewAccountComponent implements OnInit {
         duration: 5000,
         leftBarColor: '#3A7D44'
       });
-    }).catch((error) => {
-      this.notificationService.showNotification({
-        heading: 'Something Went Wrong!',
-        message: 'Please Contact IT Support!',
-        duration: 5000,
-        leftBarColor: '#ff0000'
-      });
-    })
+    }).catch((error) => this.notificationService.somethingWentWrong('105'));
   }
 
   cancelClicked() {

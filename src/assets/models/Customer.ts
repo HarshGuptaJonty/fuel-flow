@@ -5,7 +5,7 @@ export interface Customer {
         address?: string,
         shippingAddress?: string,
         extraNote?: string,
-        userId?: string
+        userId: string
     },
     entry?: {
         pendingCount?: number,

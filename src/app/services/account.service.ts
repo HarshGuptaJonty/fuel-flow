@@ -71,6 +71,7 @@ export class AccountService {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTH_PROFILE);
     sessionStorage.removeItem(LOCAL_STORAGE_KEYS.USER_PROFILE);
     sessionStorage.removeItem(LOCAL_STORAGE_KEYS.CUSTOMER_DATA);
+    sessionStorage.removeItem(LOCAL_STORAGE_KEYS.DELIVERY_PERSON_DATA);
 
     this.authData?.next(null);
     this.userData?.next(null);

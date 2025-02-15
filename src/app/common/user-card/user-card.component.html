@@ -1,6 +1,6 @@
 <div class="user-card-container" [ngClass]="{'active':selected}">
     <div class="bold-text">{{data.fullName}}</div>
-    <div class="mt-1 letter-spacing-1 d-flex justify-content-between">
+    <div class="mt-1 letter-spacing-1 d-flex justify-content-between" *ngIf="data.phoneNumber">
         {{getNumberInformat(data.phoneNumber)}}
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy Number"
             (click)="copyData($event, data.phoneNumber)">

@@ -20,5 +20,5 @@ export interface EntryTransaction {
 export interface UserData {
     fullName?: string,
     phoneNumber?: string,
-    userId?: string
+    userId: string
 }
