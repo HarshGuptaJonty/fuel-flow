@@ -24,7 +24,7 @@ import { EntryDetailModelService } from '../../services/entry-detail-model.servi
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss'
 })
-export class DataTableComponent implements OnInit, OnChanges {
+export class DataTableComponent implements OnChanges {
 
   @Input() customerObject?: Customer;
 
@@ -103,27 +103,20 @@ export class DataTableComponent implements OnInit, OnChanges {
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-    this.pendingUnit = this.customerObject?.entry?.pendingCount || 0;
-    this.dueAmount = this.customerObject?.entry?.dueAmount || 0;
-
-    this.enterDataService.isDataChanged.subscribe(flag => {
-      if (flag) {
-        this.entryDataAvaliable = true;
-        this.refreshEntryData();
-        this.newEntry = false;
-      }
-    });
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     this.pendingUnit = this.customerObject?.entry?.pendingCount || 0;
     this.dueAmount = this.customerObject?.entry?.dueAmount || 0;
 
-    if (this.entryDataAvaliable) {
-      this.refreshEntryData();
-      this.newEntry = false;
-    }
+    this.refreshEntryData(); // to refersh first time
+    this.entryDataAvaliable = this.rawTransactionList.length > 0;
+
+    this.enterDataService.isDataChanged.subscribe(flag => {
+      if (flag) {
+        this.entryDataAvaliable = true;
+        this.refreshEntryData(); // to refresh when there is data changge
+        this.newEntry = false;
+      }
+    });
   }
 
   refreshData() {
@@ -136,7 +129,7 @@ export class DataTableComponent implements OnInit, OnChanges {
       this.notificationService.showNotification({
         heading: 'No data found!',
         message: 'Iniciating hard refresh.',
-        duration: 5000,
+        duration: 4000,
         leftBarColor: this.notificationService.color.yellow
       });
     }

@@ -11,6 +11,7 @@ In-Progress: *****************************************
 
 
 Done: ************************************************
+auto update table on profile change
 show multiple notifictions
 remove add-account when delivery person selected changes
 search in delivery person
