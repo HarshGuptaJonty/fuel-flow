@@ -49,12 +49,12 @@
                     <input matInput placeholder="Ankit Pushp" [maxLength]="30" autocomplete="off"
                         formControlName="deliveryBoyName" (focus)="onfocus('deliveryBoyName')">
                 </mat-form-field>
-                {{deliveryBoySelected}}
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyName'">
                     <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
-                        {{obj.data?.fullName}}
-                        <span *ngIf="obj.data?.phoneNumber">({{formatNumber(obj.data?.phoneNumber)}})</span>
+                        <span class="bold-text me-2">{{obj.data?.fullName}}</span>
+                        <span *ngIf="obj.data?.phoneNumber"
+                            class="dropdown-number">{{formatNumber(obj.data?.phoneNumber)}}</span>
                     </div>
                 </div>
             </div>
@@ -67,8 +67,9 @@
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyNumber'">
                     <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
-                        {{obj.data?.fullName}}
-                        <span *ngIf="obj.data?.phoneNumber">({{formatNumber(obj.data?.phoneNumber)}})</span>
+                        <span class="bold-text me-2">{{obj.data?.fullName}}</span>
+                        <span *ngIf="obj.data?.phoneNumber"
+                            class="dropdown-number">{{formatNumber(obj.data?.phoneNumber)}}</span>
                     </div>
                 </div>
             </div>

@@ -50,18 +50,23 @@
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
             border: 1px solid gray;
             z-index: 10;
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
 
             .profile {
-                padding: 5px 10px;
-                border-bottom: 1px dotted black;
+                padding: 7px 10px;
 
                 &:hover {
                     background-color: $border-very-light2;
                     cursor: pointer;
                 }
             }
+        }
+
+        .dropdown-number {
+            background-color: $border-light;
+            padding: 3px 5px;
+            border-radius: 5px;
         }
     }
 
