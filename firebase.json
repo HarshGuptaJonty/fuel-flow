@@ -3,13 +3,12 @@
     "public": "dist/fuel-flow-web/browser",
     "ignore": [
       "firebase.json",
-      "**/.*",
       "**/node_modules/**"
     ],
     "rewrites": [
       {
         "source": "**",
-        "destination": "/dist/fuel-flow-web/browser/index.html"
+        "destination": "/index.html"
       }
     ]
   }
