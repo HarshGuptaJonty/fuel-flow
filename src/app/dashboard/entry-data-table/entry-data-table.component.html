@@ -13,8 +13,9 @@
             (click)="newEntry=!newEntry">
             <span class="bold-text">New Entry</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center entry-btn" (click)="refreshData()">
-            <span class="bold-text">Refresh</span>
+        <div class="data-card d-flex flex-column justify-content-center"
+            [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'" (click)="refreshData()">
+            <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
         </div>
     </div>
 
@@ -26,7 +27,7 @@
     </div>
 
     <div class="w-100 table-div">
-        <table *ngIf="processedTableData && processedTableData.length>0" mat-table [dataSource]="processedTableData"
+        <table *ngIf="processedTableData && processedTableData.length>0" mat-table [dataSource]="dataSource"
             class="custom-table">
             <tr mat-header-row *matHeaderRowDef="displayedColumns()" class="custom-header-row nowrap"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns();" class="custom-row"></tr>
@@ -40,6 +41,8 @@
                 </td>
             </ng-container>
         </table>
+        <mat-paginator *ngIf="processedTableData && processedTableData.length>5" [pageSizeOptions]="[5, 10, 20, 40]"
+            showFirstLastButtons></mat-paginator>
     </div>
 
     <div *ngIf="(!processedTableData || processedTableData.length === 0) && !newEntry"

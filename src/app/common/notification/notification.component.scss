@@ -5,7 +5,7 @@
     font-family: "Comfortaa", serif;
     position: fixed;
     top: 90px;
-    right: 25px;
+    user-select: none;
 
     .notification-card {
         background-color: $light-color;
@@ -20,6 +20,16 @@
 
     .message {
         max-width: 300px;
+    }
+
+    &.moved-right {
+        right: 25px;
+        left: auto;
+    }
+
+    &.moved-left {
+        right: auto;
+        left: 25px;
     }
 }
 

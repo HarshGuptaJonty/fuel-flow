@@ -6,7 +6,7 @@
         </div>
 
         <div class="d-flex">
-            <input class="search-box align-self-center" type="text" placeholder="Search customers"
+            <input class="search-box align-self-center" type="text" [placeholder]="'Search in '+activeNavMenu"
                 *ngIf="(activeNavMenu === 'customers' && hasCustomerData() || activeNavMenu === 'delivery' && hasDeliveryPersonData())"
                 (input)="onSearch($event)">
 

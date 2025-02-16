@@ -70,6 +70,14 @@ export class EntryDataService {
     return [];
   }
 
+  getSortedTransactionList(): EntryTransaction[] {
+    if (this.isDataChanged && this.getTransactionList()) {
+      return (Object.values(this.getTransactionList()) as EntryTransaction[])
+        .sort((a, b) => a.data?.transactionId > b.data?.transactionId ? 1 : -1);
+    }
+    return [];
+  }
+
   addNewEntry(entry: EntryTransaction, isEditing: boolean = false) {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, entry)
       .then((result) => {

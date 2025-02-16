@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { dateConverter } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,7 @@ import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { EntryDetailModelService } from '../../services/entry-detail-model.service';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-entry-data-table',
@@ -19,12 +20,13 @@ import { EntryDetailModelService } from '../../services/entry-detail-model.servi
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    NewEntryComponent
+    NewEntryComponent,
+    MatPaginatorModule
   ],
   templateUrl: './entry-data-table.component.html',
   styleUrl: './entry-data-table.component.scss'
 })
-export class EntryDataTableComponent implements OnChanges {
+export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterViewChecked {
 
   @Input() customerObject?: Customer;
 
@@ -32,6 +34,8 @@ export class EntryDataTableComponent implements OnChanges {
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
   @ViewChild('nameText', { static: true }) nameText!: TemplateRef<any>;
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   tableStructure = [
     {
@@ -93,6 +97,9 @@ export class EntryDataTableComponent implements OnChanges {
   newEntry: boolean = false;
   entryDataAvaliable: boolean = false;
   openTransaction?: EntryTransaction;
+  isRefreshing: boolean = false;
+
+  dataSource = new MatTableDataSource<any>([]);
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -113,26 +120,44 @@ export class EntryDataTableComponent implements OnChanges {
     this.enterDataService.isDataChanged.subscribe(flag => {
       if (flag) {
         this.entryDataAvaliable = true;
-        this.refreshEntryData(); // to refresh when there is data changge
+        this.refreshEntryData(); // to refresh when there is data change
         this.newEntry = false;
+        this.isRefreshing = false;
       }
     });
   }
 
-  refreshData() {
-    if (this.entryDataAvaliable) {
-      this.refreshEntryData();
-      this.notificationService.transactionListRefreshed();
-    } else {
-      this.enterDataService.hardRefresh();
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
 
-      this.notificationService.showNotification({
-        heading: 'No data found!',
-        message: 'Iniciating hard refresh.',
-        duration: 4000,
-        leftBarColor: this.notificationService.color.yellow
-      });
+  ngAfterViewChecked(): void {
+    if (this.paginator && this.dataSource.paginator !== this.paginator) {
+      this.dataSource.paginator = this.paginator;
     }
+  }
+
+  refreshData() {
+    if (this.isRefreshing)
+      return;
+    this.isRefreshing = true;
+
+    setTimeout(() => {
+      if (this.entryDataAvaliable) {
+        this.refreshEntryData();
+        this.notificationService.transactionListRefreshed();
+      } else {
+        this.enterDataService.hardRefresh();
+
+        this.notificationService.showNotification({
+          heading: 'No data found!',
+          message: 'Iniciating hard refresh.',
+          duration: 4000,
+          leftBarColor: this.notificationService.color.yellow
+        });
+      }
+      this.isRefreshing = false;
+    }, 1000);
   }
 
   async refreshEntryData() {
@@ -145,6 +170,16 @@ export class EntryDataTableComponent implements OnChanges {
 
     this.rawTransactionList = this.enterDataService.getCustomerTransactionList(this.customerObject?.data?.userId);
     this.processedTableData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
+
+    this.dataSource.data = this.processedTableData;
+    this.resetPaginator();
+  }
+
+  resetPaginator() {
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   transformItem(item: EntryTransaction) {
