@@ -1,15 +1,14 @@
 Todo: ************************************************
-show warning when user decrease sent amout less than pending units like if user sent 5 and recieved 4, 
-     - pending is 1, and if he edit the sent to 3 then penidng will be 01, in this case show error
 
-add pagination
 hard refresh if user click twice in 1 sec
 resend otp feature
+login stayed login untill logged out manually
 
 In-Progress: *****************************************
 
 
 Done: ************************************************
+add pagination
 auto focus on name on adding new account
 auto update table on profile change
 show multiple notifictions
