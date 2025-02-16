@@ -13,8 +13,9 @@
             (click)="newEntry=!newEntry">
             <span class="bold-text">New Entry</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center entry-btn" (click)="refreshData()">
-            <span class="bold-text">Refresh</span>
+        <div class="data-card d-flex flex-column justify-content-center"
+            [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'" (click)="refreshData()">
+            <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
         </div>
     </div>
 

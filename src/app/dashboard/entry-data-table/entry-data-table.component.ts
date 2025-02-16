@@ -97,6 +97,7 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
   newEntry: boolean = false;
   entryDataAvaliable: boolean = false;
   openTransaction?: EntryTransaction;
+  isRefreshing: boolean = false;
 
   dataSource = new MatTableDataSource<any>([]);
 
@@ -122,6 +123,7 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
         this.entryDataAvaliable = true;
         this.refreshEntryData(); // to refresh when there is data change
         this.newEntry = false;
+        this.isRefreshing = false;
       }
     });
   }
@@ -137,19 +139,26 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
   }
 
   refreshData() {
-    if (this.entryDataAvaliable) {
-      this.refreshEntryData();
-      this.notificationService.transactionListRefreshed();
-    } else {
-      this.enterDataService.hardRefresh();
+    if (this.isRefreshing)
+      return;
+    this.isRefreshing = true;
 
-      this.notificationService.showNotification({
-        heading: 'No data found!',
-        message: 'Iniciating hard refresh.',
-        duration: 4000,
-        leftBarColor: this.notificationService.color.yellow
-      });
-    }
+    setTimeout(() => {
+      if (this.entryDataAvaliable) {
+        this.refreshEntryData();
+        this.notificationService.transactionListRefreshed();
+        this.isRefreshing = false;
+      } else {
+        this.enterDataService.hardRefresh();
+
+        this.notificationService.showNotification({
+          heading: 'No data found!',
+          message: 'Iniciating hard refresh.',
+          duration: 4000,
+          leftBarColor: this.notificationService.color.yellow
+        });
+      }
+    }, 1000);
   }
 
   async refreshEntryData() {
