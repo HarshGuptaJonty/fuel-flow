@@ -72,6 +72,13 @@ export class CustomerDataService {
     });
   }
 
+  getAddress(userId?: string) {
+    if (userId)
+      return this.getCustomerList()[userId]?.data?.address || '';
+    else
+      return '';
+  }
+
   getCustomerData() {
     return this.customerData?.value;
   }

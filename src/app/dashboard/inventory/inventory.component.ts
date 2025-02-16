@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { dateConverter } from '../../shared/commonFunctions';
 import { NewFullEntryComponent } from "./new-full-entry/new-full-entry.component";
+import { CustomerDataService } from '../../services/customer-data.service';
+import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 
 @Component({
   selector: 'app-inventory',
@@ -95,6 +97,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   dueAmount: number = 0;
   newEntry: boolean = false;
   isRefreshing: boolean = false;
+  isSearching: boolean = false;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
   entryDataAvaliable: boolean = false;
@@ -108,7 +111,9 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     private notificationService: NotificationService,
     private confirmationModelService: ConfirmationModelService,
     private entryDetailModelService: EntryDetailModelService,
-    private router: Router
+    private router: Router,
+    private customerDataService: CustomerDataService,
+    private deliveryPersonDataService: DeliveryPersonDataService
   ) { }
 
   ngOnInit(): void {
@@ -140,7 +145,6 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       if (this.entryDataAvaliable) {
         this.refreshEntryData();
         this.notificationService.transactionListRefreshed();
-        this.isRefreshing = false;
       } else {
         this.enterDataService.hardRefresh();
 
@@ -151,6 +155,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
           leftBarColor: this.notificationService.color.yellow
         });
       }
+      this.isRefreshing = false;
     }, 1000);
   }
 
@@ -190,10 +195,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       date: dateConverter(item.data?.date || ''),
       customer: {
         fullName: item.data?.customer?.fullName,
+        phoneNumber: item.data?.customer?.phoneNumber,
         userId: item.data?.customer?.userId
       },
       deliveryBoy: {
         fullName: item.data?.deliveryBoy?.fullName,
+        phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
       sent: sent > 0 ? sent : '',
@@ -207,9 +214,28 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     };
   }
 
+  forSearch(item: any) {
+    return [
+      item.date,
+      item.customer?.fullName,
+      item.customer?.phoneNumber,
+      this.customerDataService.getAddress(item.customer?.userId),
+      item.deliveryBoy?.fullName,
+      item.deliveryBoy?.phoneNumber,
+      this.deliveryPersonDataService.getAddress(item.deliveryBoy?.userId),
+      item.extraDetails
+    ]
+  }
+
   onSearch(event: any) {
     const searchValue = (event.target as HTMLInputElement).value;
-    // this.searchService.updateSearchText(searchValue); // TODO search in inventory
+    if (searchValue && searchValue.length > 0) {
+      this.dataSource.data = this.processedTableData.filter((item: any) => this.forSearch(item).toString().toLowerCase().includes(searchValue.toLowerCase()));
+      this.isSearching = true;
+    } else {
+      this.dataSource.data = this.processedTableData;
+      this.isSearching = false;
+    }
   }
 
   saveEntry(event: EntryTransaction) {

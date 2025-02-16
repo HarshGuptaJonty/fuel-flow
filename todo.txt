@@ -1,13 +1,18 @@
 Todo: ************************************************
 
-hard refresh if user click twice in 1 sec
+count the number of backend database calls and what data are comming, can we reuse
 resend otp feature
 login stayed login untill logged out manually
+export data in excel and pdf
+make variables private
+fix auto date picker
+notification hiding things
 
 In-Progress: *****************************************
 
-
 Done: ************************************************
+search in inventory
+make inventory page
 add pagination
 auto focus on name on adding new account
 auto update table on profile change
@@ -132,3 +137,10 @@ TESTING THINGS
 14. Acount refresh
      . User can manually refresh accounts list using the refresh text on the top left of the screen.
      . This will refresh the data by downloading latest data from remote database
+
+15.  inventory
+     . In inventory user can see all the transactions in one place sorted by date
+     . User can see the total pending units and total due amount
+     . User can also add new entries here
+     . New entries added here will require to provide customer and delivery person details
+     . User can create new customer or delivery person from here also, by addig new entries

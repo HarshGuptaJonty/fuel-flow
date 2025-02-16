@@ -146,7 +146,6 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
       if (this.entryDataAvaliable) {
         this.refreshEntryData();
         this.notificationService.transactionListRefreshed();
-        this.isRefreshing = false;
       } else {
         this.enterDataService.hardRefresh();
 
@@ -157,6 +156,7 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
           leftBarColor: this.notificationService.color.yellow
         });
       }
+      this.isRefreshing = false;
     }, 1000);
   }
 

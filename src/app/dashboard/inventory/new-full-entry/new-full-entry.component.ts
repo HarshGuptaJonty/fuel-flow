@@ -64,7 +64,7 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
     extraDetails: new FormControl(''),
   });
 
-  disableSave = false;
+  disableSave = true;
   isEditing: boolean = false;
   errorMessage?: string;
   focusedFormName: string = '';
@@ -260,7 +260,7 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
     } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
       this.errorMessage = 'Any of Sent, Recieved or Payment is required.';
-    } else if (value.unitsRecieved > value.unitsSent) {
+    } else if (value.unitsRecieved > value.unitsSent && value.unitsSent > 0) {
       this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${value.unitsSent}] units.`;
     } else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;

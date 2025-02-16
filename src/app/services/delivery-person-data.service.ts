@@ -59,7 +59,7 @@ export class DeliveryPersonDataService {
       this.isDataChanged.next(true);
 
       this.notificationService.showNotification({
-        heading: `${newDeliveryPerson.data.fullName}'s person created.`,
+        heading: `${newDeliveryPerson.data.fullName}'s account created.`,
         message: 'New delivery person added successfully.',
         duration: 5000,
         leftBarColor: '#3A7D44'
@@ -93,8 +93,11 @@ export class DeliveryPersonDataService {
       });
   }
 
-  getAddress(userId: string) {
-    return this.getDeliveryPersonList()[userId]?.data?.address || '';
+  getAddress(userId?: string) {
+    if (userId)
+      return this.getDeliveryPersonList()[userId]?.data?.address || '';
+    else
+      return '';
   }
 
   getDeliveryPersonData() {
