@@ -1,4 +1,4 @@
-<div class="notification-container">
+<div class="notification-container moved-right">
     <div class="notification-card mb-2" *ngFor="let notification of notificationService.notification$ | async"
         [ngStyle]="{'background-color':notification?.backgroundColor,'color':notification?.textColor,'border-left-color':notification?.leftBarColor}">
         <div class="bold-text">

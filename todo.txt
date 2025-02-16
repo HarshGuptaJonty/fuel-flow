@@ -6,11 +6,11 @@ login stayed login untill logged out manually
 export data in excel and pdf
 make variables private
 fix auto date picker
-notification hiding things
 
 In-Progress: *****************************************
 
 Done: ************************************************
+notification hiding things
 search in inventory
 make inventory page
 add pagination
