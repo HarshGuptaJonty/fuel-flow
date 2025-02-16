@@ -257,7 +257,10 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
 
   getFormattedDate(format: string): string {
     const date = this.entryForm.get('date')?.value;
-    return date ? moment(date).format(format) : '';
+    const formatted = date ? moment(date).format(format) : '';
+    if (formatted === 'Invalid date')
+      return '';
+    return formatted;
   }
 
   formatNumber(value?: string) {

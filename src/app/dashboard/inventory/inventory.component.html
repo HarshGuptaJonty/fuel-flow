@@ -16,6 +16,9 @@
             <div class="capsule" (click)="refreshData()" [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'">
                 <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
             </div>
+            <div class="capsule excel-btn" (click)="exportInExcel()">
+                <span class="bold-text">Export Excel</span>
+            </div>
             <div class="capsule hover-action" [ngClass]="{'danger':dueAmount>0}">
                 <span class="bold-text me-2">Due Amount:</span>
                 <span class="secondary-color">{{dueAmount | number: '1.2-2'}} Rs</span>

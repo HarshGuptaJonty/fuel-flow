@@ -90,8 +90,7 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.isEditing = !!this.openTransaction;
-    this.transactionId = this.openTransaction?.data.transactionId ||
-      this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
+    this.transactionId = this.openTransaction?.data.transactionId || '';
 
     if (this.isEditing) {
       this.entryForm = new FormGroup({
@@ -186,6 +185,8 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
 
     let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
     let createdTime = this.openTransaction?.others?.createdTime || Date.now();
+    let transactionId = this.openTransaction?.data.transactionId ||
+      this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
 
     const customer: any = {
       fullName: value.customerName,
@@ -214,7 +215,7 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
         recieved: value.unitsRecieved,
         rate: value.rate,
         payment: value.paidAmt,
-        transactionId: this.transactionId,
+        transactionId: transactionId,
         extraDetails: value.extraDetails
       }, others: {
         createdBy: createdBy,
@@ -328,7 +329,10 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
 
   getFormattedDate(format: string): string {
     const date = this.entryForm.get('date')?.value;
-    return date ? moment(date).format(format) : '';
+    const formatted = date ? moment(date).format(format) : '';
+    if (formatted === 'Invalid date')
+      return '';
+    return formatted;
   }
 
   formatNumber(value?: string) {

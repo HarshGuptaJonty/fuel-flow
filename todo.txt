@@ -3,11 +3,11 @@ Todo: ************************************************
 count the number of backend database calls and what data are comming, can we reuse
 resend otp feature
 login stayed login untill logged out manually
-export data in excel and pdf
 make variables private
 fix auto date picker
 
 In-Progress: *****************************************
+export data in excel and pdf
 
 Done: ************************************************
 notification hiding things

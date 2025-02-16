@@ -67,4 +67,12 @@ export class NotificationService {
       leftBarColor: this.color.green
     });
   }
+
+  xlsxExportSuccessful() {
+    this.showNotification({
+      heading: 'Transactions Exported.',
+      duration: 5000,
+      leftBarColor: this.color.green
+    });
+  }
 }

@@ -13,6 +13,8 @@ import { dateConverter } from '../../shared/commonFunctions';
 import { NewFullEntryComponent } from "./new-full-entry/new-full-entry.component";
 import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
+import { ExportXlsxService } from '../../services/export-xlsx.service';
+import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 
 @Component({
   selector: 'app-inventory',
@@ -113,7 +115,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     private entryDetailModelService: EntryDetailModelService,
     private router: Router,
     private customerDataService: CustomerDataService,
-    private deliveryPersonDataService: DeliveryPersonDataService
+    private deliveryPersonDataService: DeliveryPersonDataService,
+    private exportXlsxService: ExportXlsxService
   ) { }
 
   ngOnInit(): void {
@@ -134,6 +137,38 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     if (this.paginator && this.dataSource.paginator !== this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
+  }
+
+  exportInExcel() {
+    let forExport;
+    if (this.dataSource.data.length > 10) {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      const endIndex = startIndex + this.paginator.pageSize;
+      const displayedRows = this.dataSource.data.slice(startIndex, endIndex);
+      forExport = displayedRows;
+    } else {
+      forExport = this.dataSource.data;
+    }
+
+    let formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
+      return {
+        Date: item.date,
+        'Customer Name': item.customer?.fullName,
+        'Customer Phone': item.customer?.phoneNumber,
+        'Delivery Person Name': item.deliveryBoy?.fullName,
+        'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
+        'Sent Quantity': item.sent,
+        'Received Quantity': item.recieved,
+        'Pending Units': item.pending,
+        'Rate/Unit': item.rate,
+        'Total Amount': item.totamAmt,
+        'Payment Amount': item.paymentAmt,
+        'Due Amount': item.dueAmt
+      };
+    });
+
+    this.exportXlsxService.exportToExcel(formatForExport);
+    this.notificationService.xlsxExportSuccessful();
   }
 
   refreshData() {

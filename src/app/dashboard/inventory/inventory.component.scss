@@ -40,6 +40,14 @@
             }
         }
 
+        &.excel-btn {
+            &:hover {
+                background-color: #1D6F42;
+                cursor: pointer;
+                color: white;
+            }
+        }
+
         &.disabled-entry-btn {
             background-color: $border-very-light;
             color: $border-light;
