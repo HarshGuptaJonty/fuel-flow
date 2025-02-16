@@ -11,6 +11,7 @@ import { UserDetailsComponent } from "../../common/user-details/user-details.com
 import { NotificationService } from '../../services/notification.service';
 import { EntryDataTableComponent } from "../entry-data-table/entry-data-table.component";
 import { EntryDataService } from '../../services/entry-data.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-customer',
@@ -37,8 +38,10 @@ export class CustomerComponent {
   isSearching: boolean = false;
   isEditingProfile: boolean = false;
   selectedIndex: number = 0;
+  customerUserId?: string;
 
   constructor(
+    private route: ActivatedRoute,
     private accountService: AccountService,
     private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
@@ -48,6 +51,10 @@ export class CustomerComponent {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.route.queryParams.subscribe(params => {
+      this.customerUserId = params['userId'];  // Extracts 'userId' from the URL, if it exists
+    });
+
     this.userId = this.accountService.getUserId();
     if (this.customerService.hasCustomerData()) {
       this.customerData = this.customerService.getCustomerData();
@@ -81,6 +88,17 @@ export class CustomerComponent {
     this.computedData.customerList = Object.values(this.customerData.customerList || {});
 
     // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
+
+    this.openProfileOnLoad();
+  }
+
+  openProfileOnLoad() {
+    if (this.customerUserId) {
+      this.selectedCustomer = this.customerData?.customerList?.[this.customerUserId];
+      if (this.selectedCustomer) {
+        this.selectedIndex = Object.values(this.customerData.customerList).findIndex((obj: any) => obj?.data?.userId === this.customerUserId);
+      }
+    }
   }
 
   onDeleteProfile(userId: string) {

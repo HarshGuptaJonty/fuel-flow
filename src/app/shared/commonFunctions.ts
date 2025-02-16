@@ -60,3 +60,26 @@ export function dateConverter(inputDate: string): string { // convert 'dd/MM/yyy
   const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
   return date.toLocaleDateString('en-GB', options);
 }
+
+export function getDateInDatepickerFormat() { // ddMMyyyy
+  let today = new Date();
+  let day: any = today.getDate();
+  let month: any = today.getMonth() + 1;
+  let year = today.getFullYear();
+
+  day = day < 10 ? '0' + day : day;
+  month = month < 10 ? '0' + month : month;
+  return `${day}${month}${year}`;
+}
+
+export function generateDateTimeKey(): string { // HHmmss
+  let today = new Date();
+  let hour: any = today.getHours();
+  let min: any = today.getMinutes();
+  let sec: any = today.getSeconds();
+
+  sec = sec < 10 ? '0' + sec : sec;
+  min = min < 10 ? '0' + min : min;
+  hour = hour < 10 ? '0' + hour : hour;
+  return `${hour}${min}${sec}`;
+}

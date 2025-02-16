@@ -101,7 +101,6 @@ export class DashboardComponent implements OnInit {
     } else {
       // fetch admin data from account service
       let data = this.adminDataService.getAdminData(this.accountService.getUserId());
-      // let data = await this.firebaseService.getData(`admint/${this.accountService.getUserId()}`);
       this.accountService.setUserData(data);
       this.userData = data;
     }

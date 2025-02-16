@@ -1,0 +1,70 @@
+@import '../../../../assets/styles/color.scss';
+
+.new-full-entry-container {
+    .customer-form {
+        .gap {
+            gap: 10px;
+        }
+
+        .box-input {
+            flex: 1 0 45%;
+        }
+
+        .p-relative {
+            position: relative;
+        }
+
+        .select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid gray;
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+
+            .profile {
+                padding: 7px 10px;
+
+                &:hover {
+                    background-color: $border-very-light2;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .dropdown-number {
+            background-color: $border-light;
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
+    }
+
+    .error-msg {
+        font-size: 14px;
+        color: $primary-web-red;
+    }
+
+    .save-btn {
+        font-family: "Comfortaa", serif;
+        border-radius: 5px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .custom-btn {
+        @extend .save-btn;
+
+        background-color: $border-light;
+        color: $primary-web-dark;
+
+        &.danger {
+            &:hover {
+                background-color: $primary-web-red;
+                color: white;
+            }
+        }
+    }
+}

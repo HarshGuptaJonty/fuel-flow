@@ -1,24 +1,25 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Customer } from '../../../assets/models/Customer';
-import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { AccountService } from '../../services/account.service';
-import { EntryDataService } from '../../services/entry-data.service';
-import { ConfirmationModelService } from '../../services/confirmation-model.service';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { EntryTransaction } from '../../../../assets/models/EntryTransaction';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { generateDateTimeKey, generateRandomString, getDateInDatepickerFormat } from '../../../shared/commonFunctions';
+import { Customer } from '../../../../assets/models/Customer';
+import { DeliveryPerson } from '../../../../assets/models/DeliveryPerson';
+import { AccountService } from '../../../services/account.service';
+import { ConfirmationModelService } from '../../../services/confirmation-model.service';
+import { DeliveryPersonDataService } from '../../../services/delivery-person-data.service';
+import { EntryDataService } from '../../../services/entry-data.service';
 import moment from 'moment';
-import { generateDateTimeKey, generateRandomString, getDateInDatepickerFormat } from '../../shared/commonFunctions';
-import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
-import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { CustomerDataService } from '../../../services/customer-data.service';
 
 @Component({
-  selector: 'app-new-entry',
+  selector: 'app-new-full-entry',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -32,20 +33,18 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
   providers: [
     provideNgxMask()
   ],
-  templateUrl: './new-entry.component.html',
-  styleUrl: './new-entry.component.scss'
+  templateUrl: './new-full-entry.component.html',
+  styleUrl: './new-full-entry.component.scss'
 })
-export class NewEntryComponent implements OnInit, AfterViewInit {
+export class NewFullEntryComponent implements OnInit, AfterViewInit {
 
-  @Input() customerObject?: Customer;
-  @Input() pendingCount: number = 0;
   @Input() openTransaction?: EntryTransaction;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
-  @ViewChild('dateInput') dateInput!: ElementRef;
+  @ViewChild('nameInput') nameInput!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(getDateInDatepickerFormat()),
@@ -53,31 +52,47 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
     unitsRecieved: new FormControl(''),
     rate: new FormControl(''),
     paidAmt: new FormControl(''),
+
+    customerName: new FormControl(''),
+    customerNumber: new FormControl(''),
+    customerId: new FormControl(generateRandomString()), // not user input
+
     deliveryBoyName: new FormControl(''),
     deliveryBoyNumber: new FormControl(''),
-    deliveryBoyAddress: new FormControl(''),
-    extraDetails: new FormControl(''),
     deliveryBoyUserId: new FormControl(generateRandomString()), // not user input
+
+    extraDetails: new FormControl(''),
   });
 
-  disableSave: boolean = true;
+  disableSave = false;
   isEditing: boolean = false;
   errorMessage?: string;
-  phoneNumbers: string[] = [];
+  focusedFormName: string = '';
+  transactionId: string = '';
+
+  customerPhoneNumbers: string[] = [];
+  customerList: Customer[] = [];
+  customerSearchList: Customer[] = [];
+  customerSelected: boolean = false;
+
+  deliveryPhoneNumbers: string[] = [];
   deliveryBoysList: DeliveryPerson[] = [];
   deliveryBoysSearchList: DeliveryPerson[] = [];
   deliveryBoySelected: boolean = false;
-  focusedFormName: string = '';
 
   constructor(
     private accountService: AccountService,
     private entryDataService: EntryDataService,
     private confirmationModelService: ConfirmationModelService,
-    private deliveryPersonDataService: DeliveryPersonDataService
+    private deliveryPersonDataService: DeliveryPersonDataService,
+    private customerDataService: CustomerDataService
   ) { }
 
   ngOnInit(): void {
     this.isEditing = !!this.openTransaction;
+    this.transactionId = this.openTransaction?.data.transactionId ||
+      this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
+
     if (this.isEditing) {
       this.entryForm = new FormGroup({
         date: new FormControl({ value: moment(this.openTransaction?.data.date || '', 'DD/MM/YYYY').toDate(), disabled: true }),
@@ -85,14 +100,20 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
         unitsRecieved: new FormControl(this.openTransaction?.data.recieved),
         rate: new FormControl(this.openTransaction?.data.rate),
         paidAmt: new FormControl(this.openTransaction?.data.payment),
+
+        customerName: new FormControl(this.openTransaction?.data.customer?.fullName),
+        customerNumber: new FormControl(this.openTransaction?.data.customer?.phoneNumber),
+        customerId: new FormControl(this.openTransaction?.data.customer?.userId),
+
         deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName),
         deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber),
-        deliveryBoyAddress: new FormControl(this.deliveryPersonDataService.getAddress(this.openTransaction?.data.deliveryBoy?.userId || '')),
-        extraDetails: new FormControl(this.openTransaction?.data.extraDetails),
         deliveryBoyUserId: new FormControl(this.openTransaction?.data.deliveryBoy?.userId),
+
+        extraDetails: new FormControl(this.openTransaction?.data.extraDetails),
       });
-      this.pendingCount += this.openTransaction?.data.recieved || 0;
+
       this.deliveryBoySelected = true;
+      this.customerSelected = true;
     } else {
       this.entryForm = new FormGroup({
         date: new FormControl(getDateInDatepickerFormat()),
@@ -100,34 +121,55 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
         unitsRecieved: new FormControl(''),
         rate: new FormControl(''),
         paidAmt: new FormControl(''),
+
+        customerName: new FormControl(''),
+        customerNumber: new FormControl(''),
+        customerId: new FormControl(generateRandomString()), // not user input
+
         deliveryBoyName: new FormControl(''),
         deliveryBoyNumber: new FormControl(''),
-        deliveryBoyAddress: new FormControl(''),
+        deliveryBoyUserId: new FormControl(generateRandomString()), // not user input
+
         extraDetails: new FormControl(''),
-        deliveryBoyUserId: new FormControl(generateRandomString()),
       });
+    }
+
+    if (this.customerDataService.getCustomerData()) {
+      this.customerList = Object.values(this.customerDataService.getCustomerList());
+      this.customerPhoneNumbers = this.customerList.map((user: any) => user?.data?.phoneNumber);
+      this.customerSearchList = this.customerList;
     }
 
     if (this.deliveryPersonDataService.hasDeliveryPersonData()) {
       this.deliveryBoysList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
-      this.phoneNumbers = this.deliveryBoysList.map((user: any) => user?.data?.phoneNumber);
+      this.deliveryPhoneNumbers = this.deliveryBoysList.map((user: any) => user?.data?.phoneNumber);
       this.deliveryBoysSearchList = this.deliveryBoysList;
     }
 
     this.entryForm.valueChanges.subscribe((value) => this.checkForDataValidation(value));
+
+    this.entryForm.get('customerName')?.valueChanges.subscribe((value) => this.customerDataChanged(value));
+    this.entryForm.get('customerNumber')?.valueChanges.subscribe((value) => this.customerDataChanged(value));
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
   }
 
   ngAfterViewInit(): void {
-    this.dateInput.nativeElement.focus();
+    this.nameInput.nativeElement.focus();
+  }
+
+  onSelectCustomer(customer: Customer) {
+    this.entryForm.get('customerName')?.setValue(customer.data?.fullName);
+    this.entryForm.get('customerNumber')?.setValue(customer.data?.phoneNumber);
+    this.customerSelected = true;
+    this.entryForm.get('customerId')?.setValue(customer.data?.userId);
+    this.customerSearchList = [];
   }
 
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {
     this.entryForm.get('deliveryBoyName')?.setValue(deliveryBoy.data?.fullName);
     this.entryForm.get('deliveryBoyNumber')?.setValue(deliveryBoy.data?.phoneNumber);
-    this.entryForm.get('deliveryBoyAddress')?.setValue(deliveryBoy.data?.address);
     this.deliveryBoySelected = true;
     this.entryForm.get('deliveryBoyUserId')?.setValue(deliveryBoy.data?.userId);
     this.deliveryBoysSearchList = [];
@@ -144,32 +186,35 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
 
     let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
     let createdTime = this.openTransaction?.others?.createdTime || Date.now();
-    let transactionId = this.openTransaction?.data.transactionId ||
-      this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
+
+    const customer: any = {
+      fullName: value.customerName,
+      phoneNumber: value.customerNumber,
+      userId: value.customerId,
+    };
 
     const deliveryPerson: any = {
       fullName: value.deliveryBoyName,
       phoneNumber: value.deliveryBoyNumber,
       userId: value.deliveryBoyUserId,
-    }
+    };
+
+    if (!this.customerSelected)
+      this.customerDataService.addNewCustomer(customer.userId, customer.fullName, customer.phoneNumber);
 
     if (!this.deliveryBoySelected)
-      this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
+      this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber);
 
     let data: EntryTransaction = {
       data: {
         date: this.getFormattedDate('DD/MM/YYYY'),
-        customer: {
-          fullName: this.customerObject?.data?.fullName,
-          phoneNumber: this.customerObject?.data?.phoneNumber,
-          userId: this.customerObject?.data?.userId || generateRandomString(),
-        },
+        customer: customer,
         deliveryBoy: deliveryPerson,
         sent: value.unitsSent,
         recieved: value.unitsRecieved,
         rate: value.rate,
         payment: value.paidAmt,
-        transactionId: transactionId,
+        transactionId: this.transactionId,
         extraDetails: value.extraDetails
       }, others: {
         createdBy: createdBy,
@@ -214,12 +259,21 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
       this.errorMessage = 'Please enter date of entry.';
     } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
-      this.errorMessage = 'Any of Sent, Recieved and Payment is required.';
-    } else if (parseInt(value.unitsRecieved) > (this.pendingCount + parseInt(value.unitsSent || '0'))) {
-      this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${this.pendingCount + parseInt(value.unitsSent || '0')}] units.`;
+      this.errorMessage = 'Any of Sent, Recieved or Payment is required.';
+    } else if (value.unitsRecieved > value.unitsSent) {
+      this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${value.unitsSent}] units.`;
     } else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;
       this.errorMessage = 'Rate is required if units are sent.';
+    } else if (value.customerName?.length == 0) {
+      this.disableSave = true;
+      this.errorMessage = "Please enter customer name.";
+    } else if (value.customerNumber?.length != 10) {
+      this.disableSave = true;
+      this.errorMessage = "Please enter customer's number.";
+    } else if (value.customerNumber?.length === 10 && parseInt(String(value.customerNumber).charAt(0)) < 6) {
+      this.disableSave = true;
+      this.errorMessage = 'Invalid customer number.';
     } else if (value.deliveryBoyName?.length == 0) {
       this.disableSave = true;
       this.errorMessage = "Please enter delivery boy's name.";
@@ -229,16 +283,33 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
     } else if (value.deliveryBoyNumber?.length > 0 && parseInt(String(value.deliveryBoyNumber).charAt(0)) < 6) {
       this.disableSave = true;
       this.errorMessage = 'Invalid delivery boy number.';
-    } else if (value.deliveryBoyAddress?.length > 0 && value.deliveryBoyAddress?.length < 5) {
-      this.disableSave = true;
-      this.errorMessage = 'Please enter atlest 5 character for address.';
     } else if (!this.deliveryBoySelected) {
       const numberToSearch: string = this.entryForm.get('deliveryBoyNumber')?.value;
-      if (numberToSearch?.length === 10 && this.phoneNumbers.includes(numberToSearch)) {
+      if (numberToSearch?.length === 10 && this.deliveryPhoneNumbers.includes(numberToSearch)) {
         this.disableSave = true;
         this.errorMessage = "Delivery person with same number already present. please select from dropdown list.";
       }
+    } else if (!this.customerSelected) {
+      const numberToSearch: string = this.entryForm.get('customerNumber')?.value;
+      if (numberToSearch?.length === 10 && this.customerPhoneNumbers.includes(numberToSearch)) {
+        this.disableSave = true;
+        this.errorMessage = "Customer with same number already present. please select from dropdown list.";
+      }
     }
+  }
+
+  customerDataChanged(value: any) {
+    if (this.customerSelected) {
+      this.customerSelected = false;
+      this.entryForm.get('customerId')?.setValue(generateRandomString());
+    }
+
+    if (value?.length == 0)
+      this.customerSearchList = this.customerList;
+    else
+      this.customerSearchList = this.customerList.filter((item) =>
+        Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
+      );
   }
 
   deliveryBoyDataChanged(value: any) {

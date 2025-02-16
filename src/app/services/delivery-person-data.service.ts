@@ -59,8 +59,8 @@ export class DeliveryPersonDataService {
       this.isDataChanged.next(true);
 
       this.notificationService.showNotification({
-        heading: `${newDeliveryPerson.data.fullName}'s account created.`,
-        message: 'Database updated successfully.',
+        heading: `${newDeliveryPerson.data.fullName}'s person created.`,
+        message: 'New delivery person added successfully.',
         duration: 5000,
         leftBarColor: '#3A7D44'
       });

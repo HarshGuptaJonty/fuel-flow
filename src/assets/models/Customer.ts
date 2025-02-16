@@ -1,5 +1,5 @@
 export interface Customer {
-    data?: {
+    data: {
         fullName?: string,
         phoneNumber?: string,
         address?: string,

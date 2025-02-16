@@ -1,1 +1,86 @@
-<p>inventory works!</p>
+<div class="new-full-entry" *ngIf="newEntry">
+    <div class="model-box">
+        <app-new-full-entry (onCancel)="newEntry=false; openTransaction = undefined" (onSubmit)="saveEntry($event)"
+            [openTransaction]="openTransaction" (onDelete)="deleteEntry(openTransaction)">
+        </app-new-full-entry>
+    </div>
+</div>
+
+<div class="inventory-container h-100 d-flex flex-column">
+    <div class="d-flex align-items-center flex-wrap gap-15 justify-content-between">
+        <input class="capsule search-box" type="text" placeholder="Search in inventory" (input)="onSearch($event)">
+        <div class="d-flex align-items-center flex-wrap gap-15">
+            <div class="capsule min-width-200 hover-action" [ngClass]="{'danger':pendingUnit>0}">
+                <span class="bold-text me-2">Pending Units:</span>
+                <span class="secondary-color">{{pendingUnit}}</span>
+            </div>
+            <div class="capsule min-width-200 hover-action" [ngClass]="{'danger':dueAmount>0}">
+                <span class="bold-text me-2">Due Amount:</span>
+                <span class="secondary-color">{{dueAmount | number: '1.2-2'}} Rs</span>
+            </div>
+            <div class="capsule entry-btn" (click)="newEntry=!newEntry">
+                <span class="bold-text">{{newEntry?'Cancel':'New Entry'}}</span>
+            </div>
+            <div class="capsule" (click)="refreshData()" [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'">
+                <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-100 table-div mt-4">
+        <table *ngIf="processedTableData && processedTableData.length>0" mat-table [dataSource]="dataSource"
+            class="custom-table">
+            <tr mat-header-row *matHeaderRowDef="displayedColumns()" class="custom-header-row nowrap"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns();" class="custom-row"></tr>
+
+            <ng-container *ngFor="let column of tableStructure" [matColumnDef]="column.key">
+                <th mat-header-cell *matHeaderCellDef class="custom-header-cell" [ngClass]="column.customClass">
+                    {{column.label}}</th>
+                <td mat-cell *matCellDef="let value" class="custom-mat-cell" [ngClass]="column.customClass">
+                    <ng-container
+                        *ngTemplateOutlet="getTemplate(column.dataType); context: {$implicit: value, column: column}"></ng-container>
+                </td>
+            </ng-container>
+        </table>
+        <mat-paginator *ngIf="processedTableData && processedTableData.length>10"
+            [pageSizeOptions]="[10, 20, 50, 80, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <div *ngIf="(!processedTableData || processedTableData.length === 0) && !newEntry"
+        class="flex-grow-1 d-flex justify-content-center align-items-center flex-column">
+        <img src="assets/images/banner/no-result.png" alt="">
+        <div class="m-4 text-center bold-text">
+            No entries to show!
+            <div class="secondary-color mt-1">
+                Please add new entries!
+            </div>
+        </div>
+    </div>
+
+    <ng-template #plainText let-value let-column="column">
+        <span class="nowrap">{{value?.[column.key]}}</span>
+    </ng-template>
+
+    <ng-template #amountText let-value let-column="column">
+        <span class="nowrap">{{value?.[column.key] | number: '1.2-2'}}</span>
+    </ng-template>
+
+    <ng-template #cnameText let-value let-column="column">
+        <span class="name-text nowrap"
+            (click)="openCustomerProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
+        </span>
+    </ng-template>
+
+    <ng-template #dnameText let-value let-column="column">
+        <span class="name-text nowrap"
+            (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
+        </span>
+    </ng-template>
+
+    <ng-template #actionText let-value let-column="column">
+        <div class="nowrap">
+            <span class="name-text" (click)="editEntry(value)">Edit</span> |
+            <span class="name-text" (click)="showMore(value)">More</span>
+        </div>
+    </ng-template>
+</div>

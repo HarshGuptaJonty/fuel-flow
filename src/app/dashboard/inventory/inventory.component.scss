@@ -1,0 +1,128 @@
+@import "../../../assets/styles/color.scss";
+
+.inventory-container {
+    user-select: none;
+    padding: 20px 40px 0px 40px;
+
+    .gap-15 {
+        gap: 15px;
+    }
+
+    .capsule {
+        height: 40px;
+        border-radius: 20px;
+        padding: 5px 15px;
+        border: 0px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+
+        &.min-width-200 {
+            min-width: 200px;
+        }
+
+        &.hover-action {
+            &:hover {
+                background-color: $border-very-light;
+            }
+        }
+
+        &.danger {
+            border-bottom: 3px solid $primary-web-red;
+        }
+
+        &.entry-btn {
+            &:hover {
+                background-color: $primary-mat-color;
+                cursor: pointer;
+                color: white;
+            }
+        }
+
+        &.disabled-entry-btn {
+            background-color: $border-very-light;
+            color: $border-light;
+            cursor: not-allowed;
+        }
+
+        &.search-box {
+            outline: none;
+            min-width: 250px;
+            width: 35%;
+        }
+    }
+
+
+    .custom-table {
+        .custom-header-row {
+            background-color: $border-light;
+        }
+
+        .custom-row:nth-child(even) {
+            background-color: $border-very-light;
+        }
+
+        .custom-header-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .custom-mat-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .text-right {
+            text-align: end
+        }
+
+        .witdh-limit-200 {
+            max-width: 200px;
+        }
+
+        .name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: $primary-mat-color;
+
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+    }
+
+    .table-div {
+        overflow-y: auto;
+    }
+}
+
+.new-full-entry {
+    z-index: 2;
+    font-family: "Comfortaa", serif;
+
+    width: 100vw;
+    height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    background-color: rgb(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+
+    .model-box {
+        width: 50%;
+        max-height: 95%;
+        overflow-y: auto;
+
+        background-color: white;
+        border-radius: 20px;
+        padding: 20px 30px 20px 30px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+}
