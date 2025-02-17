@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AccountService } from '../../services/account.service';
-import { FirebaseService } from '../../services/firebase.service';
-import { NotificationService } from '../../services/notification.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { UserCardComponent } from '../../common/user-card/user-card.component';
@@ -40,9 +38,7 @@ export class DeliveryPersonComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private accountService: AccountService,
-    private firebaseService: FirebaseService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private notificationService: NotificationService,
     private searchService: SearchService
   ) { }
 
@@ -61,8 +57,11 @@ export class DeliveryPersonComponent implements OnInit {
     }
 
     this.deliveryPersonDataService.isDataChanged.subscribe((isChanged) => {
-      if (isChanged)
-        this.refreshDeliveryPersonData();
+      if (isChanged) {
+        this.selectedDeliveryPerson = null;
+        this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();
+        this.computeDeliveryPersonData();
+      }
     });
 
     this.searchService.searchText$.subscribe(searchText => {
@@ -125,29 +124,8 @@ export class DeliveryPersonComponent implements OnInit {
 
   async refreshDeliveryPersonData(showNotification: boolean = false) {
     this.selectedDeliveryPerson = null;
-    const latestData = await this.firebaseService.getData('deliveryPerson/bucket'); // todo increase database efficiency
-    let data = {
-      deliveryPersonList: latestData,
-      others: {
-        lastFrereshed: Date.now()
-      }
-    }
-    this.deliveryPersonDataService.setDeliveryPersonData(data);
-    this.deliveryPersonData = data;
-
+    await this.deliveryPersonDataService.refreshData(showNotification);
+    this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();
     this.computeDeliveryPersonData();
-
-    if (Object.keys(latestData).length === 0)
-      this.notificationService.showNotification({
-        heading: 'No delivery person data!',
-        duration: 5000,
-        leftBarColor: this.notificationService.color.red
-      });
-    else if (showNotification)
-      this.notificationService.showNotification({
-        heading: 'Delivery person data refreshed.',
-        duration: 5000,
-        leftBarColor: this.notificationService.color.green
-      });
   }
 }
