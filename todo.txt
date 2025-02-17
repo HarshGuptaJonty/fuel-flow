@@ -6,9 +6,10 @@ login stayed login untill logged out manually
 make variables private
 fix auto date picker
 stabilazize
-make it responsive
+write test cases
 
 In-Progress: *****************************************
+make it responsive
 
 Done: ************************************************
 export data in excel and pdf

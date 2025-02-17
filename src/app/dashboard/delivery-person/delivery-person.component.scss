@@ -3,6 +3,7 @@
 .delivery-person-container {
     height: inherit;
     user-select: none;
+    overflow-y: auto;
 
     .list-section {
         width: 20%;
@@ -55,7 +56,14 @@
 
     .details-section {
         width: 80%;
+        min-width: 410px;
         height: calc(100vh - 70px);
         overflow-y: auto;
+    }
+
+    @media (max-width: 1440px) {
+        .list-section {
+            min-width: 300px;
+        }
     }
 }
