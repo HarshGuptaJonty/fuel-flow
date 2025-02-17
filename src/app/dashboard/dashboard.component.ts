@@ -166,8 +166,6 @@ export class DashboardComponent implements OnInit {
         } else
           this.confirmationModelService.hideModel();
       });
-    } else if (key === 'profile') {
-      this.router.navigate(['/profile']);
     } else {
       this.router.navigate(['/dashboard/' + key]);
     }
