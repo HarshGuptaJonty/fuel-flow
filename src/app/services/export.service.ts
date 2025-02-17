@@ -26,8 +26,8 @@ export class ExportService {
     const doc = new jsPDF('landscape');
     const fileName = filePrefix + this.generateFileName() + '.pdf';
 
-    const columns = Object.keys(data[0]).map(key => ({ title: key, dataKey: key }));
-    const rows = data.map(entry => Object.values(entry));
+    const columns = Object.keys(data[0]).map(key => ({ title: key, dataKey: key })); // title refer to the column names and dataKey refer to key of object
+    const rows = data.map(entry => Object.values(entry)); // object inside object cant be processed here properly
 
     (doc as any).autoTable({
       head: [columns],

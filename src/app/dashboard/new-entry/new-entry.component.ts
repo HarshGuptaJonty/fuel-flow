@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
@@ -12,10 +12,10 @@ import { EntryDataService } from '../../services/entry-data.service';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import moment from 'moment';
 import { generateDateTimeKey, generateRandomString, getDateInDatepickerFormat } from '../../shared/commonFunctions';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
+import moment from 'moment';
 
 @Component({
   selector: 'app-new-entry',
@@ -35,7 +35,7 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
   templateUrl: './new-entry.component.html',
   styleUrl: './new-entry.component.scss'
 })
-export class NewEntryComponent implements OnInit, AfterViewInit {
+export class NewEntryComponent implements OnInit {
 
   @Input() customerObject?: Customer;
   @Input() pendingCount: number = 0;
@@ -44,8 +44,6 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
-
-  @ViewChild('dateInput') dateInput!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(getDateInDatepickerFormat()),
@@ -118,10 +116,6 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
-  }
-
-  ngAfterViewInit(): void {
-    this.dateInput.nativeElement.focus();
   }
 
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {

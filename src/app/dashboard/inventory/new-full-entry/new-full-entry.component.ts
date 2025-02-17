@@ -36,7 +36,7 @@ import { CustomerDataService } from '../../../services/customer-data.service';
   templateUrl: './new-full-entry.component.html',
   styleUrl: './new-full-entry.component.scss'
 })
-export class NewFullEntryComponent implements OnInit, AfterViewInit {
+export class NewFullEntryComponent implements OnInit {
 
   @Input() openTransaction?: EntryTransaction;
 
@@ -153,10 +153,6 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
-  }
-
-  ngAfterViewInit(): void {
-    this.nameInput.nativeElement.focus();
   }
 
   @HostListener('document:click', ['$event'])
