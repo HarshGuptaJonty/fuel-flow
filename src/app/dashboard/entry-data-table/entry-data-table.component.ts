@@ -14,7 +14,7 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
 import { EntryDetailModelService } from '../../services/entry-detail-model.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
-import { ExportXlsxService } from '../../services/export-xlsx.service';
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-entry-data-table',
@@ -110,7 +110,7 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     private confirmationModelService: ConfirmationModelService,
     private entryDetailModelService: EntryDetailModelService,
     private router: Router,
-    private exportXlsxService: ExportXlsxService
+    private exportService: ExportService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -163,9 +163,9 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     }, 1000);
   }
 
-  exportInExcel() {
+  export(type: string) {
     let forExport;
-    if (this.dataSource.data.length > 10) {
+    if (this.dataSource.data.length > 5) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       const endIndex = startIndex + this.paginator.pageSize;
       const displayedRows = this.dataSource.data.slice(startIndex, endIndex);
@@ -177,8 +177,6 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     let formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
       return {
         Date: item.date,
-        'Customer Name': item.customer?.fullName,
-        // 'Customer Phone': item.customer?.phoneNumber,
         'Delivery Person Name': item.deliveryBoy?.fullName,
         // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
         'Sent Quantity': item.sent,
@@ -191,7 +189,10 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
       };
     });
 
-    this.exportXlsxService.exportToExcel(formatForExport, `${this.customerObject?.data.fullName}_`);
+    if (type === 'excel')
+      this.exportService.exportToExcel(formatForExport, `${this.customerObject?.data.fullName}_`);
+    else if (type === 'pdf')
+      this.exportService.exportToPdf(formatForExport, `${this.customerObject?.data.fullName}_`);
   }
 
   async refreshEntryData() {

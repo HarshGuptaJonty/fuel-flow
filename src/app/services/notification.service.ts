@@ -68,7 +68,7 @@ export class NotificationService {
     });
   }
 
-  xlsxExporting(fileName: string) {
+  exporting(fileName: string) {
     this.showNotification({
       heading: 'Exporting...',
       message: fileName,

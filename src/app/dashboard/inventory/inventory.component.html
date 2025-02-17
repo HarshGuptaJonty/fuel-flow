@@ -8,7 +8,8 @@
 
 <div class="inventory-container h-100 d-flex flex-column">
     <div class="d-flex align-items-center flex-wrap gap-15 justify-content-between">
-        <input class="capsule search-box" type="text" placeholder="Search in inventory" (input)="onSearch($event)">
+        <input class="capsule search-box flex-grow-1" type="text" placeholder="Search in inventory"
+            (input)="onSearch($event)">
         <div class="d-flex align-items-center flex-wrap gap-15">
             <div class="capsule entry-btn" (click)="newEntry=!newEntry">
                 <span class="bold-text">{{newEntry?'Cancel':'New Entry'}}</span>
@@ -16,8 +17,11 @@
             <div class="capsule" (click)="refreshData()" [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'">
                 <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
             </div>
-            <div class="capsule excel-btn" (click)="exportInExcel()">
+            <div class="capsule export-btn" (click)="export('excel')">
                 <span class="bold-text">Export Excel</span>
+            </div>
+            <div class="capsule export-btn" (click)="export('pdf')">
+                <span class="bold-text">Export PDF</span>
             </div>
             <div class="capsule hover-action" [ngClass]="{'danger':dueAmount>0}">
                 <span class="bold-text me-2">Due Amount:</span>

@@ -1,6 +1,6 @@
 export interface InventoryExportEntry {
     Date: string;
-    'Customer Name': string;
+    'Customer Name'?: string;
     // 'Customer Phone': string;
     'Delivery Person Name': string;
     // 'Delivery Person Phone'?: string;

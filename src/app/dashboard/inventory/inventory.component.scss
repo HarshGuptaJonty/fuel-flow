@@ -40,7 +40,7 @@
             }
         }
 
-        &.excel-btn {
+        &.export-btn {
             &:hover {
                 background-color: $excel-color;
                 cursor: pointer;
@@ -56,8 +56,6 @@
 
         &.search-box {
             outline: none;
-            min-width: 250px;
-            width: 35%;
         }
     }
 
