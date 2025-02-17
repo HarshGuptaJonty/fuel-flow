@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { EntryTransaction } from '../../../../assets/models/EntryTransaction';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -36,7 +36,7 @@ import { CustomerDataService } from '../../../services/customer-data.service';
   templateUrl: './new-full-entry.component.html',
   styleUrl: './new-full-entry.component.scss'
 })
-export class NewFullEntryComponent implements OnInit, AfterViewInit {
+export class NewFullEntryComponent implements OnInit {
 
   @Input() openTransaction?: EntryTransaction;
 
@@ -45,6 +45,7 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
   @ViewChild('nameInput') nameInput!: ElementRef;
+  @ViewChild('formSection') formSection!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(getDateInDatepickerFormat()),
@@ -154,8 +155,10 @@ export class NewFullEntryComponent implements OnInit, AfterViewInit {
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
   }
 
-  ngAfterViewInit(): void {
-    this.nameInput.nativeElement.focus();
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (this.formSection && !this.formSection.nativeElement.contains(event.target))
+      this.focusedFormName = '';
   }
 
   onSelectCustomer(customer: Customer) {

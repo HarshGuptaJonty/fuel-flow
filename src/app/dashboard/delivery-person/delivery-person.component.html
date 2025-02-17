@@ -34,9 +34,9 @@
     </div>
 
     <div *ngIf="addNewDeliveryBoy" class="details-section">
-        <app-new-account (onCancel)="addNewDeliveryBoy=false" (onSubmit)="refreshDeliveryPersonData()"
-            userType="deliveryPerson" [editProfileId]="selectedDeliveryPerson?.data?.userId"
-            [isEditingProfile]="isEditingProfile" (onDelete)="onDeleteProfile(selectedDeliveryPerson?.data?.userId)">
+        <app-new-account (onCancel)="addNewDeliveryBoy=false" userType="deliveryPerson"
+            [editProfileId]="selectedDeliveryPerson?.data?.userId" [isEditingProfile]="isEditingProfile"
+            (onDelete)="onDeleteProfile(selectedDeliveryPerson?.data?.userId)">
         </app-new-account>
     </div>
     <div *ngIf="selectedDeliveryPerson && !addNewDeliveryBoy" class="details-section d-flex flex-column">
