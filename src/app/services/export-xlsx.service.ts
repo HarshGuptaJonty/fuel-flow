@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { InventoryExportEntry } from '../../assets/models/ExportEntry';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExportXlsxService {
 
-  constructor() { }
+  constructor(
+    private notificationService: NotificationService
+  ) { }
 
-  exportToExcel(data: InventoryExportEntry[]): void {
-    const fileName = 'Inventory_' + this.generateFileName();
+  exportToExcel(data: InventoryExportEntry[], filePrefix: string = 'Inventory_'): void {
+    const fileName = filePrefix + this.generateFileName();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
     const workbook: XLSX.WorkBook = { Sheets: { 'Inventory': worksheet }, SheetNames: ['Inventory'] };
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    this.notificationService.xlsxExporting(fileName);
   }
 
   private generateFileName(): string {

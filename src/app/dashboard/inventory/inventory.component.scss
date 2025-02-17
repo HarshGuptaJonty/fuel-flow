@@ -42,7 +42,7 @@
 
         &.excel-btn {
             &:hover {
-                background-color: #1D6F42;
+                background-color: $excel-color;
                 cursor: pointer;
                 color: white;
             }

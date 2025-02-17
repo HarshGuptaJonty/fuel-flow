@@ -31,6 +31,16 @@
             }
         }
 
+        .excel-btn {
+            padding: 0px 20px;
+
+            &:hover {
+                background-color: $excel-color;
+                cursor: pointer;
+                color: white;
+            }
+        }
+
         .disabled-entry-btn {
             padding: 0px 20px;
             background-color: $border-very-light;

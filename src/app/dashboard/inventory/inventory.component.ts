@@ -154,9 +154,9 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       return {
         Date: item.date,
         'Customer Name': item.customer?.fullName,
-        'Customer Phone': item.customer?.phoneNumber,
+        // 'Customer Phone': item.customer?.phoneNumber,
         'Delivery Person Name': item.deliveryBoy?.fullName,
-        'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
+        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
         'Sent Quantity': item.sent,
         'Received Quantity': item.recieved,
         'Pending Units': item.pending,
@@ -168,7 +168,6 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     });
 
     this.exportXlsxService.exportToExcel(formatForExport);
-    this.notificationService.xlsxExportSuccessful();
   }
 
   refreshData() {

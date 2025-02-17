@@ -68,9 +68,10 @@ export class NotificationService {
     });
   }
 
-  xlsxExportSuccessful() {
+  xlsxExporting(fileName: string) {
     this.showNotification({
-      heading: 'Transactions Exported.',
+      heading: 'Exporting...',
+      message: fileName,
       duration: 5000,
       leftBarColor: this.color.green
     });
