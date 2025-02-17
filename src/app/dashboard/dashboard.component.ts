@@ -117,7 +117,7 @@ export class DashboardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
-    this.visibleInMenuItem('setting', this.screenWidth <= 870 ? 'side' : 'top');
+    this.visibleInMenuItem('setting', this.screenWidth <= 1150 ? 'side' : 'top');
     this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
     this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
     this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');

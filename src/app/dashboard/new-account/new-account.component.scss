@@ -1,7 +1,7 @@
 @import '../../../assets/styles/color.scss';
 
 .new-user-container {
-    padding: 30px 0px 40px 40px;
+    padding: 30px 40px 40px 40px;
 
     .heading {
         font-size: 28px;
@@ -26,6 +26,10 @@
             font-size: 14px;
             color: $primary-web-red;
         }
+    }
+
+    .button-section {
+        max-width: 800px;
 
         .custom-btn {
             min-width: 150px;
@@ -42,5 +46,23 @@
                 color: white;
             }
         }
+
+        @media (max-width: 850px) {
+            .custom-btn {
+                min-width: 100px;
+            }
+        }
+    }
+
+    .nowrap {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 1440px) {
+    .new-user-container {
+        padding: 30px 40px 40px 40px;
     }
 }
