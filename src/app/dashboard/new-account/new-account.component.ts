@@ -13,6 +13,7 @@ import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
+import { Customer } from '../../../assets/models/Customer';
 
 @Component({
   selector: 'app-new-account',
@@ -140,20 +141,28 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (this.userType !== 'customer')
+    if (this.userType === 'customer') {
+      this.createNewCustomerAccount(newAccount);
+    } else {
       newAccount.data.shippingAddress = null;
+      this.firebaseService.setData(`${this.userType}/bucket/${newAccount.data?.userId}`, newAccount).then((result) => {
+        this.onSubmit.emit();
+        this.onCancel.emit();
 
-    this.firebaseService.setData(`${this.userType}/bucket/${newAccount.data?.userId}`, newAccount).then((result) => {
-      this.onSubmit.emit();
+        this.notificationService.showNotification({
+          heading: this.getAccountMessage(),
+          message: 'Details saved successfully.',
+          duration: 5000,
+          leftBarColor: '#3A7D44'
+        });
+      }).catch((error) => this.notificationService.somethingWentWrong('105'));
+    }
+  }
+
+  async createNewCustomerAccount(newCustomer: Customer) {
+    if (await this.customerService.addNewCustomerFull(newCustomer)) {
       this.onCancel.emit();
-
-      this.notificationService.showNotification({
-        heading: this.getAccountMessage(),
-        message: 'Details saved successfully.',
-        duration: 5000,
-        leftBarColor: '#3A7D44'
-      });
-    }).catch((error) => this.notificationService.somethingWentWrong('105'));
+    }
   }
 
   getAccountMessage(): string {
