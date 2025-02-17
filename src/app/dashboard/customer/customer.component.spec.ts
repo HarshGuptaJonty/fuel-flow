@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 import { CustomerComponent } from './customer.component';
 
 describe('CustomerComponent', () => {
@@ -8,7 +9,13 @@ describe('CustomerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomerComponent]
+      imports: [
+        RouterTestingModule
+      ],
+      declarations: [CustomerComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: {} }
+      ]
     })
     .compileComponents();
 

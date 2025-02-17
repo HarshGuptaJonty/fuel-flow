@@ -16,7 +16,7 @@ export class authGuard {
       return true;
     } else {
       this.router.navigate(['/auth']);
-      return false;// this will disable the route in route.ts file if user is not logged in and uppe rline will navigate to /auth
+      return false;// this will disable the route in route.ts file if user is not logged in and application will navigate to /auth
     }
   }
 }
