@@ -108,7 +108,7 @@
 
     @media (max-width: 1024px) {
         .top-navbar {
-            .logo-text {
+            .logo-text-normal {
                 display: none;
             }
         }
@@ -122,12 +122,20 @@
         }
     }
 
+    @media (max-width: 760px) {
+        .top-navbar {
+            .logo-text-inventory {
+                display: none;
+            }
+        }
+    }
+
     @media (max-width: 425px) {
         .top-navbar {
             padding-left: 15px;
-            padding-right: 15px;
+            padding-right: 25px;
 
-            .logo-text,
+            .logo-text-normal,
             .logo-icon {
                 display: none;
             }
@@ -143,7 +151,9 @@
         }
 
         .nav-item-bar {
-            display: none !important;
+            .nav-item {
+                margin-left: 20px;
+            }
         }
     }
 }
