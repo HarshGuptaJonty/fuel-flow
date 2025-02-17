@@ -4,13 +4,14 @@ resend otp feature
 login stayed login untill logged out manually
 make variables private
 fix auto date picker
-stabilazize
 write test cases
 
 In-Progress: *****************************************
-count the number of backend database calls and what data are comming, can we reuse
+
 
 Done: ************************************************
+stabilazize
+count the number of backend database calls and what data are comming, can we reuse
 make it responsive
 export data in excel and pdf
 notification hiding things

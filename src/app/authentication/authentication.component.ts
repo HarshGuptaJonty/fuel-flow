@@ -103,7 +103,7 @@ export class AuthenticationComponent implements OnInit {
     }
   }
 
-  senOTP() {
+  checkCaptchaAndDendOTP() {
     const auth = getAuth();
 
     this.disableButtons = true;
@@ -252,7 +252,7 @@ export class AuthenticationComponent implements OnInit {
     if (this.isOtpSent)
       this.verifyOtp();
     else
-      this.senOTP();
+      this.checkCaptchaAndDendOTP();
   }
 
   updateOtpSentStatus(newStatus: boolean) {
