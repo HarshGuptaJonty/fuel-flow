@@ -1,21 +1,27 @@
 <div class="data-table-container h-100">
 
     <div class="detail-section d-flex">
-        <div class="data-card d-flex flex-column me-3" [ngClass]="{'danger':pendingUnit>0}">
+        <div class="data-card d-flex flex-column" [ngClass]="{'danger':pendingUnit>0}">
             <span class="bold-text">Pending Units</span>
             <span class="secondary-color mt-1">{{pendingUnit}} Units</span>
         </div>
-        <div class="data-card d-flex flex-column me-3" [ngClass]="{'danger':dueAmount>0}">
+        <div class="data-card d-flex flex-column" [ngClass]="{'danger':dueAmount>0}">
             <span class="bold-text">Due Amount</span>
             <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
         </div>
-        <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn me-3"
+        <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn"
             (click)="newEntry=!newEntry">
             <span class="bold-text">New Entry</span>
         </div>
         <div class="data-card d-flex flex-column justify-content-center"
             [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'" (click)="refreshData()">
             <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
+        </div>
+        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('excel')">
+            <span class="bold-text">Export Excel</span>
+        </div>
+        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('pdf')">
+            <span class="bold-text">Export PDF</span>
         </div>
     </div>
 

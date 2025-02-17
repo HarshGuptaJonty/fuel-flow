@@ -16,10 +16,19 @@
 
     .model-box {
         width: 25%;
+        min-width: 400px;
         background-color: white;
         border-radius: 20px;
         padding: 20px 30px 20px 30px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+
+        @media (max-width: 500px) {
+            min-width: calc(100vw - 100px);
+        }
+
+        @media (max-width: 340px) {
+            min-width: 290px;
+        }
     }
 
     .button-box {

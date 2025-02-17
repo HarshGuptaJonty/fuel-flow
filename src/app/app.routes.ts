@@ -18,11 +18,6 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
     },
-    {
-        path: 'profile',
-        canActivate: [authGuard],
-        component: ProfileComponent
-    },
     { path: '', redirectTo: 'auth', pathMatch: 'full' },
     { path: '**', redirectTo: 'auth' }
 ];

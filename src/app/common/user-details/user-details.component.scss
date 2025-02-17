@@ -37,4 +37,40 @@
             }
         }
     }
+
+    .noWrap {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media (max-width: 810px) {
+        .created-text {
+            display: none;
+        }
+
+        .label-span {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: 1440px) {
+    .user-details-container {
+        padding: 20px 25px 20px 25px;
+
+        .action-section {
+            top: 50px;
+            right: 25px;
+        }
+    }
+}
+
+@media (max-width: 810px) {
+    .user-details-container {
+        .action-section {
+            top: 20px;
+            right: 25px;
+        }
+    }
 }

@@ -12,6 +12,11 @@
 
         .fire-icon {
             margin-left: -10px;
+            height: 40px;
+        }
+
+        .logo-text {
+            height: 40px;
         }
 
         .action-section {
@@ -181,6 +186,11 @@
         .left-section {
             padding-left: 30px;
             padding-right: 30px;
+
+            .logo-text {
+                height: auto;
+                max-width: 250px;
+            }
 
             .change-number {
                 display: block;

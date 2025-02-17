@@ -3,7 +3,7 @@
     <div class="model-box">
         <div class="heading bold-text">{{confirmation.heading}}</div>
         <div>{{confirmation.message}}</div>
-        <div class="justify-content-between d-flex button-box">
+        <div class="justify-content-between d-flex button-box flex-wrap gap-3">
             <button mat-flat-button (click)="onleftButtonClick()" class="custom-btn"
                 [ngClass]="confirmation.leftButton.customClass" [disabled]="confirmation.leftButton.disabled"
                 *ngIf="confirmation.leftButton">

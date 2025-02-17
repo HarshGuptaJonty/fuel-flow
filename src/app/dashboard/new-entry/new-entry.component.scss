@@ -70,24 +70,41 @@
         }
     }
 
+    .nowrap {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .error-msg {
         font-size: 14px;
         color: $primary-web-red;
     }
 
-    .custom-btn {
-        font-family: "Comfortaa", serif;
-        border-radius: 5px;
-        min-width: 200px;
-    }
+    .button-section {
+        flex-wrap: wrap;
+        gap: 10px;
 
-    .cancel-btn {
-        background-color: #e3e3e4;
-        color: $primary-web-dark;
+        .custom-btn {
+            font-family: "Comfortaa", serif;
+            border-radius: 5px;
+            min-width: 200px;
+        }
 
-        &:hover {
-            background-color: $primary-web-red;
-            color: white;
+        .cancel-btn {
+            background-color: #e3e3e4;
+            color: $primary-web-dark;
+
+            &:hover {
+                background-color: $primary-web-red;
+                color: white;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .custom-btn {
+                min-width: 150px;
+            }
         }
     }
 }

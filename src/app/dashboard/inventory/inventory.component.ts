@@ -13,7 +13,7 @@ import { dateConverter } from '../../shared/commonFunctions';
 import { NewFullEntryComponent } from "./new-full-entry/new-full-entry.component";
 import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
-import { ExportXlsxService } from '../../services/export-xlsx.service';
+import { ExportService } from '../../services/export.service';
 import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 
 @Component({
@@ -116,7 +116,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     private router: Router,
     private customerDataService: CustomerDataService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private exportXlsxService: ExportXlsxService
+    private exportService: ExportService
   ) { }
 
   ngOnInit(): void {
@@ -139,7 +139,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  exportInExcel() {
+  export(type: string) {
     let forExport;
     if (this.dataSource.data.length > 10) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
@@ -154,9 +154,9 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       return {
         Date: item.date,
         'Customer Name': item.customer?.fullName,
-        'Customer Phone': item.customer?.phoneNumber,
+        // 'Customer Phone': item.customer?.phoneNumber,
         'Delivery Person Name': item.deliveryBoy?.fullName,
-        'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
+        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
         'Sent Quantity': item.sent,
         'Received Quantity': item.recieved,
         'Pending Units': item.pending,
@@ -167,8 +167,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       };
     });
 
-    this.exportXlsxService.exportToExcel(formatForExport);
-    this.notificationService.xlsxExportSuccessful();
+    if (type === 'excel')
+      this.exportService.exportToExcel(formatForExport);
+    else if (type === 'pdf')
+      this.exportService.exportToPdf(formatForExport);
   }
 
   refreshData() {

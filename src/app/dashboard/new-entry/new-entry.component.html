@@ -42,7 +42,7 @@
                 </mat-form-field>
             </div>
         </div>
-        <div class="mt-3 bold-text">Please provide the delivery boy details.</div>
+        <div class="mt-3 bold-text nowrap">Please provide the delivery boy details.</div>
         <div class="gap d-flex w-100 flex-wrap">
             <div class="pt-2 box-input-half p-relative">
                 <mat-form-field appearance="outline" class="w-100">
@@ -91,7 +91,7 @@
         </div>
     </form>
     <div class="error-msg mt-2 bold-text" *ngIf="errorMessage">{{errorMessage}}</div>
-    <div class="mt-3 justify-content-between d-flex customer-form">
+    <div class="mt-3 justify-content-between d-flex button-section">
         <button mat-flat-button (click)="onSaveClick()" class="custom-btn" [disabled]="disableSave">Save Entry
             Details</button>
         <div>
