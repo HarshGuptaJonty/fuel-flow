@@ -14,7 +14,7 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { environment } from '../../../environments/environment';
 import { Database } from '@angular/fire/database';
 
-fdescribe('CustomerComponent', () => {
+describe('CustomerComponent', () => {
   let component: CustomerComponent;
   let fixture: ComponentFixture<CustomerComponent>;
   let mockAccountService: jasmine.SpyObj<AccountService>;

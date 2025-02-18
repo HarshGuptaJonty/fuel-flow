@@ -59,7 +59,7 @@ export class DeliveryPersonComponent implements OnInit {
       this.refreshDeliveryPersonData();
     }
 
-    this.deliveryPersonDataService.isDataChanged.subscribe((isChanged) => {
+    this.deliveryPersonDataService.isDataChanged?.subscribe((isChanged) => {
       if (isChanged) {
         this.selectedDeliveryPerson = undefined;
         this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();
@@ -69,13 +69,13 @@ export class DeliveryPersonComponent implements OnInit {
 
     this.searchService.searchText$.subscribe(searchText => {
       if (searchText && searchText.length > 0) {
-        this.computedData.customerList = Object.values(this.deliveryPersonData.deliveryPersonList).filter((item: any) =>
+        this.computedData.deliveryPersonList = Object.values(this.deliveryPersonData.deliveryPersonList).filter((item: any) =>
           Object.values(item.data).toString().toLowerCase().includes(searchText.toLowerCase())
         );
         this.isSearching = true;
         this.selectedDeliveryPerson = undefined;
       } else {
-        this.computedData.customerList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
+        this.computedData.deliveryPersonList = Object.values(this.deliveryPersonData.deliveryPersonList);
         this.isSearching = false;
       }
     });
