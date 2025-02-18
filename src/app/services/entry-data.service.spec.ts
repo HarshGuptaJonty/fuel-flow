@@ -18,7 +18,7 @@ describe('EntryDataService', () => {
       providers: [
         AngularFireAuth,
         EntryDataService,
-        Database
+        { provide: Database, useValue: {} }
       ]
     });
     service = TestBed.inject(EntryDataService);

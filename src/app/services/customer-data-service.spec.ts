@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { environment } from '../../environments/environment';
 import { CustomerDataService } from './customer-data.service';
+import { Database } from '@angular/fire/database';
 
 describe('CustomerDataService', () => {
   let service: CustomerDataService;
@@ -16,6 +17,7 @@ describe('CustomerDataService', () => {
       ],
       providers: [
         AngularFireAuth,
+        { provide: Database, useValue: {} },
         CustomerDataService
       ]
     });

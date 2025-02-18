@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { environment } from '../../environments/environment';
 import { DeliveryPersonDataService } from './delivery-person-data.service';
 import { CustomerDataService } from './customer-data.service';
+import { Database } from '@angular/fire/database';
 
 describe('DeliveryPersonDataService', () => {
   let service: DeliveryPersonDataService;
@@ -16,7 +17,8 @@ describe('DeliveryPersonDataService', () => {
       providers: [
         DeliveryPersonDataService,
         CustomerDataService,
-        AngularFireAuth
+        AngularFireAuth,
+        { provide: Database, useValue: {} }
       ]
     });
     service = TestBed.inject(DeliveryPersonDataService);

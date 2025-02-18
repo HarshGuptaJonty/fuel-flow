@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { environment } from '../../environments/environment';
 import { AdminDataService } from './admin-data.service';
+import { Database } from '@angular/fire/database';
 
 describe('AdminDataService', () => {
   let service: AdminDataService;
@@ -16,7 +17,8 @@ describe('AdminDataService', () => {
       ],
       providers: [
         AngularFireAuth,
-        AdminDataService
+        AdminDataService,
+        { provide: Database, useValue: {} }
       ]
     });
     service = TestBed.inject(AdminDataService);

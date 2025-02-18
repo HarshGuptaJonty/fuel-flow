@@ -18,7 +18,7 @@ describe('FirebaseService', () => {
       providers: [
         AngularFireAuth,
         FirebaseService,
-        Database
+        { provide: Database, useValue: {} },
       ]
     });
     service = TestBed.inject(FirebaseService);

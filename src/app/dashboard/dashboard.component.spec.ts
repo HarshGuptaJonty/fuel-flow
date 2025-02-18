@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard.component';
 import { environment } from '../../environments/environment';
 import { AccountService } from '../services/account.service';
 import { Database } from '@angular/fire/database';
+import { ActivatedRoute } from '@angular/router';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -21,7 +22,8 @@ describe('DashboardComponent', () => {
       providers: [
         AngularFireAuth,
         AccountService,
-        Database
+        { provide: Database, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
       ]
     })
     .compileComponents();

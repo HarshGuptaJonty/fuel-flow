@@ -5,6 +5,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { environment } from '../../environments/environment';
 import { EntryDetailModelService } from './entry-detail-model.service';
 import { AdminDataService } from './admin-data.service';
+import { Database } from '@angular/fire/database';
 
 describe('EntryDetailModelService', () => {
   let service: EntryDetailModelService;
@@ -18,7 +19,8 @@ describe('EntryDetailModelService', () => {
       providers: [
         AngularFireAuth,
         EntryDetailModelService,
-        AdminDataService
+        AdminDataService,
+        { provide: Database, useValue: {} }
       ]
     });
     service = TestBed.inject(EntryDetailModelService);

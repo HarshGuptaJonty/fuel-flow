@@ -90,7 +90,7 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.nameInput.nativeElement.focus();
+    // this.nameInput.nativeElement.focus();
   }
 
   setupForm() {

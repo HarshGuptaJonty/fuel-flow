@@ -6,19 +6,21 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { EntryDetailModelService } from './services/entry-detail-model.service';
 import { AdminDataService } from './services/admin-data.service';
+import { Database } from '@angular/fire/database';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         AngularFireModule.initializeApp(environment.firebaseConfig),
-        AngularFireDatabaseModule
+        AngularFireDatabaseModule,
+        AppComponent
       ],
-      declarations: [AppComponent],
       providers: [
         AngularFireAuth,
         EntryDetailModelService,
-        AdminDataService
+        AdminDataService,
+        { provide: Database, useValue: {} }
       ]
     }).compileComponents();
   });

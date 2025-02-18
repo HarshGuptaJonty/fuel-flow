@@ -181,10 +181,10 @@ export class NewEntryComponent implements OnInit {
       message: 'You are trying to delete an entry, once done, cannot be retrived, are you sure?',
       leftButton: {
         text: 'Confirm',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_RED,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
       }, rightButton: {
         text: 'Cancel',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
       }
     }).subscribe(result => {
       if (result === 'left') {
@@ -203,7 +203,7 @@ export class NewEntryComponent implements OnInit {
     this.disableSave = false;
     this.errorMessage = undefined;
 
-    if (this.getFormattedDate('DD/MM/YYYY').length == 0) {
+    if (this.getFormattedDate('DD/MM/YYYY', value.date).length == 0) {
       this.disableSave = true;
       this.errorMessage = 'Please enter date of entry.';
     } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
@@ -249,8 +249,7 @@ export class NewEntryComponent implements OnInit {
       );
   }
 
-  getFormattedDate(format: string): string {
-    const date = this.entryForm.get('date')?.value;
+  getFormattedDate(format: string, date = this.entryForm.get('date')?.value): string {
     const formatted = date ? moment(date).format(format) : '';
     if (formatted === 'Invalid date')
       return '';
