@@ -24,12 +24,14 @@ fdescribe('CustomerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockAccountService = jasmine.createSpyObj('AccountService', ['getUserId']);
-    mockCustomerDataService = jasmine.createSpyObj('CustomerDataService', ['hasCustomerData', 'getCustomerData', 'refreshData', 'deleteCustoner']);
-    mockSearchService = jasmine.createSpyObj('SearchService', ['searchText$']);
+    mockCustomerDataService = jasmine.createSpyObj('CustomerDataService', ['hasCustomerData', 'getCustomerData', 'refreshData', 'deleteCustoner', 'getCustomerList']);
+    mockSearchService = jasmine.createSpyObj('SearchService', ['searchText$'], {
+      searchText$: of('')
+    });
     mockActivatedRoute = {
       queryParams: of({ userId: 'testUserId' })
     };
-  
+
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -98,6 +100,18 @@ fdescribe('CustomerComponent', () => {
       },
       others: {
         lastFrereshed: Date.now()
+      }
+    });
+    mockCustomerDataService.getCustomerList.and.returnValue({
+      testUserId: {
+        data: {
+          fullName: 'testData',
+          phoneNumber: '1234567890',
+          userId: 'testUserId'
+        },
+        others: {
+          createdTime: Date.now()
+        }
       }
     });
 
