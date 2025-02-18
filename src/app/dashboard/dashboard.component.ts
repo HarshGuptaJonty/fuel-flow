@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { CustomerDataService } from '../services/customer-data.service';
@@ -20,6 +20,8 @@ import { DeliveryPersonDataService } from '../services/delivery-person-data.serv
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+
+  @ViewChild('profileIcon') profileIcon!: ElementRef;
 
   menuItemList = [
     {
@@ -61,10 +63,10 @@ export class DashboardComponent implements OnInit {
     }
   ]
 
-  activeNavMenu: string = 'customers';
+  activeNavMenu = 'customers';
   profilePicLink: string | undefined = ''; //https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJxo2NFiYcR35GzCk5T3nxA7rGlSsXvIfJwg&s
-  showMenuCardInfo: boolean = false;
-  screenWidth: number = 0;
+  showMenuCardInfo = false;
+  screenWidth = 0;
   userData?: any;
   adminProfileData?: any;
   private routeSub: Subscription = new Subscription();
@@ -78,7 +80,8 @@ export class DashboardComponent implements OnInit {
     private notificationService: NotificationService,
     private confirmationModelService: ConfirmationModelService,
     private adminDataService: AdminDataService,
-    private deliveryPersonDataService: DeliveryPersonDataService
+    private deliveryPersonDataService: DeliveryPersonDataService,
+    private eRef: ElementRef
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -89,6 +92,7 @@ export class DashboardComponent implements OnInit {
         if (child) {
           child.url.subscribe((url) => {
             this.activeNavMenu = url[0]?.path;
+            this.onResize();
           });
         }
       })
@@ -100,7 +104,7 @@ export class DashboardComponent implements OnInit {
       this.userData = this.accountService.getUserData();
     } else {
       // fetch admin data from account service
-      let data = this.adminDataService.getAdminData(this.accountService.getUserId());
+      const data = this.adminDataService.getAdminData(this.accountService.getUserId());
       this.accountService.setUserData(data);
       this.userData = data;
     }
@@ -117,10 +121,23 @@ export class DashboardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
-    this.visibleInMenuItem('setting', this.screenWidth <= 870 ? 'side' : 'top');
-    this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
-    this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
-    this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
+    if (this.activeNavMenu === 'inventory') {
+      this.visibleInMenuItem('setting', this.screenWidth <= 850 ? 'side' : 'top');
+      this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
+      this.visibleInMenuItem('inventory', 'top');
+      this.visibleInMenuItem('customers', 'top');
+    } else {
+      this.visibleInMenuItem('setting', this.screenWidth <= 1150 ? 'side' : 'top');
+      this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
+      this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
+      this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (this.profileIcon && !this.profileIcon.nativeElement.contains(event.target))
+      this.showMenuCardInfo = false;
   }
 
   computeUserData() {
@@ -149,8 +166,6 @@ export class DashboardComponent implements OnInit {
         } else
           this.confirmationModelService.hideModel();
       });
-    } else if (key === 'profile') {
-      this.router.navigate(['/profile']);
     } else {
       this.router.navigate(['/dashboard/' + key]);
     }

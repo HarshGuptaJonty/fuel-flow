@@ -14,7 +14,7 @@ export class FirebaseService {
     private notificationService: NotificationService
   ) { }
 
-  async getData(path: string, showNotification: boolean = false) {
+  async getData(path: string, showNotification = false) {
     const dbRef = ref(this.db);
     try {
       const snapshot = await get(child(dbRef, path));

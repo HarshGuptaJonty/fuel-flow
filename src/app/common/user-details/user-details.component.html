@@ -1,25 +1,25 @@
 <div class="user-details-container">
     <div class="d-flex align-items-top justify-content-between">
         <span class="large-text bold-text">{{data.fullName}}</span>
-        <span class="live-since medium-text secondary-color">Created {{computedData.createdOn}}</span>
+        <span class="live-since medium-text secondary-color created-text">Created {{computedData.createdOn}}</span>
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.phoneNumber">
         <span class="me-3 label-span small-text">Phone Number</span>
         <span class="bold-text letter-spacing-1 me-2">{{getNumberInformat(data?.phoneNumber)}}</span>
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy number"
-            (click)="copyData(data.phoneNumber)">
+            (click)="copyData(data.phoneNumber)" tabindex="0">
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.address">
         <span class="me-3 label-span small-text">Address</span>
-        <span class="bold-text letter-spacing-1 me-2">{{data.address}}</span>
+        <span class="bold-text letter-spacing-1 me-2 noWrap">{{data.address}}</span>
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy address"
-            (click)="copyData(data.address)">
+            (click)="copyData(data.address)" tabindex="0">
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.shippingAddress">
-        <span class="me-3 label-span small-text">Shipping Address</span>
-        <span class="bold-text letter-spacing-1 me-2">{{data.shippingAddress}}</span>
+        <span class="me-3 label-span small-text noWrap">Shipping Address</span>
+        <span class="bold-text letter-spacing-1 me-2 noWrap">{{data.shippingAddress}}</span>
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy shipping address"
-            (click)="copyData(data.shippingAddress)">
+            (click)="copyData(data.shippingAddress)" tabindex="0">
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.extraNote">
         <span class="me-3 label-span small-text">Extra Note</span>

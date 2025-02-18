@@ -16,6 +16,7 @@
 
     .model-box {
         width: 50%;
+        min-width: 540px;
         max-height: 95%;
         overflow-y: auto;
 
@@ -23,6 +24,10 @@
         border-radius: 20px;
         padding: 20px 30px 20px 30px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+
+        .row-card {
+            align-items: center;
+        }
     }
 
     .heading {
@@ -48,7 +53,7 @@
 
         .label {
             font-weight: bold;
-            min-width: 30%;
+            min-width: 186px;
         }
 
         .data {
@@ -61,6 +66,35 @@
 
         .top-border {
             border-top: 1px dotted $secondary-color;
+        }
+    }
+
+    .nowrap {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media (max-width: 600px) {
+        .model-box {
+            min-width: calc(100vw - 80px);
+            padding: 20px 20px 20px 20px;
+
+            .row-card {
+                align-items: unset;
+                flex-direction: column;
+            }
+        }
+
+        .details-section .data {
+            margin-left: 0px;
+            text-align: end;
+        }
+    }
+
+    @media (max-width: 510px) {
+        .model-box {
+            min-width: calc(100vw - 20px);
         }
     }
 }

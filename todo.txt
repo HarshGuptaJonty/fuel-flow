@@ -1,16 +1,22 @@
 Todo: ************************************************
 
-count the number of backend database calls and what data are comming, can we reuse
 resend otp feature
 login stayed login untill logged out manually
 make variables private
-fix auto date picker
-stabilazize
-make it responsive
+write test cases
+notification comeing frol right
+fix lint issues
 
 In-Progress: *****************************************
 
 Done: ************************************************
+table in delivery boy
+fix auto date picker
+dont show export if there is no data in inventory and customer
+no data is not center in inventory
+stabilazize
+count the number of backend database calls and what data are comming, can we reuse
+make it responsive
 export data in excel and pdf
 notification hiding things
 search in inventory

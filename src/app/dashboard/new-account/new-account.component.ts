@@ -8,11 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { AccountService } from '../../services/account.service';
-import { FirebaseService } from '../../services/firebase.service';
-import { NotificationService } from '../../services/notification.service';
 import { generateRandomString } from '../../shared/commonFunctions';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
+import { Customer } from '../../../assets/models/Customer';
+import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
 @Component({
   selector: 'app-new-account',
@@ -34,21 +34,20 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
 export class NewAccountComponent implements OnInit, AfterViewInit {
 
   @Output() onCancel = new EventEmitter<any>();
-  @Output() onSubmit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
 
-  @Input() editProfileId: string = '';
-  @Input() userType: string = '';
-  @Input() isEditingProfile: boolean = false;
+  @Input() editProfileId = '';
+  @Input() userType = '';
+  @Input() isEditingProfile = false;
 
   @ViewChild('nameInput') nameInput!: ElementRef;
 
   userId?: string;
   accountId?: string;
   accountList?: any;
-  disableSave: boolean = false;
+  disableSave = false;
   phoneNumbers: string[] = [];
-  isCustomerType: boolean = false;
+  isCustomerType = false;
 
   accountForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
@@ -63,9 +62,7 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   constructor(
     private afAuth: AngularFireAuth,
     private accountService: AccountService,
-    private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
-    private notificationService: NotificationService,
     private deliveryPersonDataService: DeliveryPersonDataService,
     private confirmationModelService: ConfirmationModelService
   ) { }
@@ -140,20 +137,24 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (this.userType !== 'customer')
+    if (this.userType === 'customer') {
+      this.createNewCustomerAccount(newAccount);
+    } else {
       newAccount.data.shippingAddress = null;
+      this.createNewDeliveryPersonAcconut(newAccount);
+    }
+  }
 
-    this.firebaseService.setData(`${this.userType}/bucket/${newAccount.data?.userId}`, newAccount).then((result) => {
-      this.onSubmit.emit();
+  async createNewCustomerAccount(newCustomer: Customer) {
+    if (await this.customerService.addNewCustomerFull(newCustomer)) {
       this.onCancel.emit();
+    }
+  }
 
-      this.notificationService.showNotification({
-        heading: this.getAccountMessage(),
-        message: 'Details saved successfully.',
-        duration: 5000,
-        leftBarColor: '#3A7D44'
-      });
-    }).catch((error) => this.notificationService.somethingWentWrong('105'));
+  async createNewDeliveryPersonAcconut(newDeliveryPerson: DeliveryPerson) {
+    if (await this.deliveryPersonDataService.addNewDeliveryPersonFull(newDeliveryPerson)) {
+      this.onCancel.emit();
+    }
   }
 
   getAccountMessage(): string {

@@ -5,11 +5,12 @@
                 <div class="line1">{{computedData?.customerList?.length}} {{isSearching? 'Results found':'Customers'}}
                 </div>
                 <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
-                    <span class="refresh" (click)="refreshCustomerData(true)"
+                    <span class="refresh" (click)="refreshCustomerData(true)" tabindex="0"
                         title="Refresh customer list">refresh</span>.
                 </div>
             </div>
-            <div class="add-customer d-flex justify-content-center align-items-center" (click)="onAddNewCustomer()">
+            <div class="add-customer d-flex justify-content-center align-items-center" (click)="onAddNewCustomer()"
+                tabindex="0">
                 <span *ngIf="!addNewCustomer" title="Add Customer">+</span>
                 <span *ngIf="addNewCustomer" title="Cancel">x</span>
             </div>
@@ -21,7 +22,7 @@
             </app-user-card>
         </div>
 
-        <div *ngIf="computedData.customerList?.length == 0"
+        <div *ngIf="computedData.customerList?.length === 0"
             class="customer-list d-flex justify-content-center align-items-center flex-column">
             <img src="assets/images/banner/no-result.png" alt="">
             <div *ngIf="isSearching" class="m-4 text-center bold-text">No search results found!</div>
@@ -31,7 +32,7 @@
     </div>
 
     <div *ngIf="addNewCustomer" class="details-section">
-        <app-new-account (onCancel)="addNewCustomer=false" (onSubmit)="refreshCustomerData()" userType="customer"
+        <app-new-account (onCancel)="addNewCustomer=false" userType="customer"
             [editProfileId]="selectedCustomer?.data?.userId" [isEditingProfile]="isEditingProfile"
             (onDelete)="onDeleteProfile(selectedCustomer?.data?.userId)">
         </app-new-account>

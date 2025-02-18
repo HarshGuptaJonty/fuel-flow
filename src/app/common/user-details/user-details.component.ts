@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { CommonModule } from '@angular/common';
 import { copyData, getNumberInformat, timeAgoWithMsg } from '../../shared/commonFunctions';
@@ -32,7 +32,7 @@ export class UserDetailsComponent implements OnChanges {
     createdOn: 0
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.data = this.userObject?.data;
     this.others = this.userObject?.others;
 

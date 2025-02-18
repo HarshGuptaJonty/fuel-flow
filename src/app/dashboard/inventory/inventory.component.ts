@@ -95,14 +95,14 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   ]
 
-  pendingUnit: number = 0;
-  dueAmount: number = 0;
-  newEntry: boolean = false;
-  isRefreshing: boolean = false;
-  isSearching: boolean = false;
+  pendingUnit = 0;
+  dueAmount = 0;
+  newEntry = false;
+  isRefreshing = false;
+  isSearching = false;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
-  entryDataAvaliable: boolean = false;
+  entryDataAvaliable = false;
   openTransaction?: EntryTransaction;
 
   dataSource = new MatTableDataSource<any>([]);
@@ -150,7 +150,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       forExport = this.dataSource.data;
     }
 
-    let formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
+    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
       return {
         Date: item.date,
         'Customer Name': item.customer?.fullName,
@@ -309,7 +309,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   showMore(object: any) {
-    let expandView = this.enterDataService.getTransactionList()?.[object?.transactionId];
+    const expandView = this.enterDataService.getTransactionList()?.[object?.transactionId];
     this.entryDetailModelService.showModel(expandView);
   }
 

@@ -1,10 +1,10 @@
 export interface DeliveryPerson {
-    data?: {
+    data: {
         fullName?: string,
         phoneNumber?: string,
         address?: string,
         extraNote?: string,
-        userId?: string
+        userId: string
     },
     others?: {
         createdBy?: string,

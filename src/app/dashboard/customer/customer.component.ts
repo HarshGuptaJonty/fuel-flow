@@ -1,16 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../services/account.service';
-import { FirebaseService } from '../../services/firebase.service';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
 import { NewAccountComponent } from "../new-account/new-account.component";
 import { UserCardComponent } from "../../common/user-card/user-card.component";
 import { SearchService } from '../../services/search.service';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
-import { NotificationService } from '../../services/notification.service';
 import { EntryDataTableComponent } from "../entry-data-table/entry-data-table.component";
-import { EntryDataService } from '../../services/entry-data.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -25,29 +22,26 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
 })
-export class CustomerComponent {
+export class CustomerComponent implements OnInit {
 
   customerData?: any;
   computedData: any = {
     customerList: [],
     lastUpdatedStr: ''
   }
-  userId: string = '';
+  userId = '';
   selectedCustomer?: any;
-  addNewCustomer: boolean = false;
-  isSearching: boolean = false;
-  isEditingProfile: boolean = false;
-  selectedIndex: number = 0;
+  addNewCustomer = false;
+  isSearching = false;
+  isEditingProfile = false;
+  selectedIndex = 0;
   customerUserId?: string;
 
   constructor(
     private route: ActivatedRoute,
     private accountService: AccountService,
-    private firebaseService: FirebaseService,
     private customerService: CustomerDataService,
     private searchService: SearchService,
-    private notificationService: NotificationService,
-    private entryDataService: EntryDataService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -63,6 +57,14 @@ export class CustomerComponent {
     } else {
       this.refreshCustomerData();
     }
+
+    this.customerService.isDataChanged.subscribe(flag => {
+      if (flag) {
+        this.selectedCustomer = null;
+        this.customerData = this.customerService.getCustomerData();
+        this.computeCustomerData();
+      }
+    });
 
     this.searchService.searchText$.subscribe(searchText => {
       if (searchText && searchText.length > 0) {
@@ -87,8 +89,6 @@ export class CustomerComponent {
     this.computedData.lastUpdatedStr = timeAgoWithMsg(this.customerData.others.lastFrereshed);
     this.computedData.customerList = Object.values(this.customerData.customerList || {});
 
-    // this.selectedCustomer = this.computedData.customerList[0]; // TODO: remove this line after developing customer-details page
-
     this.openProfileOnLoad();
   }
 
@@ -102,35 +102,7 @@ export class CustomerComponent {
   }
 
   onDeleteProfile(userId: string) {
-    if (this.entryDataService.customerHasData(userId)) {
-      this.notificationService.showNotification({
-        heading: 'Process denied.',
-        message: 'Customer with entries cannot be deleted, please delete the entries first!',
-        duration: 7000,
-        leftBarColor: this.notificationService.color.yellow
-      });
-      return;
-    }
-    this.firebaseService.setData(`customer/bucket/${userId}`, null)
-      .then(() => {
-        let objects = this.customerService.getCustomerList();
-        delete objects[userId];
-        this.customerService.setCustomerData({
-          customerList: objects,
-          others: {
-            lastFrereshed: Date.now()
-          }
-        });
-
-        this.notificationService.showNotification({
-          heading: 'Customer profile deleted successfully.',
-          duration: 5000,
-          leftBarColor: this.notificationService.color.green
-        });
-        this.refreshCustomerData();
-      }).catch((error) => {
-        this.notificationService.somethingWentWrong('107');
-      });
+    this.customerService.deleteCustoner(userId);
   }
 
   customerSelected(object: any, index: number) {
@@ -152,32 +124,10 @@ export class CustomerComponent {
       this.selectedCustomer = null;
   }
 
-  async refreshCustomerData(showNotification: boolean = false) {
+  async refreshCustomerData(showNotification = false) {
     this.selectedCustomer = null;
-    const latestData = await this.firebaseService.getData('customer/bucket'); // todo increase database efficiency
-    let data = {
-      customerList: latestData,
-      others: {
-        lastFrereshed: Date.now()
-      }
-    }
-    this.customerService.setCustomerData(data);
-    this.customerData = data;
-
+    await this.customerService.refreshData(showNotification);
+    this.customerData = this.customerService.getCustomerData();
     this.computeCustomerData();
-
-    if (Object.keys(latestData).length === 0)
-      this.notificationService.showNotification({
-        heading: 'No customer data!',
-        message: 'Please add a customer.',
-        duration: 5000,
-        leftBarColor: this.notificationService.color.red
-      });
-    else if (showNotification)
-      this.notificationService.showNotification({
-        heading: 'Customer data refreshed.',
-        duration: 5000,
-        leftBarColor: this.notificationService.color.green
-      });
   }
 }

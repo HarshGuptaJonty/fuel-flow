@@ -5,6 +5,7 @@ import { LOCAL_STORAGE_KEYS } from '../shared/constants';
 import { FirebaseService } from './firebase.service';
 import { NotificationService } from './notification.service';
 import { AccountService } from './account.service';
+import { DeliveryPerson } from '../../assets/models/DeliveryPerson';
 
 @Injectable({
   providedIn: 'root'
@@ -32,23 +33,9 @@ export class DeliveryPersonDataService {
     sessionStorage.setItem(LOCAL_STORAGE_KEYS.DELIVERY_PERSON_DATA, JSON.stringify(data));
   }
 
-  addNewDeliveryPerson(newUserId: string, fullName: string, phoneNumber: string, address?: string) {
-    const newDeliveryPerson = {
-      data: {
-        fullName: fullName,
-        phoneNumber: phoneNumber,
-        address: address || '',
-        extraNote: '',
-        userId: newUserId
-      },
-      others: {
-        createdBy: this.accountService.getUserId(),
-        createdTime: Date.now()
-      }
-    };
-
-    this.firebaseService.setData(`deliveryPerson/bucket/${newDeliveryPerson.data.userId}`, newDeliveryPerson).then((result) => {
-      let objects = this.getDeliveryPersonList();
+  async addNewDeliveryPersonFull(newDeliveryPerson: DeliveryPerson): Promise<boolean> {
+    return this.firebaseService.setData(`deliveryPerson/bucket/${newDeliveryPerson.data.userId}`, newDeliveryPerson).then(() => {
+      const objects = this.getDeliveryPersonList();
       objects[newDeliveryPerson.data.userId] = newDeliveryPerson;
       this.setDeliveryPersonData({
         deliveryPersonList: objects,
@@ -64,16 +51,38 @@ export class DeliveryPersonDataService {
         duration: 5000,
         leftBarColor: '#3A7D44'
       });
-    }).catch((error) => {
+
+      return true;
+    }).catch(() => {
       this.isDataChanged.next(false);
       this.notificationService.somethingWentWrong('106');
+
+      return false;
     });
+  }
+
+  addNewDeliveryPerson(newUserId: string, fullName: string, phoneNumber: string, address?: string) {
+    const newDeliveryPerson = {
+      data: {
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        address: address || '',
+        extraNote: '',
+        userId: newUserId
+      },
+      others: {
+        createdBy: this.accountService.getUserId(),
+        createdTime: Date.now()
+      }
+    };
+
+    this.addNewDeliveryPersonFull(newDeliveryPerson);
   }
 
   deleteDeliveryPerson(userId: string) {
     this.firebaseService.setData(`deliveryPerson/bucket/${userId}`, null)
       .then(() => {
-        let objects = this.getDeliveryPersonList();
+        const objects = this.getDeliveryPersonList();
         delete objects[userId];
         this.setDeliveryPersonData({
           deliveryPersonList: objects,
@@ -88,8 +97,32 @@ export class DeliveryPersonDataService {
           duration: 5000,
           leftBarColor: this.notificationService.color.green
         });
-      }).catch((error) => {
+      }).catch(() => {
         this.notificationService.somethingWentWrong('108');
+      });
+  }
+
+  async refreshData(showNotification = false) {
+    const latestData = await this.firebaseService.getData('deliveryPerson/bucket'); // todo increase database efficiency
+    const data = {
+      deliveryPersonList: latestData,
+      others: {
+        lastFrereshed: Date.now()
+      }
+    }
+    this.setDeliveryPersonData(data);
+
+    if (Object.keys(latestData).length === 0)
+      this.notificationService.showNotification({
+        heading: 'No delivery person data!',
+        duration: 5000,
+        leftBarColor: this.notificationService.color.red
+      });
+    else if (showNotification)
+      this.notificationService.showNotification({
+        heading: 'Delivery person data refreshed.',
+        duration: 5000,
+        leftBarColor: this.notificationService.color.green
       });
   }
 

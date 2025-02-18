@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
@@ -12,10 +12,10 @@ import { EntryDataService } from '../../services/entry-data.service';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import moment from 'moment';
 import { generateDateTimeKey, generateRandomString, getDateInDatepickerFormat } from '../../shared/commonFunctions';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
+import moment from 'moment';
 
 @Component({
   selector: 'app-new-entry',
@@ -35,20 +35,18 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
   templateUrl: './new-entry.component.html',
   styleUrl: './new-entry.component.scss'
 })
-export class NewEntryComponent implements OnInit, AfterViewInit {
+export class NewEntryComponent implements OnInit {
 
   @Input() customerObject?: Customer;
-  @Input() pendingCount: number = 0;
+  @Input() pendingCount = 0;
   @Input() openTransaction?: EntryTransaction;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
-  @ViewChild('dateInput') dateInput!: ElementRef;
-
   entryForm: FormGroup = new FormGroup({
-    date: new FormControl(getDateInDatepickerFormat()),
+    date: new FormControl(''),
     unitsSent: new FormControl(''),
     unitsRecieved: new FormControl(''),
     rate: new FormControl(''),
@@ -60,14 +58,14 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
     deliveryBoyUserId: new FormControl(generateRandomString()), // not user input
   });
 
-  disableSave: boolean = true;
-  isEditing: boolean = false;
+  disableSave = true;
+  isEditing = false;
   errorMessage?: string;
   phoneNumbers: string[] = [];
   deliveryBoysList: DeliveryPerson[] = [];
   deliveryBoysSearchList: DeliveryPerson[] = [];
-  deliveryBoySelected: boolean = false;
-  focusedFormName: string = '';
+  deliveryBoySelected = false;
+  focusedFormName = '';
 
   constructor(
     private accountService: AccountService,
@@ -95,7 +93,7 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
       this.deliveryBoySelected = true;
     } else {
       this.entryForm = new FormGroup({
-        date: new FormControl(getDateInDatepickerFormat()),
+        date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
         unitsSent: new FormControl(''),
         unitsRecieved: new FormControl(''),
         rate: new FormControl(''),
@@ -120,10 +118,6 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
   }
 
-  ngAfterViewInit(): void {
-    this.dateInput.nativeElement.focus();
-  }
-
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {
     this.entryForm.get('deliveryBoyName')?.setValue(deliveryBoy.data?.fullName);
     this.entryForm.get('deliveryBoyNumber')?.setValue(deliveryBoy.data?.phoneNumber);
@@ -142,9 +136,9 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
         this.checkForDataValidation(value);
     });
 
-    let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
-    let createdTime = this.openTransaction?.others?.createdTime || Date.now();
-    let transactionId = this.openTransaction?.data.transactionId ||
+    const createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
+    const createdTime = this.openTransaction?.others?.createdTime || Date.now();
+    const transactionId = this.openTransaction?.data.transactionId ||
       this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
 
     const deliveryPerson: any = {
@@ -156,7 +150,7 @@ export class NewEntryComponent implements OnInit, AfterViewInit {
     if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
 
-    let data: EntryTransaction = {
+    const data: EntryTransaction = {
       data: {
         date: this.getFormattedDate('DD/MM/YYYY'),
         customer: {

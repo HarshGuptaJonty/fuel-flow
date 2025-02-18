@@ -5,6 +5,7 @@ import { CustomerComponent } from "./customer/customer.component";
 import { InventoryComponent } from "./inventory/inventory.component";
 import { SettingComponent } from "./setting/setting.component";
 import { DeliveryPersonComponent } from "./delivery-person/delivery-person.component";
+import { ProfileComponent } from "../profile/profile.component";
 
 const routes: Routes = [
     {
@@ -15,6 +16,7 @@ const routes: Routes = [
             { path: 'inventory', component: InventoryComponent },
             { path: 'setting', component: SettingComponent },
             { path: 'delivery', component: DeliveryPersonComponent },
+            { path: 'profile', component: ProfileComponent },
             { path: '', redirectTo: 'customers', pathMatch: 'full' }
         ]
     }
