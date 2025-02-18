@@ -18,7 +18,7 @@ import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { environment } from '../../../environments/environment';
 
-fdescribe('EntryDataTableComponent', () => {
+describe('EntryDataTableComponent', () => {
   let component: EntryDataTableComponent;
   let fixture: ComponentFixture<EntryDataTableComponent>;
   let mockEntryDataService: jasmine.SpyObj<EntryDataService>;
