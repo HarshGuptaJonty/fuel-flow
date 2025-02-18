@@ -3,13 +3,17 @@ Todo: ************************************************
 resend otp feature
 login stayed login untill logged out manually
 make variables private
-fix auto date picker
 write test cases
+notification comeing frol right
+table in delivery boy
+fix lint issues
 
 In-Progress: *****************************************
 
-
 Done: ************************************************
+fix auto date picker
+dont show export if there is no data in inventory and customer
+no data is not center in inventory
 stabilazize
 count the number of backend database calls and what data are comming, can we reuse
 make it responsive

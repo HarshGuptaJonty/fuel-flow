@@ -48,7 +48,7 @@ export class NewFullEntryComponent implements OnInit {
   @ViewChild('formSection') formSection!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
-    date: new FormControl(getDateInDatepickerFormat()),
+    date: new FormControl(''),
     unitsSent: new FormControl(''),
     unitsRecieved: new FormControl(''),
     rate: new FormControl(''),
@@ -116,7 +116,7 @@ export class NewFullEntryComponent implements OnInit {
       this.customerSelected = true;
     } else {
       this.entryForm = new FormGroup({
-        date: new FormControl(getDateInDatepickerFormat()),
+        date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
         unitsSent: new FormControl(''),
         unitsRecieved: new FormControl(''),
         rate: new FormControl(''),

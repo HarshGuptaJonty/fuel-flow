@@ -53,9 +53,9 @@
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyName'">
                     <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
-                        <span class="bold-text me-2">{{obj.data?.fullName}}</span>
+                        <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
-                            class="dropdown-number">{{formatNumber(obj.data?.phoneNumber)}}</span>
+                            class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
                     </div>
                 </div>
             </div>
@@ -68,16 +68,19 @@
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyNumber'">
                     <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
-                        <span class="bold-text me-2">{{obj.data?.fullName}}</span>
+                        <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
-                            class="dropdown-number">{{formatNumber(obj.data?.phoneNumber)}}</span>
+                            class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
                     </div>
                 </div>
             </div>
         </div>
+        <div *ngIf="!deliveryBoySelected && this.entryForm.get('deliveryBoyName')?.value"
+            class="small-text error-msg bold-text mt-1">New
+            delivery person ({{this.entryForm.get('deliveryBoyName')?.value}}) will be created!</div>
         <div class="pt-2 mt-1">
             <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Address</mat-label>
+                <mat-label>Delivery person address</mat-label>
                 <input matInput placeholder="ABC Lane, XYZ Road 132002" autocomplete="off"
                     formControlName="deliveryBoyAddress" (focus)="onfocus('deliveryBoyAddress')">
             </mat-form-field>

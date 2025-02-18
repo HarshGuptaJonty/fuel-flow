@@ -17,10 +17,12 @@
             [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'" (click)="refreshData()">
             <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('excel')">
+        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('excel')"
+            *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export Excel</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('pdf')">
+        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('pdf')"
+            *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export PDF</span>
         </div>
     </div>

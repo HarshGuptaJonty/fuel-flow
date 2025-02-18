@@ -46,7 +46,7 @@ export class NewEntryComponent implements OnInit {
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
   entryForm: FormGroup = new FormGroup({
-    date: new FormControl(getDateInDatepickerFormat()),
+    date: new FormControl(''),
     unitsSent: new FormControl(''),
     unitsRecieved: new FormControl(''),
     rate: new FormControl(''),
@@ -93,7 +93,7 @@ export class NewEntryComponent implements OnInit {
       this.deliveryBoySelected = true;
     } else {
       this.entryForm = new FormGroup({
-        date: new FormControl(getDateInDatepickerFormat()),
+        date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
         unitsSent: new FormControl(''),
         unitsRecieved: new FormControl(''),
         rate: new FormControl(''),
