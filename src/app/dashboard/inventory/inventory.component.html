@@ -12,17 +12,18 @@
             <input class="capsule search-box flex-grow-1" type="text" placeholder="Search in inventory"
                 (input)="onSearch($event)">
             <div class="d-flex align-items-center flex-wrap gap-15">
-                <div class="capsule entry-btn" (click)="newEntry=!newEntry">
+                <div class="capsule entry-btn" (click)="newEntry=!newEntry" tabindex="0">
                     <span class="bold-text">{{newEntry?'Cancel':'New Entry'}}</span>
                 </div>
-                <div class="capsule" (click)="refreshData()" [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'">
+                <div class="capsule" (click)="refreshData()" tabindex="0"
+                    [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'">
                     <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
                 </div>
-                <div class="capsule export-btn" (click)="export('excel')"
+                <div class="capsule export-btn" (click)="export('excel')" tabindex="0"
                     *ngIf="dataSource.data && dataSource.data.length>0">
                     <span class="bold-text">Export Excel</span>
                 </div>
-                <div class="capsule export-btn" (click)="export('pdf')"
+                <div class="capsule export-btn" (click)="export('pdf')" tabindex="0"
                     *ngIf="dataSource.data && dataSource.data.length>0">
                     <span class="bold-text">Export PDF</span>
                 </div>
@@ -76,21 +77,21 @@
         </ng-template>
 
         <ng-template #cnameText let-value let-column="column">
-            <span class="name-text nowrap"
+            <span class="name-text nowrap" tabindex="0"
                 (click)="openCustomerProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
             </span>
         </ng-template>
 
         <ng-template #dnameText let-value let-column="column">
-            <span class="name-text nowrap"
+            <span class="name-text nowrap" tabindex="0"
                 (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
             </span>
         </ng-template>
 
         <ng-template #actionText let-value let-column="column">
             <div class="nowrap">
-                <span class="name-text" (click)="editEntry(value)">Edit</span> |
-                <span class="name-text" (click)="showMore(value)">More</span>
+                <span class="name-text" (click)="editEntry(value)" tabindex="0">Edit</span> |
+                <span class="name-text" (click)="showMore(value)" tabindex="0">More</span>
             </div>
         </ng-template>
     </div>

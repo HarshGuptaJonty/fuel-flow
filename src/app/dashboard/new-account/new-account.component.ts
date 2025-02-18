@@ -36,18 +36,18 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
 
-  @Input() editProfileId: string = '';
-  @Input() userType: string = '';
-  @Input() isEditingProfile: boolean = false;
+  @Input() editProfileId = '';
+  @Input() userType = '';
+  @Input() isEditingProfile = false;
 
   @ViewChild('nameInput') nameInput!: ElementRef;
 
   userId?: string;
   accountId?: string;
   accountList?: any;
-  disableSave: boolean = false;
+  disableSave = false;
   phoneNumbers: string[] = [];
-  isCustomerType: boolean = false;
+  isCustomerType = false;
 
   accountForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),

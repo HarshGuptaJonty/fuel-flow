@@ -38,7 +38,7 @@ import moment from 'moment';
 export class NewEntryComponent implements OnInit {
 
   @Input() customerObject?: Customer;
-  @Input() pendingCount: number = 0;
+  @Input() pendingCount = 0;
   @Input() openTransaction?: EntryTransaction;
 
   @Output() onCancel = new EventEmitter<any>();
@@ -58,14 +58,14 @@ export class NewEntryComponent implements OnInit {
     deliveryBoyUserId: new FormControl(generateRandomString()), // not user input
   });
 
-  disableSave: boolean = true;
-  isEditing: boolean = false;
+  disableSave = true;
+  isEditing = false;
   errorMessage?: string;
   phoneNumbers: string[] = [];
   deliveryBoysList: DeliveryPerson[] = [];
   deliveryBoysSearchList: DeliveryPerson[] = [];
-  deliveryBoySelected: boolean = false;
-  focusedFormName: string = '';
+  deliveryBoySelected = false;
+  focusedFormName = '';
 
   constructor(
     private accountService: AccountService,
@@ -136,9 +136,9 @@ export class NewEntryComponent implements OnInit {
         this.checkForDataValidation(value);
     });
 
-    let createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
-    let createdTime = this.openTransaction?.others?.createdTime || Date.now();
-    let transactionId = this.openTransaction?.data.transactionId ||
+    const createdBy = this.openTransaction?.others?.createdBy || this.accountService.getUserId();
+    const createdTime = this.openTransaction?.others?.createdTime || Date.now();
+    const transactionId = this.openTransaction?.data.transactionId ||
       this.getFormattedDate('YYYYMMDD') + '_' + generateDateTimeKey() + '_' + generateRandomString(5);
 
     const deliveryPerson: any = {
@@ -150,7 +150,7 @@ export class NewEntryComponent implements OnInit {
     if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
 
-    let data: EntryTransaction = {
+    const data: EntryTransaction = {
       data: {
         date: this.getFormattedDate('DD/MM/YYYY'),
         customer: {

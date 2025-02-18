@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, Renderer2 } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
 import { CommonModule } from '@angular/common';
 
@@ -17,7 +17,7 @@ export class NotificationComponent implements AfterViewInit {
     private renderer: Renderer2
   ) { }
 
-  currentPosition: string = 'right';
+  currentPosition = 'right';
 
   ngAfterViewInit(): void {
     const notificationContainer = document.querySelector('.notification-container');

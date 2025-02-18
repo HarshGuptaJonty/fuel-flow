@@ -34,8 +34,8 @@ export class DeliveryPersonDataService {
   }
 
   async addNewDeliveryPersonFull(newDeliveryPerson: DeliveryPerson): Promise<boolean> {
-    return this.firebaseService.setData(`deliveryPerson/bucket/${newDeliveryPerson.data.userId}`, newDeliveryPerson).then((result) => {
-      let objects = this.getDeliveryPersonList();
+    return this.firebaseService.setData(`deliveryPerson/bucket/${newDeliveryPerson.data.userId}`, newDeliveryPerson).then(() => {
+      const objects = this.getDeliveryPersonList();
       objects[newDeliveryPerson.data.userId] = newDeliveryPerson;
       this.setDeliveryPersonData({
         deliveryPersonList: objects,
@@ -53,7 +53,7 @@ export class DeliveryPersonDataService {
       });
 
       return true;
-    }).catch((error) => {
+    }).catch(() => {
       this.isDataChanged.next(false);
       this.notificationService.somethingWentWrong('106');
 
@@ -82,7 +82,7 @@ export class DeliveryPersonDataService {
   deleteDeliveryPerson(userId: string) {
     this.firebaseService.setData(`deliveryPerson/bucket/${userId}`, null)
       .then(() => {
-        let objects = this.getDeliveryPersonList();
+        const objects = this.getDeliveryPersonList();
         delete objects[userId];
         this.setDeliveryPersonData({
           deliveryPersonList: objects,
@@ -97,14 +97,14 @@ export class DeliveryPersonDataService {
           duration: 5000,
           leftBarColor: this.notificationService.color.green
         });
-      }).catch((error) => {
+      }).catch(() => {
         this.notificationService.somethingWentWrong('108');
       });
   }
 
-  async refreshData(showNotification: boolean = false) {
+  async refreshData(showNotification = false) {
     const latestData = await this.firebaseService.getData('deliveryPerson/bucket'); // todo increase database efficiency
-    let data = {
+    const data = {
       deliveryPersonList: latestData,
       others: {
         lastFrereshed: Date.now()

@@ -63,10 +63,10 @@ export class DashboardComponent implements OnInit {
     }
   ]
 
-  activeNavMenu: string = 'customers';
+  activeNavMenu = 'customers';
   profilePicLink: string | undefined = ''; //https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJxo2NFiYcR35GzCk5T3nxA7rGlSsXvIfJwg&s
-  showMenuCardInfo: boolean = false;
-  screenWidth: number = 0;
+  showMenuCardInfo = false;
+  screenWidth = 0;
   userData?: any;
   adminProfileData?: any;
   private routeSub: Subscription = new Subscription();
@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit {
       this.userData = this.accountService.getUserData();
     } else {
       // fetch admin data from account service
-      let data = this.adminDataService.getAdminData(this.accountService.getUserId());
+      const data = this.adminDataService.getAdminData(this.accountService.getUserId());
       this.accountService.setUserData(data);
       this.userData = data;
     }

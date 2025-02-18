@@ -10,18 +10,18 @@
             <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
         </div>
         <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn"
-            (click)="newEntry=!newEntry">
+            (click)="newEntry=!newEntry" tabindex="0">
             <span class="bold-text">New Entry</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center"
+        <div class="data-card d-flex flex-column justify-content-center" tabindex="0"
             [ngClass]="isRefreshing?'disabled-entry-btn':'entry-btn'" (click)="refreshData()">
             <span class="bold-text">{{isRefreshing?'Refreshing...':'Refresh'}}</span>
         </div>
         <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('excel')"
-            *ngIf="processedTableData && processedTableData.length>0">
+            tabindex="0" *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export Excel</span>
         </div>
-        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('pdf')"
+        <div class="data-card d-flex flex-column justify-content-center export-btn" (click)="export('pdf')" tabindex="0"
             *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export PDF</span>
         </div>
@@ -74,14 +74,15 @@
     </ng-template>
 
     <ng-template #nameText let-value let-column="column">
-        <span class="name-text nowrap" (click)="openProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
+        <span class="name-text nowrap" (click)="openProfile(value?.[column.key])" tabindex="0">
+            {{value?.[column.key]?.fullName}}
         </span>
     </ng-template>
 
     <ng-template #actionText let-value let-column="column">
         <div class="nowrap">
-            <span class="name-text" (click)="editEntry(value)" *ngIf="isCustomer">Edit | </span>
-            <span class="name-text" (click)="showMore(value)">More</span>
+            <span class="name-text" (click)="editEntry(value)" tabindex="0" *ngIf="isCustomer">Edit | </span>
+            <span class="name-text" (click)="showMore(value)" tabindex="0">More</span>
         </div>
     </ng-template>
 </div>

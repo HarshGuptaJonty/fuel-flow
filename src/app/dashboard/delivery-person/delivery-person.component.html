@@ -6,11 +6,11 @@
                     {{isSearching? 'Results found':'Delivery Persons'}}
                 </div>
                 <div class="line2">Updated <span>{{computedData?.lastUpdatedStr}} </span>
-                    <span class="refresh" (click)="refreshDeliveryPersonData(true)"
+                    <span class="refresh" (click)="refreshDeliveryPersonData(true)" tabindex="0"
                         title="Refresh delivery person list">refresh</span>.
                 </div>
             </div>
-            <div class="add-delivery-boy d-flex justify-content-center align-items-center"
+            <div class="add-delivery-boy d-flex justify-content-center align-items-center" tabindex="0"
                 (click)="onAddNewDeliveryBoy()">
                 <span *ngIf="!addNewDeliveryBoy" title="Add Customer">+</span>
                 <span *ngIf="addNewDeliveryBoy" title="Cancel">x</span>
@@ -23,7 +23,7 @@
             </app-user-card>
         </div>
 
-        <div *ngIf="computedData.deliveryPersonList?.length == 0"
+        <div *ngIf="computedData.deliveryPersonList?.length === 0"
             class="delivery-person-list d-flex justify-content-center align-items-center flex-column">
             <img src="assets/images/banner/no-result.png" alt="">
             <div *ngIf="isSearching" class="m-4 text-center bold-text">No search results found!</div>

@@ -18,7 +18,7 @@ export class UserCardComponent implements OnInit {
   ) { }
 
   @Input() userObject: any;
-  @Input() selected: boolean = false;
+  @Input() selected = false;
 
   data: any;
 

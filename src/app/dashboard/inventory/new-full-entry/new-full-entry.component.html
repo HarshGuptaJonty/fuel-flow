@@ -15,7 +15,8 @@
                 </mat-form-field>
                 <div class="select-dropdown"
                     *ngIf="customerSearchList.length > 0 && focusedFormName === 'customerName'">
-                    <div class="profile" *ngFor="let obj of customerSearchList" (click)="onSelectCustomer(obj)">
+                    <div class="profile" *ngFor="let obj of customerSearchList" (click)="onSelectCustomer(obj)"
+                        tabindex="0">
                         <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
                             class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
@@ -30,7 +31,8 @@
                 </mat-form-field>
                 <div class="select-dropdown"
                     *ngIf="customerSearchList.length > 0 && focusedFormName === 'customerNumber'">
-                    <div class="profile" *ngFor="let obj of customerSearchList" (click)="onSelectCustomer(obj)">
+                    <div class="profile" *ngFor="let obj of customerSearchList" (click)="onSelectCustomer(obj)"
+                        tabindex="0">
                         <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
                             class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
@@ -51,7 +53,8 @@
                 </mat-form-field>
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyName'">
-                    <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
+                    <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)"
+                        tabindex="0">
                         <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
                             class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
@@ -66,7 +69,8 @@
                 </mat-form-field>
                 <div class="select-dropdown"
                     *ngIf="deliveryBoysSearchList.length > 0 && focusedFormName === 'deliveryBoyNumber'">
-                    <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)">
+                    <div class="profile" *ngFor="let obj of deliveryBoysSearchList" (click)="onSelectDeliveryBoy(obj)"
+                        tabindex="0">
                         <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
                             class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>

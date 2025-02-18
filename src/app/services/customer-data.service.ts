@@ -36,8 +36,8 @@ export class CustomerDataService {
   }
 
   async addNewCustomerFull(newCustomer: Customer): Promise<boolean> {
-    return this.firebaseService.setData(`customer/bucket/${newCustomer.data.userId}`, newCustomer).then((result) => {
-      let objects = this.getCustomerList();
+    return this.firebaseService.setData(`customer/bucket/${newCustomer.data.userId}`, newCustomer).then(() => {
+      const objects = this.getCustomerList();
       objects[newCustomer.data.userId] = newCustomer;
       this.setCustomerData({
         customerList: objects,
@@ -55,7 +55,7 @@ export class CustomerDataService {
       });
 
       return true;
-    }).catch((error) => {
+    }).catch(() => {
       this.isDataChanged.next(false);
       this.notificationService.somethingWentWrong('110');
 
@@ -82,9 +82,9 @@ export class CustomerDataService {
     this.addNewCustomerFull(newCustomer);
   }
 
-  async refreshData(showNotification: boolean = false) {
+  async refreshData(showNotification = false) {
     const latestData = await this.firebaseService.getData('customer/bucket'); // todo increase database efficiency
-    let data = {
+    const data = {
       customerList: latestData,
       others: {
         lastFrereshed: Date.now()
@@ -119,7 +119,7 @@ export class CustomerDataService {
     }
     this.firebaseService.setData(`customer/bucket/${userId}`, null)
       .then(() => {
-        let objects = this.getCustomerList();
+        const objects = this.getCustomerList();
         delete objects[userId];
         this.setCustomerData({
           customerList: objects,
@@ -134,7 +134,7 @@ export class CustomerDataService {
           leftBarColor: this.notificationService.color.green
         });
         this.isDataChanged.next(true);
-      }).catch((error) => {
+      }).catch(() => {
         this.notificationService.somethingWentWrong('107');
       });
   }

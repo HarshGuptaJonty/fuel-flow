@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
@@ -33,7 +33,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   @Input() customerObject?: Customer;
   @Input() deliveryPersonObject?: DeliveryPerson;
-  @Input() isCustomer: boolean = true;
+  @Input() isCustomer = true;
 
   @ViewChild('plainText', { static: true }) plainText!: TemplateRef<any>;
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
@@ -95,14 +95,14 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }
   ]
 
-  pendingUnit: number = 0;
-  dueAmount: number = 0;
+  pendingUnit = 0;
+  dueAmount = 0;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
-  newEntry: boolean = false;
-  entryDataAvaliable: boolean = false;
+  newEntry = false;
+  entryDataAvaliable = false;
   openTransaction?: EntryTransaction;
-  isRefreshing: boolean = false;
+  isRefreshing = false;
 
   dataSource = new MatTableDataSource<any>([]);
 
@@ -121,7 +121,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       this.modifyTableStructureToDeliveryType();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.refreshEntryData(); // to refersh first time
     this.entryDataAvaliable = this.rawTransactionList.length > 0;
 
@@ -189,7 +189,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       forExport = this.dataSource.data;
     }
 
-    let formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
+    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
       return {
         Date: item.date,
         'Delivery Person Name': item.deliveryBoy?.fullName,
@@ -292,7 +292,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   showMore(object: any) {
-    let expandView = this.enterDataService.getTransactionList()?.[object?.transactionId];
+    const expandView = this.enterDataService.getTransactionList()?.[object?.transactionId];
     this.entryDetailModelService.showModel(expandView);
   }
 

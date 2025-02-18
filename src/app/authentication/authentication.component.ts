@@ -52,13 +52,13 @@ export class AuthenticationComponent implements OnInit {
     otp: new FormControl(''),
   });
 
-  isLogin: boolean = true;
-  isOtpSent: boolean = false;
-  disableButtons: boolean = false;
+  isLogin = true;
+  isOtpSent = false;
+  disableButtons = false;
   confirmationResult?: any;
   recaptchaVerifier?: any;
   activeFormGroup: FormGroup = this.loginForm;
-  isMaleGender: boolean = true;
+  isMaleGender = true;
   accessKey: any;
   authData: any;
 
@@ -111,7 +111,7 @@ export class AuthenticationComponent implements OnInit {
     if (!this.recaptchaVerifier) {
       this.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
-        'callback': (response: any) => {
+        'callback': () => {
           console.log('reCAPTCHA verified');
         }
       });
@@ -133,7 +133,7 @@ export class AuthenticationComponent implements OnInit {
   }
 
   verifyOtp() {
-    let verificationCode = this.activeFormGroup.get('otp')?.value;
+    const verificationCode = this.activeFormGroup.get('otp')?.value;
     this.disableButtons = true;
     this.confirmationResult?.confirm(verificationCode)
       .then((result: any) => {
@@ -141,7 +141,7 @@ export class AuthenticationComponent implements OnInit {
         this.disableButtons = false;
         this.authVerifiedCheckAndOpenDashboard();
       })
-      .catch((error: any) => {
+      .catch(() => {
         this.activeFormGroup.get('otp')?.setErrors({ invalidOTP: true });
         this.activeFormGroup.updateValueAndValidity();
         this.disableButtons = false;
@@ -198,11 +198,11 @@ export class AuthenticationComponent implements OnInit {
           }
         };
 
-        this.firebaseService.setData(`admin/${this.authData?.user?.uid}`, data).then((result) => {
+        this.firebaseService.setData(`admin/${this.authData?.user?.uid}`, data).then(() => {
           this.accountService.setAuthData(this.authData);
           this.accountService.setUserData(data);
           this.router?.navigate(['/dashboard']);
-        }).catch((error) => {
+        }).catch(() => {
           this.notificationService.showNotification({
             heading: 'Something Went Wrong!',
             message: 'Please Contact IT Support!',
@@ -243,8 +243,8 @@ export class AuthenticationComponent implements OnInit {
   }
 
   getShortName() {
-    let name = this.signupForm.get('fullName')?.value;
-    let names = name.split(' ');
+    const name = this.signupForm.get('fullName')?.value;
+    const names = name.split(' ');
     return names[0];
   }
 

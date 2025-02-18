@@ -14,12 +14,13 @@
             <div class="nav-item-bar d-flex justify-content-between me-4">
                 <ng-container *ngFor="let item of menuItemList">
                     <span *ngIf="item.visibleIn === 'top' && item.visible" class="nav-item"
-                        (click)="item.enable ? navMenuItemClicked(item.key):''"
-                        [ngClass]="{'disabled': !item.enable, 'active': item.key == activeNavMenu}">{{item.title}}</span>
+                        (click)="item.enable ? navMenuItemClicked(item.key):''" tabindex="0"
+                        [ngClass]="{'disabled': !item.enable, 'active': item.key === activeNavMenu}">{{item.title}}</span>
                 </ng-container>
             </div>
 
-            <div (click)="showMenuCardInfo =! showMenuCardInfo" #profileIcon class="profie align-self-center">
+            <div (click)="showMenuCardInfo =! showMenuCardInfo" #profileIcon class="profie align-self-center"
+                tabindex="0">
                 <img class="profile-image" title="Profile" *ngIf="!profilePicLink && adminProfileData?.male"
                     src="assets/images/svg/profile_male.svg" alt="Male profile Image">
                 <img class="profile-image" title="Profile" *ngIf="!profilePicLink && !adminProfileData?.male"
@@ -30,8 +31,8 @@
             <div *ngIf="showMenuCardInfo" class="other-menu-card pb-3">
                 <ng-container *ngFor="let item of menuItemList">
                     <div class="card-menu-item mt-2" *ngIf="item && item.visibleIn === 'side' && item.visible"
-                        (click)="navMenuItemClicked(item.key)"
-                        [ngClass]="{'disabled': !item.enable, 'active': item.key == activeNavMenu}">
+                        (click)="navMenuItemClicked(item.key)" tabindex="0"
+                        [ngClass]="{'disabled': !item.enable, 'active': item.key === activeNavMenu}">
                         <span>{{item.title}}</span>
                     </div>
                 </ng-container>

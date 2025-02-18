@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { CustomerDataService } from '../../services/customer-data.service';
 import { timeAgoWithMsg } from '../../shared/commonFunctions';
@@ -22,19 +22,19 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
 })
-export class CustomerComponent {
+export class CustomerComponent implements OnInit {
 
   customerData?: any;
   computedData: any = {
     customerList: [],
     lastUpdatedStr: ''
   }
-  userId: string = '';
+  userId = '';
   selectedCustomer?: any;
-  addNewCustomer: boolean = false;
-  isSearching: boolean = false;
-  isEditingProfile: boolean = false;
-  selectedIndex: number = 0;
+  addNewCustomer = false;
+  isSearching = false;
+  isEditingProfile = false;
+  selectedIndex = 0;
   customerUserId?: string;
 
   constructor(
@@ -124,7 +124,7 @@ export class CustomerComponent {
       this.selectedCustomer = null;
   }
 
-  async refreshCustomerData(showNotification: boolean = false) {
+  async refreshCustomerData(showNotification = false) {
     this.selectedCustomer = null;
     await this.customerService.refreshData(showNotification);
     this.customerData = this.customerService.getCustomerData();

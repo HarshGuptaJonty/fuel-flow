@@ -23,8 +23,8 @@ export class EntryDataService {
     this.initialize();
   }
 
-  private async initialize(showNotification: boolean = false) {
-    let data = await this.firebaseService.getData('transactionList');
+  private async initialize(showNotification = false) {
+    const data = await this.firebaseService.getData('transactionList');
     if (Object.keys(data).length > 0) {
       this.transactionList.next(data);
       this.isDataChanged.next(true);
@@ -87,10 +87,10 @@ export class EntryDataService {
     return [];
   }
 
-  addNewEntry(entry: EntryTransaction, isEditing: boolean = false) {
+  addNewEntry(entry: EntryTransaction, isEditing = false) {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, entry)
-      .then((result) => {
-        let objects = this.transactionList.getValue() || {};
+      .then(() => {
+        const objects = this.transactionList.getValue() || {};
         objects[entry.data.transactionId] = entry;
         this.transactionList.next(objects);
         this.isDataChanged.next(true);
@@ -101,7 +101,7 @@ export class EntryDataService {
           duration: 5000,
           leftBarColor: this.notificationService.color.green
         });
-      }).catch((error) => {
+      }).catch(() => {
         this.isDataChanged.next(false);
         this.notificationService.somethingWentWrong('102');
       });
@@ -109,8 +109,8 @@ export class EntryDataService {
 
   deleteEntry(entry: EntryTransaction) {
     this.firebaseService.setData(`transactionList/${entry.data?.transactionId}`, null)
-      .then((result) => {
-        let objects = this.transactionList.getValue() || {};
+      .then(() => {
+        const objects = this.transactionList.getValue() || {};
         delete objects[entry.data.transactionId];
         this.transactionList.next(objects);
         this.isDataChanged.next(true);
@@ -121,7 +121,7 @@ export class EntryDataService {
           duration: 5000,
           leftBarColor: this.notificationService.color.green
         });
-      }).catch((error) => {
+      }).catch(() => {
         this.notificationService.somethingWentWrong('103');
         this.isDataChanged.next(false);
       });

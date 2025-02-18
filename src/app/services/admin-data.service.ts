@@ -21,7 +21,7 @@ export class AdminDataService {
   }
 
   private async initialize() {
-    let data = await this.firebaseService.getData('admin');
+    const data = await this.firebaseService.getData('admin');
     if (Object.keys(data).length > 0) {
       this.adminList.next(data);
       this.isDataChanged.next(true);

@@ -31,12 +31,12 @@ export class DeliveryPersonComponent implements OnInit {
     deliveryPersonList: [],
     lastUpdatedStr: ''
   }
-  userId: string = '';
+  userId = '';
   selectedDeliveryPerson?: DeliveryPerson;
-  addNewDeliveryBoy: boolean = false;
-  isSearching: boolean = false;
-  isEditingProfile: boolean = false;
-  selectedIndex: number = 0;
+  addNewDeliveryBoy = false;
+  isSearching = false;
+  isEditingProfile = false;
+  selectedIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -125,7 +125,7 @@ export class DeliveryPersonComponent implements OnInit {
       this.selectedDeliveryPerson = undefined;
   }
 
-  async refreshDeliveryPersonData(showNotification: boolean = false) {
+  async refreshDeliveryPersonData(showNotification = false) {
     this.selectedDeliveryPerson = undefined;
     await this.deliveryPersonDataService.refreshData(showNotification);
     this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();

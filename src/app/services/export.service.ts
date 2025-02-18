@@ -14,7 +14,7 @@ export class ExportService {
     private notificationService: NotificationService
   ) { }
 
-  exportToExcel(data: InventoryExportEntry[], filePrefix: string = 'Inventory_'): void {
+  exportToExcel(data: InventoryExportEntry[], filePrefix = 'Inventory_'): void {
     const fileName = filePrefix + this.generateFileName();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
     const workbook: XLSX.WorkBook = { Sheets: { 'Inventory': worksheet }, SheetNames: ['Inventory'] };
@@ -22,7 +22,7 @@ export class ExportService {
     this.notificationService.exporting(fileName);
   }
 
-  exportToPdf(data: InventoryExportEntry[], filePrefix: string = 'Inventory_'): void {
+  exportToPdf(data: InventoryExportEntry[], filePrefix = 'Inventory_'): void {
     const doc = new jsPDF('landscape');
     const fileName = filePrefix + this.generateFileName() + '.pdf';
 

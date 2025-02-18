@@ -6,7 +6,6 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { authGuard } from './guards/auth.guard';
-import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
     {

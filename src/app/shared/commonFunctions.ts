@@ -34,7 +34,7 @@ export function copyData(data: string, notificationService: NotificationService)
       leftBarColor: '#3A7D44'
     });
 
-  }).catch((error) => {
+  }).catch(() => {
     notificationService.showNotification({
       heading: 'Something Went Wrong!',
       message: 'Please Contact IT Support!',
@@ -44,7 +44,7 @@ export function copyData(data: string, notificationService: NotificationService)
   })
 }
 
-export function generateRandomString(length: number = 14) {
+export function generateRandomString(length = 14) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
@@ -62,10 +62,10 @@ export function dateConverter(inputDate: string): string { // convert 'dd/MM/yyy
 }
 
 export function getDateInDatepickerFormat() { // ddMMyyyy
-  let today = new Date();
+  const today = new Date();
   let day: any = today.getDate();
   let month: any = today.getMonth() + 1;
-  let year = today.getFullYear();
+  const year = today.getFullYear();
 
   day = day < 10 ? '0' + day : day;
   month = month < 10 ? '0' + month : month;
@@ -73,7 +73,7 @@ export function getDateInDatepickerFormat() { // ddMMyyyy
 }
 
 export function generateDateTimeKey(): string { // HHmmss
-  let today = new Date();
+  const today = new Date();
   let hour: any = today.getHours();
   let min: any = today.getMinutes();
   let sec: any = today.getSeconds();

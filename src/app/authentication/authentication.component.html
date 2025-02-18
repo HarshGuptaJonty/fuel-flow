@@ -31,12 +31,12 @@
                 (click)="loginBtnClick()">{{isOtpSent ? 'Verify OTP': 'Login'}}
             </button>
             <div class="otp-sent-msg" *ngIf="!isOtpSent">
-                Dont have an account?<span class="change-number" (click)="createNewAccBtnClick()">
+                Dont have an account?<span class="change-number" (click)="createNewAccBtnClick()" tabindex="0">
                     Create new account.</span>
             </div>
             <div *ngIf="isOtpSent" class="otp-sent-msg">
                 OTP sent to +91 {{loginForm.get('phoneNumber')?.value}}.
-                <span class="change-number" (click)="updateOtpSentStatus(false)"> Change Number?</span>
+                <span class="change-number" (click)="updateOtpSentStatus(false)" tabindex="0"> Change Number?</span>
             </div>
         </div>
 
@@ -95,11 +95,12 @@
                 {{isOtpSent ? 'Verify OTP': 'Create new account'}}
             </button>
             <div class="otp-sent-msg" *ngIf="!isOtpSent">
-                Already have an account?<span class="change-number" (click)="loginBtnClick()"> Login.</span>
+                Already have an account?<span class="change-number" (click)="loginBtnClick()" tabindex="0">
+                    Login.</span>
             </div>
             <div *ngIf="isOtpSent" class="otp-sent-msg">
                 OTP sent to {{signupForm.get('phoneNumber')?.value}}. <span class="change-number"
-                    (click)="updateOtpSentStatus(false)"> Change Number?</span>
+                    (click)="updateOtpSentStatus(false)" tabindex="0"> Change Number?</span>
             </div>
         </div>
 
