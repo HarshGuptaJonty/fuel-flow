@@ -4,7 +4,7 @@ import { NotificationService } from '../../services/notification.service';
 import { Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-fdescribe('NotificationComponent', () => {
+describe('NotificationComponent', () => {
   let component: NotificationComponent;
   let fixture: ComponentFixture<NotificationComponent>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
