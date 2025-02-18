@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
@@ -15,6 +15,7 @@ import { EntryDetailModelService } from '../../services/entry-detail-model.servi
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 import { ExportService } from '../../services/export.service';
+import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
 @Component({
   selector: 'app-entry-data-table',
@@ -28,9 +29,11 @@ import { ExportService } from '../../services/export.service';
   templateUrl: './entry-data-table.component.html',
   styleUrl: './entry-data-table.component.scss'
 })
-export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterViewChecked {
+export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
 
   @Input() customerObject?: Customer;
+  @Input() deliveryPersonObject?: DeliveryPerson;
+  @Input() isCustomer: boolean = true;
 
   @ViewChild('plainText', { static: true }) plainText!: TemplateRef<any>;
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
@@ -113,10 +116,12 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     private exportService: ExportService
   ) { }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.pendingUnit = this.customerObject?.entry?.pendingCount || 0;
-    this.dueAmount = this.customerObject?.entry?.dueAmount || 0;
+  ngOnInit(): void {
+    if (!this.isCustomer)
+      this.modifyTableStructureToDeliveryType();
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
     this.refreshEntryData(); // to refersh first time
     this.entryDataAvaliable = this.rawTransactionList.length > 0;
 
@@ -138,6 +143,16 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     if (this.paginator && this.dataSource.paginator !== this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
+  }
+
+  modifyTableStructureToDeliveryType() {
+    this.tableStructure[1] = {
+      key: 'customer',
+      label: 'Customer',
+      customClass: 'width-limit-200',
+      dataType: 'nameText'
+    };
+    this.tableStructure.splice(4, 1);
   }
 
   refreshData() {
@@ -203,7 +218,10 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     this.processedTableData = null;
     this.openTransaction = undefined;
 
-    this.rawTransactionList = this.enterDataService.getCustomerTransactionList(this.customerObject?.data?.userId);
+    if (this.isCustomer)
+      this.rawTransactionList = this.enterDataService.getCustomerTransactionList(this.customerObject?.data?.userId);
+    else
+      this.rawTransactionList = this.enterDataService.getDeliveryPersonTransactionList(this.deliveryPersonObject?.data?.userId);
     this.processedTableData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
 
     this.dataSource.data = this.processedTableData;
@@ -229,6 +247,10 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
 
     return {
       date: dateConverter(item.data?.date || ''),
+      customer: {
+        fullName: item.data?.customer?.fullName,
+        userId: item.data?.customer?.userId
+      },
       deliveryBoy: {
         fullName: item.data?.deliveryBoy?.fullName,
         userId: item.data?.deliveryBoy?.userId
@@ -282,9 +304,12 @@ export class EntryDataTableComponent implements OnChanges, AfterViewInit, AfterV
     this.enterDataService.deleteEntry(object);
   }
 
-  openDeliveryBoyProfile(obj: any) {
+  openProfile(obj: any) {
     if (obj.userId) {
-      this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: obj.userId } });
+      if (this.isCustomer)
+        this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: obj.userId } });
+      else
+        this.router.navigate(['/dashboard/customers'], { queryParams: { userId: obj.userId } });
     } else {
       this.notificationService.showNotification({
         heading: 'Profile not setup.',

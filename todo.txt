@@ -5,12 +5,12 @@ login stayed login untill logged out manually
 make variables private
 write test cases
 notification comeing frol right
-table in delivery boy
 fix lint issues
 
 In-Progress: *****************************************
 
 Done: ************************************************
+table in delivery boy
 fix auto date picker
 dont show export if there is no data in inventory and customer
 no data is not center in inventory

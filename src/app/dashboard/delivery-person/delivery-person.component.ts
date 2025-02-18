@@ -8,6 +8,8 @@ import { UserCardComponent } from '../../common/user-card/user-card.component';
 import { UserDetailsComponent } from "../../common/user-details/user-details.component";
 import { NewAccountComponent } from "../new-account/new-account.component";
 import { SearchService } from '../../services/search.service';
+import { EntryDataTableComponent } from "../entry-data-table/entry-data-table.component";
+import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
 @Component({
   selector: 'app-delivery-person',
@@ -15,7 +17,8 @@ import { SearchService } from '../../services/search.service';
     CommonModule,
     UserCardComponent,
     UserDetailsComponent,
-    NewAccountComponent
+    NewAccountComponent,
+    EntryDataTableComponent
   ],
   templateUrl: './delivery-person.component.html',
   styleUrl: './delivery-person.component.scss'
@@ -29,7 +32,7 @@ export class DeliveryPersonComponent implements OnInit {
     lastUpdatedStr: ''
   }
   userId: string = '';
-  selectedDeliveryPerson?: any;
+  selectedDeliveryPerson?: DeliveryPerson;
   addNewDeliveryBoy: boolean = false;
   isSearching: boolean = false;
   isEditingProfile: boolean = false;
@@ -58,7 +61,7 @@ export class DeliveryPersonComponent implements OnInit {
 
     this.deliveryPersonDataService.isDataChanged.subscribe((isChanged) => {
       if (isChanged) {
-        this.selectedDeliveryPerson = null;
+        this.selectedDeliveryPerson = undefined;
         this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();
         this.computeDeliveryPersonData();
       }
@@ -70,7 +73,7 @@ export class DeliveryPersonComponent implements OnInit {
           Object.values(item.data).toString().toLowerCase().includes(searchText.toLowerCase())
         );
         this.isSearching = true;
-        this.selectedDeliveryPerson = null;
+        this.selectedDeliveryPerson = undefined;
       } else {
         this.computedData.customerList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
         this.isSearching = false;
@@ -119,11 +122,11 @@ export class DeliveryPersonComponent implements OnInit {
     if (this.addNewDeliveryBoy)
       this.isEditingProfile = false;
     else
-      this.selectedDeliveryPerson = null;
+      this.selectedDeliveryPerson = undefined;
   }
 
   async refreshDeliveryPersonData(showNotification: boolean = false) {
-    this.selectedDeliveryPerson = null;
+    this.selectedDeliveryPerson = undefined;
     await this.deliveryPersonDataService.refreshData(showNotification);
     this.deliveryPersonData = this.deliveryPersonDataService.getDeliveryPersonData();
     this.computeDeliveryPersonData();

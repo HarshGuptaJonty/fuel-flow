@@ -1,6 +1,6 @@
 <div class="data-table-container h-100">
 
-    <div class="detail-section d-flex">
+    <div class="detail-section d-flex" *ngIf="isCustomer">
         <div class="data-card d-flex flex-column" [ngClass]="{'danger':pendingUnit>0}">
             <span class="bold-text">Pending Units</span>
             <span class="secondary-color mt-1">{{pendingUnit}} Units</span>
@@ -59,7 +59,8 @@
         <div class="m-4 text-center bold-text">
             No entries to show!
             <div class="secondary-color mt-1">
-                This customer has not made any purchase!
+                {{isCustomer?'This customer has not made any purchase!':
+                'This delivery person has not delivered any units!'}}
             </div>
         </div>
     </div>
@@ -73,14 +74,13 @@
     </ng-template>
 
     <ng-template #nameText let-value let-column="column">
-        <span class="name-text nowrap"
-            (click)="openDeliveryBoyProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
+        <span class="name-text nowrap" (click)="openProfile(value?.[column.key])">{{value?.[column.key]?.fullName}}
         </span>
     </ng-template>
 
     <ng-template #actionText let-value let-column="column">
         <div class="nowrap">
-            <span class="name-text" (click)="editEntry(value)">Edit</span> |
+            <span class="name-text" (click)="editEntry(value)" *ngIf="isCustomer">Edit | </span>
             <span class="name-text" (click)="showMore(value)">More</span>
         </div>
     </ng-template>

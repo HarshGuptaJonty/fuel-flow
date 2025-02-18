@@ -70,6 +70,15 @@ export class EntryDataService {
     return [];
   }
 
+  getDeliveryPersonTransactionList(deliveryPersonId?: string): EntryTransaction[] {
+    if (this.isDataChanged && this.getTransactionList()) {
+      return (Object.values(this.getTransactionList()) as EntryTransaction[])
+        .filter((obj: any) => obj?.data?.deliveryBoy?.userId === deliveryPersonId)
+        .sort((a, b) => a.data?.transactionId > b.data?.transactionId ? 1 : -1);
+    }
+    return [];
+  }
+
   getSortedTransactionList(): EntryTransaction[] {
     if (this.isDataChanged && this.getTransactionList()) {
       return (Object.values(this.getTransactionList()) as EntryTransaction[])
