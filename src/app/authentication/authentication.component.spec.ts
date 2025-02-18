@@ -45,7 +45,7 @@ describe('AuthenticationComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Database, useValue: {} },
         { provide: ActivatedRoute, useValue: {} },
-        { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig}
+        { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig }
       ]
     }).compileComponents();
   }));
