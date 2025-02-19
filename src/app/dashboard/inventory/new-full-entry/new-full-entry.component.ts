@@ -264,6 +264,9 @@ export class NewFullEntryComponent implements OnInit {
     } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
       this.disableSave = true;
       this.errorMessage = 'Any of Sent, Recieved or Payment is required.';
+    } else if (value.paidAmt < 0) {
+      this.disableSave = true;
+      this.errorMessage = 'Payment recieved cannot be less than 0.';
     } else if (value.unitsRecieved > value.unitsSent && value.unitsSent > 0) {
       this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${value.unitsSent}] units.`;
     } else if (value.unitsSent > 0 && value.rate == 0) {
