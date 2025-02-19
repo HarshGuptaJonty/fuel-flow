@@ -6,9 +6,9 @@ make variables private
 notification comeing frol right
 
 In-Progress: *****************************************
-write test cases
 
 Done: ************************************************
+write test cases
 fix lint issues
 table in delivery boy
 fix auto date picker
