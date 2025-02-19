@@ -121,16 +121,16 @@ export class DashboardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
-    if (this.activeNavMenu === 'inventory') {
-      this.visibleInMenuItem('setting', this.screenWidth <= 850 ? 'side' : 'top');
-      this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
-      this.visibleInMenuItem('inventory', 'top');
-      this.visibleInMenuItem('customers', 'top');
-    } else {
+    if (this.activeNavMenu === 'customers' || this.activeNavMenu === 'delivery') {
       this.visibleInMenuItem('setting', this.screenWidth <= 1150 ? 'side' : 'top');
       this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
       this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
       this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
+    } else {
+      this.visibleInMenuItem('setting', this.screenWidth <= 850 ? 'side' : 'top');
+      this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
+      this.visibleInMenuItem('inventory', 'top');
+      this.visibleInMenuItem('customers', 'top');
     }
   }
 

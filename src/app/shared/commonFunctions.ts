@@ -83,3 +83,15 @@ export function generateDateTimeKey(): string { // HHmmss
   hour = hour < 10 ? '0' + hour : hour;
   return `${hour}${min}${sec}`;
 }
+
+export function formatDateAndTime(timestamp?: number) {
+  if (!timestamp)
+    return null;
+
+  const date = new Date(timestamp);
+
+  const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+
+  return `${formattedDate} at ${formattedTime}`;
+}

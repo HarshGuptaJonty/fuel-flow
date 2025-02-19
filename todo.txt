@@ -8,6 +8,7 @@ notification comeing frol right
 In-Progress: *****************************************
 
 Done: ************************************************
+complete profile section
 write test cases
 fix lint issues
 table in delivery boy
