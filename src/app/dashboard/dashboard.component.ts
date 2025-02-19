@@ -140,6 +140,10 @@ export class DashboardComponent implements OnInit {
       this.showMenuCardInfo = false;
   }
 
+  takeMeToDashboard() {
+    this.router.navigate(['/dashboard/customer']);
+  }
+
   computeUserData() {
     this.profilePicLink = this.adminProfileData?.profilePicLink;
   }
