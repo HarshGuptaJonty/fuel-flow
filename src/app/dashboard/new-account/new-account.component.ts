@@ -90,7 +90,7 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.nameInput.nativeElement.focus();
+    // this.nameInput.nativeElement.focus();
   }
 
   setupForm() {
@@ -182,10 +182,10 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
       message: message,
       leftButton: {
         text: 'Confirm',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_RED,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
       }, rightButton: {
         text: 'Cancel',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
       }
     }).subscribe(result => {
       if (result === 'left') {

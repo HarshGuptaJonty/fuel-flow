@@ -58,7 +58,7 @@ export class CustomerComponent implements OnInit {
       this.refreshCustomerData();
     }
 
-    this.customerService.isDataChanged.subscribe(flag => {
+    this.customerService.isDataChanged?.subscribe(flag => {
       if (flag) {
         this.selectedCustomer = null;
         this.customerData = this.customerService.getCustomerData();

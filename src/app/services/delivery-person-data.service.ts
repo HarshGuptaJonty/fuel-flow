@@ -95,7 +95,7 @@ export class DeliveryPersonDataService {
         this.notificationService.showNotification({
           heading: 'Delivery person profile deleted successfully.',
           duration: 5000,
-          leftBarColor: this.notificationService.color.green
+          leftBarColor: this.notificationService.color?.green
         });
       }).catch(() => {
         this.notificationService.somethingWentWrong('108');
@@ -122,7 +122,7 @@ export class DeliveryPersonDataService {
       this.notificationService.showNotification({
         heading: 'Delivery person data refreshed.',
         duration: 5000,
-        leftBarColor: this.notificationService.color.green
+        leftBarColor: this.notificationService.color?.green
       });
   }
 

@@ -3,13 +3,13 @@ Todo: ************************************************
 resend otp feature
 login stayed login untill logged out manually
 make variables private
-write test cases
 notification comeing frol right
-fix lint issues
 
 In-Progress: *****************************************
 
 Done: ************************************************
+write test cases
+fix lint issues
 table in delivery boy
 fix auto date picker
 dont show export if there is no data in inventory and customer

@@ -99,7 +99,7 @@ export class EntryDataService {
           heading: isEditing ? 'Entry edited.' : 'New entry added.',
           message: 'Data saved successfully.',
           duration: 5000,
-          leftBarColor: this.notificationService.color.green
+          leftBarColor: this.notificationService.color?.green
         });
       }).catch(() => {
         this.isDataChanged.next(false);
@@ -119,7 +119,7 @@ export class EntryDataService {
           heading: 'Entry deleted!',
           message: 'Data erased successfully.',
           duration: 5000,
-          leftBarColor: this.notificationService.color.green
+          leftBarColor: this.notificationService.color?.green
         });
       }).catch(() => {
         this.notificationService.somethingWentWrong('103');

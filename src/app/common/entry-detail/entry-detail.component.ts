@@ -29,17 +29,10 @@ export class EntryDetailComponent {
   openDeliveryBoyProfile() {
     const deliveryBoy = this.entryDetailModelService.getDeliveryBoyData();
     if (deliveryBoy) {
-      if (deliveryBoy.userId) {
-        this.entryDetailModelService.hideModel();
-        this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: deliveryBoy.userId } });
-      } else {
-        this.notificationService.showNotification({
-          heading: 'Profile not setup.',
-          message: deliveryBoy.fullName + "'s profile is not complete!",
-          duration: 5000,
-          leftBarColor: this.notificationService.color.yellow
-        });
-      }
+      this.entryDetailModelService.hideModel();
+      this.router.navigate(['/dashboard/delivery'], { queryParams: { userId: deliveryBoy.userId } });
+    } else {
+      this.notificationService.somethingWentWrong('111');
     }
   }
 }

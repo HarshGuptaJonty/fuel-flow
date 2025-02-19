@@ -121,7 +121,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.refreshEntryData(); // to refersh first time
-    this.entryDataAvaliable = this.rawTransactionList.length > 0;
+    this.entryDataAvaliable = this.rawTransactionList?.length > 0;
 
     this.enterDataService.isDataChanged.subscribe(flag => {
       if (flag) {
@@ -285,10 +285,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       message: 'You are trying to edit an existing entry, are you sure?',
       leftButton: {
         text: 'Yes',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_BLUE,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE,
       }, rightButton: {
         text: 'Cancel',
-        customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
       }
     }).subscribe(result => {
       if (result === 'left') {
