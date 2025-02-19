@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.route.firstChild?.url.subscribe((url) => this.activeNavMenu = url[0]?.path);
     this.routeSub.add(
-      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      this.router.events?.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
         const child = this.route.firstChild;
         if (child) {
           child.url.subscribe((url) => {
@@ -153,10 +153,10 @@ export class DashboardComponent implements OnInit {
         message: 'You are trying to logout, are you sure?',
         leftButton: {
           text: 'Logout',
-          customClass: this.confirmationModelService.CUSTOM_CLASS.GREY_RED,
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
         }, rightButton: {
           text: 'Cancel',
-          customClass: this.confirmationModelService.CUSTOM_CLASS.GREY,
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
         }
       }).subscribe(result => {
         if (result === 'left') {
