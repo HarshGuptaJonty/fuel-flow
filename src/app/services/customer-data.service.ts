@@ -113,7 +113,7 @@ export class CustomerDataService {
         heading: 'Process denied.',
         message: 'Customer with entries cannot be deleted, please delete the entries first!',
         duration: 7000,
-        leftBarColor: this.notificationService.color.yellow
+        leftBarColor: this.notificationService.color?.yellow
       });
       return;
     }
@@ -131,7 +131,7 @@ export class CustomerDataService {
         this.notificationService.showNotification({
           heading: 'Customer profile deleted successfully.',
           duration: 5000,
-          leftBarColor: this.notificationService.color.green
+          leftBarColor: this.notificationService.color?.green
         });
         this.isDataChanged.next(true);
       }).catch(() => {
