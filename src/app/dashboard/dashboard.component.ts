@@ -45,13 +45,13 @@ export class DashboardComponent implements OnInit {
     }, {
       title: 'Profile',
       key: 'profile',
-      visibleIn: 'side',
+      visibleIn: 'top',
       visible: true,
       enable: true
     }, {
       title: 'Setting',
       key: 'setting',
-      visibleIn: 'top',
+      visibleIn: 'side',
       visible: true,
       enable: true
     }, {
@@ -122,12 +122,12 @@ export class DashboardComponent implements OnInit {
   onResize() {
     this.screenWidth = window.innerWidth;
     if (this.activeNavMenu === 'customers' || this.activeNavMenu === 'delivery') {
-      this.visibleInMenuItem('setting', this.screenWidth <= 1150 ? 'side' : 'top');
+      this.visibleInMenuItem('profile', this.screenWidth <= 1150 ? 'side' : 'top');
       this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
       this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
       this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
     } else {
-      this.visibleInMenuItem('setting', this.screenWidth <= 850 ? 'side' : 'top');
+      this.visibleInMenuItem('profile', this.screenWidth <= 850 ? 'side' : 'top');
       this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
       this.visibleInMenuItem('inventory', 'top');
       this.visibleInMenuItem('customers', 'top');
