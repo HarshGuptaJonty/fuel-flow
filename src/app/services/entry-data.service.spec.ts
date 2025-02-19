@@ -5,7 +5,7 @@ import { NotificationService } from './notification.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { EntryTransaction } from '../../assets/models/EntryTransaction';
 
-fdescribe('EntryDataService', () => {
+describe('EntryDataService', () => {
   let service: EntryDataService;
   let mockFirebaseService: jasmine.SpyObj<FirebaseService>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
