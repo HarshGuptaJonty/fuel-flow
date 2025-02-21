@@ -19,10 +19,10 @@ import { environment } from '../../environments/environment';
 describe('AuthenticationComponent', () => {
   let component: AuthenticationComponent;
   let fixture: ComponentFixture<AuthenticationComponent>;
-  let mockRouter = { navigate: jasmine.createSpy('navigate') };
-  let mockAccountService = { hasUserData: jasmine.createSpy('hasUserData').and.returnValue(false) };
-  let mockFirebaseService = { getData: jasmine.createSpy('getData').and.returnValue(Promise.resolve({ key: 'testKey', number: '1234567890' })) };
-  let mockNotificationService = { showNotification: jasmine.createSpy('showNotification') };
+  const mockRouter = { navigate: jasmine.createSpy('navigate') };
+  const mockAccountService = { hasUserData: jasmine.createSpy('hasUserData').and.returnValue(false) };
+  const mockFirebaseService = { getData: jasmine.createSpy('getData').and.returnValue(Promise.resolve({ key: 'testKey', number: '1234567890' })) };
+  const mockNotificationService = { showNotification: jasmine.createSpy('showNotification') };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

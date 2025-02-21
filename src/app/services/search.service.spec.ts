@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { SearchService } from './search.service';
-import { BehaviorSubject } from 'rxjs';
 
 describe('SearchService', () => {
   let service: SearchService;
