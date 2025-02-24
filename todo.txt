@@ -1,5 +1,22 @@
 Todo: ************************************************
 
+ADVANCE **********************************************
+Export in Excel in which sheets are created for seperate customers and total added in the end 
+On click on Pending Units badge in inventory, show customers with active pending
+On click of due amount badge in inventory, show custoners with active due amount
+Make row selectable for exporting purpose in inventory
+Make rows selectable for exporting purpose in customer page
+Show admins list
+Show entries made by specific admin
+show entried edited by specific admin
+Admins access to website
+keyword search feature in inventory
+keyword search featre in customer
+keyword search feature in delivery person
+statistics page to view daily/weekly/monthly sales
+Paid to delivery person and due amount
+
+BASIC ************************************************
 resend otp feature
 login stayed login untill logged out manually
 make variables private
