@@ -12,7 +12,7 @@
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Registered contact number.</mat-label>
                         <input matInput placeholder="xxxx xxx xxx" prefix="+91 " [maxLength]="16" autocomplete="off"
-                            mask="0000 000 000" formControlName="phoneNumber" (keydown.enter)="loginBtnClick()">
+                            mask="00000 00000" formControlName="phoneNumber" (keydown.enter)="loginBtnClick()">
                         <mat-hint class="error-msg"
                             *ngIf="loginForm.get('phoneNumber')?.touched && loginForm.get('phoneNumber')?.invalid">{{getErrorMessage('phoneNumber')}}</mat-hint>
                     </mat-form-field>
@@ -58,7 +58,7 @@
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Contact number.</mat-label>
                         <input matInput placeholder="xxxx xxx xxx" prefix="+91 " [maxLength]="16" autocomplete="off"
-                            mask="0000 000 000" formControlName="phoneNumber">
+                            mask="00000 00000" formControlName="phoneNumber">
                         <mat-hint class="error-msg"
                             *ngIf="signupForm.get('phoneNumber')?.touched && signupForm.get('phoneNumber')?.invalid">{{getErrorMessage('phoneNumber')}}</mat-hint>
                     </mat-form-field>
