@@ -1,4 +1,13 @@
 Todo: ************************************************
+CHANGES **********************************************
+show version
+Note stock items (dynamic)
+show negative or 0 in website and export files
+reverse exporing data, lates will be in bottom
+show sum
+
+In-Progress: *****************************************
+multiple shipping address
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -21,8 +30,6 @@ resend otp feature
 login stayed login untill logged out manually
 make variables private
 notification comeing frol right
-
-In-Progress: *****************************************
 
 Done: ************************************************
 complete profile section

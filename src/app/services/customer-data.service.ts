@@ -35,7 +35,7 @@ export class CustomerDataService {
     sessionStorage.setItem(LOCAL_STORAGE_KEYS.CUSTOMER_DATA, JSON.stringify(data));
   }
 
-  async addNewCustomerFull(newCustomer: Customer): Promise<boolean> {
+  async addNewCustomerFull(newCustomer: Customer, isEdit = false): Promise<boolean> {
     return this.firebaseService.setData(`customer/bucket/${newCustomer.data.userId}`, newCustomer).then(() => {
       const objects = this.getCustomerList();
       objects[newCustomer.data.userId] = newCustomer;
@@ -48,8 +48,8 @@ export class CustomerDataService {
       this.isDataChanged.next(true);
 
       this.notificationService.showNotification({
-        heading: `${newCustomer.data.fullName}'s account created.`,
-        message: 'New customer added successfully.',
+        heading: `${newCustomer.data.fullName}'s account ${isEdit ? 'updated' : 'created'}.`,
+        message: isEdit ? 'Customer data updated successfully' : 'New customer added successfully.',
         duration: 5000,
         leftBarColor: '#3A7D44'
       });
@@ -69,7 +69,7 @@ export class CustomerDataService {
         fullName: fullName,
         phoneNumber: phoneNumber,
         address: '',
-        shippingAddress: '',
+        shippingAddress: [''],
         extraNote: '',
         userId: newUserId
       },

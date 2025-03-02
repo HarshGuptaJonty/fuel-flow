@@ -48,13 +48,14 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   disableSave = false;
   phoneNumbers: string[] = [];
   isCustomerType = false;
+  shippingAddressCount = 1;
 
   accountForm: FormGroup = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
     phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10),
     Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
     address: new FormControl(''),
-    shippingAddress: new FormControl(''),
+    shippingAddress1: new FormControl(''),
     extraNote: new FormControl(''),
     userId: new FormControl('')
   });
@@ -103,10 +104,13 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
         phoneNumber: new FormControl(data.phoneNumber, [Validators.required, Validators.minLength(10), Validators.maxLength(10),
         Validators.pattern(/^[6-9]\d{9}$/), this.duplicateNumberValidator.bind(this)]),
         address: new FormControl(data.address),
-        shippingAddress: new FormControl(data.shippingAddress),
         extraNote: new FormControl(data.extraNote),
         userId: new FormControl(data.userId)
       });
+
+      this.shippingAddressCount = data.shippingAddress?.length || 1;
+      for (let i = 0; i < this.shippingAddressCount; i++)
+        this.accountForm.addControl('shippingAddress' + (i + 1), new FormControl(data.shippingAddress[i] || ''));
     } else
       this.isEditingProfile = false;
   }
@@ -129,24 +133,52 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
     if (!this.isEditingProfile)
       this.accountForm.get('userId')?.setValue(this.accountId);
 
-    const newAccount: any = {
-      data: this.accountForm?.value,
-      others: {
-        createdBy: this.userId,
-        createdTime: Date.now()
-      }
-    }
-
     if (this.userType === 'customer') {
+      let addressArray = []
+
+      for (let i = 0; i < this.shippingAddressCount; i++) {
+        let data: string = this.accountForm?.get('shippingAddress' + (i + 1))?.value || '';
+        if (data.length > 0) // add address only if there is data
+          addressArray.push(data)
+      }
+
+      if (addressArray.length == 0)
+        addressArray.push(''); // add atleast one address with empty data
+
+      const customerData = {
+        fullName: this.accountForm.get('fullName')?.value,
+        phoneNumber: this.accountForm.get('phoneNumber')?.value,
+        address: this.accountForm.get('address')?.value,
+        shippingAddress: addressArray,
+        extraNote: this.accountForm.get('extraNote')?.value,
+        userId: this.accountForm.get('userId')?.value
+      }
+
+      const newAccount: any = {
+        data: customerData,
+        others: {
+          createdBy: this.userId,
+          createdTime: Date.now()
+        }
+      }
+
       this.createNewCustomerAccount(newAccount);
     } else {
-      newAccount.data.shippingAddress = null;
+      const newAccount: any = {
+        data: this.accountForm?.value,
+        others: {
+          createdBy: this.userId,
+          createdTime: Date.now()
+        }
+      }
+
+      newAccount.data.shippingAddress1 = null;
       this.createNewDeliveryPersonAcconut(newAccount);
     }
   }
 
   async createNewCustomerAccount(newCustomer: Customer) {
-    if (await this.customerService.addNewCustomerFull(newCustomer)) {
+    if (await this.customerService.addNewCustomerFull(newCustomer, this.isEditingProfile)) {
       this.onCancel.emit();
     }
   }
@@ -202,5 +234,33 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
     if (!this.isEditingProfile && this.phoneNumbers?.includes(numberToSearch))
       return { duplicate: true };
     return null;
+  }
+
+  addMoreShippingAddress() {
+    ++this.shippingAddressCount;
+    this.accountForm.addControl('shippingAddress' + this.shippingAddressCount, new FormControl(''));
+  }
+
+  removeThisAddress(index: number) {
+    this.confirmationModelService.showModel({
+      heading: 'Delete Address Line ' + (index + 1) + ' ?',
+      message: 'Once deleted, it cannot be retrived!',
+      leftButton: {
+        text: 'Confirm',
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
+      }, rightButton: {
+        text: 'Cancel',
+        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
+      }
+    }).subscribe(result => {
+      if (result === 'left') {
+        this.confirmationModelService.hideModel();
+        for (let i = index; i < this.shippingAddressCount - 1; i++)
+          this.accountForm.get('shippingAddress' + (i + 1))?.setValue(this.accountForm.get('shippingAddress' + (i + 2))?.value);
+        this.accountForm.removeControl('shippingAddress' + this.shippingAddressCount);
+        --this.shippingAddressCount;
+      } else
+        this.confirmationModelService.hideModel();
+    });
   }
 }
