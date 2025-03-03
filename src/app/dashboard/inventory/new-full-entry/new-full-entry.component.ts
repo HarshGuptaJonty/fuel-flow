@@ -44,7 +44,6 @@ export class NewFullEntryComponent implements OnInit {
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
-  @ViewChild('nameInput') nameInput!: ElementRef;
   @ViewChild('formSection') formSection!: ElementRef;
 
   entryForm: FormGroup = new FormGroup({
@@ -57,6 +56,7 @@ export class NewFullEntryComponent implements OnInit {
     customerName: new FormControl(''),
     customerNumber: new FormControl(''),
     customerId: new FormControl(generateRandomString()), // not user input
+    shippingAddress: new FormControl(''),
 
     deliveryBoyName: new FormControl(''),
     deliveryBoyNumber: new FormControl(''),
@@ -75,6 +75,10 @@ export class NewFullEntryComponent implements OnInit {
   customerList: Customer[] = [];
   customerSearchList: Customer[] = [];
   customerSelected = false;
+
+  shippingAddressList: string[] = [];
+  shippingAddressSearchList: string[] = [];
+  shippingAddressSelected = false;
 
   deliveryPhoneNumbers: string[] = [];
   deliveryBoysList: DeliveryPerson[] = [];
@@ -104,6 +108,7 @@ export class NewFullEntryComponent implements OnInit {
         customerName: new FormControl(this.openTransaction?.data.customer?.fullName),
         customerNumber: new FormControl(this.openTransaction?.data.customer?.phoneNumber),
         customerId: new FormControl(this.openTransaction?.data.customer?.userId),
+        shippingAddress: new FormControl(this.openTransaction?.data.shippingAddress),
 
         deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName),
         deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber),
@@ -112,8 +117,9 @@ export class NewFullEntryComponent implements OnInit {
         extraDetails: new FormControl(this.openTransaction?.data.extraDetails),
       });
 
-      this.deliveryBoySelected = true;
       this.customerSelected = true;
+      this.shippingAddressSelected = true;
+      this.deliveryBoySelected = true;
     } else {
       this.entryForm = new FormGroup({
         date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
@@ -125,6 +131,7 @@ export class NewFullEntryComponent implements OnInit {
         customerName: new FormControl(''),
         customerNumber: new FormControl(''),
         customerId: new FormControl(generateRandomString()), // not user input
+        shippingAddress: new FormControl(''),
 
         deliveryBoyName: new FormControl(''),
         deliveryBoyNumber: new FormControl(''),
@@ -138,6 +145,12 @@ export class NewFullEntryComponent implements OnInit {
       this.customerList = Object.values(this.customerDataService.getCustomerList());
       this.customerPhoneNumbers = this.customerList.map((user: any) => user?.data?.phoneNumber);
       this.customerSearchList = this.customerList;
+
+      if (this.isEditing && this.openTransaction?.data.customer?.userId) {
+        const customerObject = this.customerDataService.getCustomerList()[this.openTransaction.data.customer.userId];
+        this.shippingAddressList = customerObject?.data?.shippingAddress || [];
+        this.shippingAddressSearchList = this.shippingAddressList;
+      }
     }
 
     if (this.deliveryPersonDataService.hasDeliveryPersonData()) {
@@ -150,6 +163,8 @@ export class NewFullEntryComponent implements OnInit {
 
     this.entryForm.get('customerName')?.valueChanges.subscribe((value) => this.customerDataChanged(value));
     this.entryForm.get('customerNumber')?.valueChanges.subscribe((value) => this.customerDataChanged(value));
+
+    this.entryForm.get('shippingAddress')?.valueChanges.subscribe((value) => this.shippingAddressDataChanged(value));
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
@@ -167,6 +182,17 @@ export class NewFullEntryComponent implements OnInit {
     this.customerSelected = true;
     this.entryForm.get('customerId')?.setValue(customer.data?.userId);
     this.customerSearchList = [];
+
+    this.shippingAddressList = customer.data?.shippingAddress || [];
+    this.shippingAddressSearchList = this.shippingAddressList;
+    this.shippingAddressSelected = false;
+    this.entryForm.get('shippingAddress')?.setValue('');
+  }
+
+  onSelectShippingAddress(selectedAddress: string) {
+    this.entryForm.get('shippingAddress')?.setValue(selectedAddress);
+    this.shippingAddressSelected = true;
+    this.shippingAddressSearchList = [];
   }
 
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {
@@ -206,6 +232,24 @@ export class NewFullEntryComponent implements OnInit {
     if (!this.customerSelected)
       this.customerDataService.addNewCustomer(customer.userId, customer.fullName, customer.phoneNumber);
 
+    if (!this.shippingAddressSelected) {
+      this.confirmationModelService.showModel({
+        heading: 'Add New Shipping Address?',
+        message: `Dear user, ${this.entryForm.get('shippingAddress')?.value} is not present in ${customer.fullName}'s profile. Do you want to add this in the profile?`,
+        leftButton: {
+          text: 'Confirm',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE,
+        }, rightButton: {
+          text: 'Cancel',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
+        }
+      }).subscribe(result => {
+        this.confirmationModelService.hideModel();
+        if (result === 'left' && this.entryForm.get('shippingAddress')?.value && customer.userId)
+          this.customerDataService.addNewAddress(this.entryForm.get('shippingAddress')?.value, customer.userId);
+      });
+    }
+
     if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber);
 
@@ -219,7 +263,8 @@ export class NewFullEntryComponent implements OnInit {
         rate: value.rate,
         payment: value.paidAmt,
         transactionId: transactionId,
-        extraDetails: value.extraDetails
+        extraDetails: value.extraDetails,
+        shippingAddress: value.shippingAddress
       }, others: {
         createdBy: createdBy,
         createdTime: createdTime,
@@ -284,6 +329,9 @@ export class NewFullEntryComponent implements OnInit {
     } else if (value.deliveryBoyName?.length == 0) {
       this.disableSave = true;
       this.errorMessage = "Please enter delivery boy's name.";
+    } else if (value.shippingAddress?.length == 0) {
+      this.disableSave = true;
+      this.errorMessage = "Please enter shipping address.";
     } else if (value.deliveryBoyNumber?.length > 0 && value.deliveryBoyNumber?.length != 10) {
       this.disableSave = true;
       this.errorMessage = 'Delivery boy number is not 10 digits.';
@@ -316,6 +364,19 @@ export class NewFullEntryComponent implements OnInit {
     else
       this.customerSearchList = this.customerList.filter((item) =>
         Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
+      );
+  }
+
+  shippingAddressDataChanged(value: string) {
+    if (this.shippingAddressSelected) {
+      this.shippingAddressSelected = false;
+    }
+
+    if (value?.length == 0)
+      this.shippingAddressSearchList = this.shippingAddressList;
+    else
+      this.shippingAddressSearchList = this.shippingAddressList.filter((item) =>
+        item.toLowerCase()?.includes(value?.toLowerCase())
       );
   }
 

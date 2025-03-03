@@ -48,6 +48,11 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       customClass: 'witdh-limit-200',
       dataType: 'cnameText'
     }, {
+      key: 'shippingAddress',
+      label: 'Address',
+      customClass: 'witdh-limit-200',
+      dataType: 'plainText'
+    }, {
       key: 'deliveryBoy',
       label: 'Delivery',
       customClass: 'witdh-limit-200',
@@ -157,6 +162,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         // 'Customer Phone': item.customer?.phoneNumber,
         'Delivery Person Name': item.deliveryBoy?.fullName,
         // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
+        'Shipping Address': item.shippingAddress,
         'Sent Quantity': item.sent,
         'Received Quantity': item.recieved,
         'Pending Units': item.pending,
@@ -240,14 +246,15 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent > 0 ? sent : '',
-      recieved: recieved > 0 ? recieved : '',
-      pending: sent - recieved > 0 ? sent - recieved : '',
-      rate: rate > 0 ? rate : '',
-      totamAmt: totalAmt > 0 ? totalAmt : '',
-      paymentAmt: payment > 0 ? payment : '',
-      dueAmt: totalAmt - payment > 0 ? totalAmt - payment : '',
-      transactionId: item.data?.transactionId
+      sent: sent,
+      recieved: recieved,
+      pending: sent - recieved,
+      rate: rate,
+      totamAmt: totalAmt,
+      paymentAmt: payment,
+      dueAmt: totalAmt - payment,
+      transactionId: item.data?.transactionId,
+      shippingAddress: item.data.shippingAddress
     };
   }
 

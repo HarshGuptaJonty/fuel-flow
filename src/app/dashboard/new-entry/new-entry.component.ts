@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,7 @@ import { generateDateTimeKey, generateRandomString, getDateInDatepickerFormat } 
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 import moment from 'moment';
+import { CustomerDataService } from '../../services/customer-data.service';
 
 @Component({
   selector: 'app-new-entry',
@@ -45,12 +46,15 @@ export class NewEntryComponent implements OnInit {
   @Output() onDelete = new EventEmitter<any>();
   @Output() onSubmit = new EventEmitter<EntryTransaction>();
 
+  @ViewChild('formSection') formSection!: ElementRef;
+
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(''),
     unitsSent: new FormControl(''),
     unitsRecieved: new FormControl(''),
     rate: new FormControl(''),
     paidAmt: new FormControl(''),
+    shippingAddress: new FormControl(''),
     deliveryBoyName: new FormControl(''),
     deliveryBoyNumber: new FormControl(''),
     deliveryBoyAddress: new FormControl(''),
@@ -62,14 +66,20 @@ export class NewEntryComponent implements OnInit {
   isEditing = false;
   errorMessage?: string;
   phoneNumbers: string[] = [];
+  focusedFormName = '';
+
   deliveryBoysList: DeliveryPerson[] = [];
   deliveryBoysSearchList: DeliveryPerson[] = [];
   deliveryBoySelected = false;
-  focusedFormName = '';
+
+  shippingAddressList: string[] = [];
+  shippingAddressSearchList: string[] = [];
+  shippingAddressSelected = false;
 
   constructor(
     private accountService: AccountService,
     private entryDataService: EntryDataService,
+    private customerDataService: CustomerDataService,
     private confirmationModelService: ConfirmationModelService,
     private deliveryPersonDataService: DeliveryPersonDataService
   ) { }
@@ -83,6 +93,7 @@ export class NewEntryComponent implements OnInit {
         unitsRecieved: new FormControl(this.openTransaction?.data.recieved),
         rate: new FormControl(this.openTransaction?.data.rate),
         paidAmt: new FormControl(this.openTransaction?.data.payment),
+        shippingAddress: new FormControl(this.openTransaction?.data.shippingAddress),
         deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName),
         deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber),
         deliveryBoyAddress: new FormControl(this.deliveryPersonDataService.getAddress(this.openTransaction?.data.deliveryBoy?.userId || '')),
@@ -91,6 +102,7 @@ export class NewEntryComponent implements OnInit {
       });
       this.pendingCount += this.openTransaction?.data.recieved || 0;
       this.deliveryBoySelected = true;
+      this.shippingAddressSelected = true;
     } else {
       this.entryForm = new FormGroup({
         date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
@@ -98,6 +110,7 @@ export class NewEntryComponent implements OnInit {
         unitsRecieved: new FormControl(''),
         rate: new FormControl(''),
         paidAmt: new FormControl(''),
+        shippingAddress: new FormControl(''),
         deliveryBoyName: new FormControl(''),
         deliveryBoyNumber: new FormControl(''),
         deliveryBoyAddress: new FormControl(''),
@@ -112,10 +125,20 @@ export class NewEntryComponent implements OnInit {
       this.deliveryBoysSearchList = this.deliveryBoysList;
     }
 
+    this.shippingAddressList = this.customerObject?.data.shippingAddress || [];
+    this.shippingAddressSearchList = this.shippingAddressList;
+
     this.entryForm.valueChanges.subscribe((value) => this.checkForDataValidation(value));
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
+    this.entryForm.get('shippingAddress')?.valueChanges.subscribe((value) => this.shippingAddressDataChanged(value));
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (this.formSection && !this.formSection.nativeElement.contains(event.target))
+      this.focusedFormName = '';
   }
 
   onSelectDeliveryBoy(deliveryBoy: DeliveryPerson) {
@@ -125,6 +148,12 @@ export class NewEntryComponent implements OnInit {
     this.deliveryBoySelected = true;
     this.entryForm.get('deliveryBoyUserId')?.setValue(deliveryBoy.data?.userId);
     this.deliveryBoysSearchList = [];
+  }
+
+  onSelectShippingAddress(selectedAddress: string) {
+    this.entryForm.get('shippingAddress')?.setValue(selectedAddress);
+    this.shippingAddressSelected = true;
+    this.shippingAddressSearchList = [];
   }
 
   onSaveClick() {
@@ -150,6 +179,24 @@ export class NewEntryComponent implements OnInit {
     if (!this.deliveryBoySelected)
       this.deliveryPersonDataService.addNewDeliveryPerson(deliveryPerson.userId, deliveryPerson.fullName, deliveryPerson.phoneNumber, value.deliveryBoyAddress);
 
+    if (!this.shippingAddressSelected) {
+      this.confirmationModelService.showModel({
+        heading: 'Add New Shipping Address?',
+        message: `Dear user, ${this.entryForm.get('shippingAddress')?.value} is not present in ${this.customerObject?.data.fullName}'s profile. Do you want to add this in the profile?`,
+        leftButton: {
+          text: 'Confirm',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE,
+        }, rightButton: {
+          text: 'Cancel',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
+        }
+      }).subscribe(result => {
+        this.confirmationModelService.hideModel();
+        if (result === 'left' && this.entryForm.get('shippingAddress')?.value && this.customerObject?.data.userId)
+          this.customerDataService.addNewAddress(this.entryForm.get('shippingAddress')?.value, this.customerObject?.data.userId);
+      });
+    }
+
     const data: EntryTransaction = {
       data: {
         date: this.getFormattedDate('DD/MM/YYYY'),
@@ -164,7 +211,8 @@ export class NewEntryComponent implements OnInit {
         rate: value.rate,
         payment: value.paidAmt,
         transactionId: transactionId,
-        extraDetails: value.extraDetails
+        extraDetails: value.extraDetails,
+        shippingAddress: value.shippingAddress
       }, others: {
         createdBy: createdBy,
         createdTime: createdTime,
@@ -217,6 +265,9 @@ export class NewEntryComponent implements OnInit {
     } else if (value.unitsSent > 0 && value.rate == 0) {
       this.disableSave = true;
       this.errorMessage = 'Rate is required if units are sent.';
+    } else if (value.shippingAddress?.length == 0) {
+      this.disableSave = true;
+      this.errorMessage = "Please enter shipping address.";
     } else if (value.deliveryBoyName?.length == 0) {
       this.disableSave = true;
       this.errorMessage = "Please enter delivery boy's name.";
@@ -249,6 +300,19 @@ export class NewEntryComponent implements OnInit {
     else
       this.deliveryBoysSearchList = this.deliveryBoysList.filter((item) =>
         Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
+      );
+  }
+
+  shippingAddressDataChanged(value: string) {
+    if (this.shippingAddressSelected) {
+      this.shippingAddressSelected = false;
+    }
+
+    if (value?.length == 0)
+      this.shippingAddressSearchList = this.shippingAddressList;
+    else
+      this.shippingAddressSearchList = this.shippingAddressList.filter((item) =>
+        item.toLowerCase()?.includes(value?.toLowerCase())
       );
   }
 

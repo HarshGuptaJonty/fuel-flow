@@ -107,6 +107,18 @@ export class CustomerDataService {
       });
   }
 
+  addNewAddress(address: string, userId: string) {
+    const obj = this.getCustomerList()[userId];
+    if(obj){
+      const addressList = obj?.data?.shippingAddress || [];
+      addressList.push(address);
+      obj.data.shippingAddress = addressList;
+      this.addNewCustomerFull(obj, true);
+    } else {
+      this.notificationService.somethingWentWrong('112')
+    }
+  }
+
   deleteCustoner(userId: string) {
     if (this.entryDataService.customerHasData(userId)) {
       this.notificationService.showNotification({

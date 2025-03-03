@@ -8,7 +8,8 @@ export interface EntryTransaction {
         rate?: number,
         payment?: number,
         transactionId: string,
-        extraDetails?: string
+        extraDetails?: string,
+        shippingAddress?: string
     }, others?: {
         createdBy?: string,
         createdTime?: number,

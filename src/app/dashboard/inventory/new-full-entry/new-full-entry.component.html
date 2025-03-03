@@ -10,7 +10,7 @@
             <div class="box-input p-relative">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Full Name</mat-label>
-                    <input matInput #nameInput placeholder="Ankit" [maxLength]="30" autocomplete="off"
+                    <input matInput placeholder="Ankit" [maxLength]="30" autocomplete="off"
                         formControlName="customerName" (focus)="onfocus('customerName')">
                 </mat-form-field>
                 <div class="select-dropdown"
@@ -36,6 +36,20 @@
                         <span class="bold-text me-2">{{obj.data.fullName}}</span>
                         <span *ngIf="obj.data?.phoneNumber"
                             class="dropdown-number">{{formatNumber(obj.data.phoneNumber)}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box-input p-relative">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Shipping Address</mat-label>
+                    <input matInput placeholder="ABC Lane, XYZ Road 132002" autocomplete="off"
+                        formControlName="shippingAddress" (focus)="onfocus('shippingAddress')">
+                </mat-form-field>
+                <div class="select-dropdown"
+                    *ngIf="shippingAddressSearchList.length > 0 && focusedFormName === 'shippingAddress' && customerSelected">
+                    <div class="profile" *ngFor="let address of shippingAddressSearchList" (click)="onSelectShippingAddress(address)"
+                        tabindex="0">
+                        <span class="bold-text me-2">{{address}}</span>
                     </div>
                 </div>
             </div>

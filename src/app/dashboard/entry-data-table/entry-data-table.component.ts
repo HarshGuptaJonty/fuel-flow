@@ -53,6 +53,11 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       customClass: 'witdh-limit-200',
       dataType: 'nameText'
     }, {
+      key: 'shippingAddress',
+      label: 'Address',
+      customClass: 'witdh-limit-200',
+      dataType: 'plainText'
+    }, {
       key: 'sent',
       label: 'Sent',
       customClass: 'text-right',
@@ -194,6 +199,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
         Date: item.date,
         'Delivery Person Name': item.deliveryBoy?.fullName,
         // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
+        'Shipping Address': item.shippingAddress,
         'Sent Quantity': item.sent,
         'Received Quantity': item.recieved,
         'Pending Units': item.pending,
@@ -205,9 +211,9 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     });
 
     if (type === 'excel')
-      this.exportService.exportToExcel(formatForExport, `${this.customerObject?.data.fullName}_`);
+      this.exportService.exportToExcel(formatForExport, this.customerObject?.data.fullName);
     else if (type === 'pdf')
-      this.exportService.exportToPdf(formatForExport, `${this.customerObject?.data.fullName}_`);
+      this.exportService.exportToPdf(formatForExport, this.customerObject?.data.fullName);
   }
 
   async refreshEntryData() {
@@ -255,12 +261,13 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
         fullName: item.data?.deliveryBoy?.fullName,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent > 0 ? sent : '',
-      recieved: recieved > 0 ? recieved : '',
+      sent: sent,
+      recieved: recieved,
+      shippingAddress: item.data.shippingAddress,
       pending: this.pendingUnit,
-      rate: rate > 0 ? rate : '',
-      totamAmt: totalAmt > 0 ? totalAmt : '',
-      paymentAmt: payment > 0 ? payment : '',
+      rate: rate,
+      totamAmt: totalAmt,
+      paymentAmt: payment,
       dueAmt: this.dueAmount,
       transactionId: item.data?.transactionId
     };

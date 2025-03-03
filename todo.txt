@@ -1,15 +1,15 @@
 Todo: ************************************************
 show all address in necessary places
-select address when making entry
+add address in export field
+filter in inventory in address, delivery personn, date range
 
 CHANGES **********************************************
-show version
 Note stock items (dynamic)
-show negative or 0 in website and export files
 reverse exporing data, lates will be in bottom
 show sum
 
 In-Progress: *****************************************
+show shipping address in full entry detail model popup
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -35,6 +35,8 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+select address when making entry
+show negative or 0 in website and export files
 multiple shipping address
 show version in auth and profile
 

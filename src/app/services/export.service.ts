@@ -14,17 +14,17 @@ export class ExportService {
     private notificationService: NotificationService
   ) { }
 
-  exportToExcel(data: InventoryExportEntry[], filePrefix = 'Inventory_'): void {
-    const fileName = filePrefix + this.generateFileName();
+  exportToExcel(data: InventoryExportEntry[], filePrefix = 'Inventory'): void {
+    const fileName = filePrefix + '_' + this.generateFileName();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    const workbook: XLSX.WorkBook = { Sheets: { 'Inventory': worksheet }, SheetNames: ['Inventory'] };
+    const workbook: XLSX.WorkBook = { Sheets: { 'Sheet 1': worksheet }, SheetNames: ['Sheet 1'] };
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
     this.notificationService.exporting(fileName);
   }
 
-  exportToPdf(data: InventoryExportEntry[], filePrefix = 'Inventory_'): void {
+  exportToPdf(data: InventoryExportEntry[], filePrefix = 'Inventory'): void {
     const doc = new jsPDF('landscape');
-    const fileName = filePrefix + this.generateFileName() + '.pdf';
+    const fileName = filePrefix + '_' + this.generateFileName() + '.pdf';
 
     const columns = Object.keys(data[0]).map(key => ({ title: key, dataKey: key })); // title refer to the column names and dataKey refer to key of object
     const rows = data.map(entry => Object.values(entry)); // object inside object cant be processed here properly
