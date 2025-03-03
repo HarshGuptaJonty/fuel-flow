@@ -116,6 +116,19 @@
         bottom: 0px;
     }
 
+    .version {
+        user-select: none;
+        position: absolute;
+        left: 30px;
+        bottom: 20px;
+        font-family: "Comfortaa", serif;
+        letter-spacing: 1px;
+
+        &:hover {
+            font-weight: bold;
+        }
+    }
+
     @media (max-width: 1440px) {
         .left-section {
             width: 45%;

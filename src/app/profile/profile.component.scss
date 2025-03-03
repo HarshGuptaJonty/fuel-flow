@@ -33,4 +33,17 @@
             min-height: 50px;
         }
     }
+
+    .version {
+        user-select: none;
+        position: absolute;
+        right: 30px;
+        bottom: 20px;
+        font-family: "Comfortaa", serif;
+        letter-spacing: 1px;
+
+        &:hover {
+            font-weight: bold;
+        }
+    }
 }

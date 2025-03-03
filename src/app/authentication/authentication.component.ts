@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FirebaseService } from '../services/firebase.service';
 import { Admin } from '../../assets/models/Admin';
 import { NotificationService } from '../services/notification.service';
+import { LOCAL_STORAGE_KEYS } from '../shared/constants';
 
 @Component({
   selector: 'app-authentication',
@@ -61,6 +62,7 @@ export class AuthenticationComponent implements OnInit {
   isMaleGender = true;
   accessKey: any;
   authData: any;
+  localStorage = LOCAL_STORAGE_KEYS;
 
   constructor(
     private route: ActivatedRoute,

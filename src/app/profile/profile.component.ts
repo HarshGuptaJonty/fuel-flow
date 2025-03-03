@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { AdminDataService } from '../services/admin-data.service';
 import { formatDateAndTime, getNumberInformat } from '../shared/commonFunctions';
+import { LOCAL_STORAGE_KEYS } from '../shared/constants';
 
 @Component({
   selector: 'app-profile',
@@ -17,6 +18,7 @@ export class ProfileComponent implements OnInit {
   userData: any;
   adminProfileData?: any;
   profilePicLink: string | undefined = ''; //'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJxo2NFiYcR35GzCk5T3nxA7rGlSsXvIfJwg&s'
+  localStorage = LOCAL_STORAGE_KEYS;
 
   constructor(
     private accountService: AccountService,

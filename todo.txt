@@ -1,5 +1,4 @@
 Todo: ************************************************
-show version in auth and profile
 show all address in necessary places
 select address when making entry
 
@@ -37,6 +36,7 @@ notification comeing frol right
 Done: ************************************************
 **V1.0.1**
 multiple shipping address
+show version in auth and profile
 
 **V1.0.0**
 complete profile section
