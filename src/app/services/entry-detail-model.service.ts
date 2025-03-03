@@ -34,6 +34,7 @@ export class EntryDetailModelService {
   formatData(entry: EntryTransaction) {
     return {
       transactionId: entry.data.transactionId,
+      shippingAddress: entry.data.shippingAddress,
       cName: entry.data.customer?.fullName,
       cNumber: entry.data.customer?.phoneNumber?.toString().replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3'),
       date: this.formatDate(entry.data.date),
