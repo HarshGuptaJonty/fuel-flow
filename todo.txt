@@ -1,4 +1,8 @@
 Todo: ************************************************
+show version in auth and profile
+show all address in necessary places
+select address when making entry
+
 CHANGES **********************************************
 show version
 Note stock items (dynamic)
@@ -7,7 +11,6 @@ reverse exporing data, lates will be in bottom
 show sum
 
 In-Progress: *****************************************
-multiple shipping address
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -32,6 +35,10 @@ make variables private
 notification comeing frol right
 
 Done: ************************************************
+**V1.0.1**
+multiple shipping address
+
+**V1.0.0**
 complete profile section
 write test cases
 fix lint issues

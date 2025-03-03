@@ -242,25 +242,31 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
   }
 
   removeThisAddress(index: number) {
-    this.confirmationModelService.showModel({
-      heading: 'Delete Address Line ' + (index + 1) + ' ?',
-      message: 'Once deleted, it cannot be retrived!',
-      leftButton: {
-        text: 'Confirm',
-        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
-      }, rightButton: {
-        text: 'Cancel',
-        customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
-      }
-    }).subscribe(result => {
-      if (result === 'left') {
+    const val = this.accountForm.get('shippingAddress' + (index + 1))?.value || '';
+    if (val.length > 0) {
+      this.confirmationModelService.showModel({
+        heading: 'Delete Address Line ' + (index + 1) + ' ?',
+        message: 'Once deleted, it cannot be retrived!',
+        leftButton: {
+          text: 'Confirm',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_RED,
+        }, rightButton: {
+          text: 'Cancel',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY,
+        }
+      }).subscribe(result => {
         this.confirmationModelService.hideModel();
-        for (let i = index; i < this.shippingAddressCount - 1; i++)
-          this.accountForm.get('shippingAddress' + (i + 1))?.setValue(this.accountForm.get('shippingAddress' + (i + 2))?.value);
-        this.accountForm.removeControl('shippingAddress' + this.shippingAddressCount);
-        --this.shippingAddressCount;
-      } else
-        this.confirmationModelService.hideModel();
-    });
+        if (result === 'left')
+          this.removeAddress(index);
+      });
+    } else
+      this.removeAddress(index);
+  }
+
+  removeAddress(index: number) {
+    for (let i = index; i < this.shippingAddressCount - 1; i++)
+      this.accountForm.get('shippingAddress' + (i + 1))?.setValue(this.accountForm.get('shippingAddress' + (i + 2))?.value);
+    this.accountForm.removeControl('shippingAddress' + this.shippingAddressCount);
+    --this.shippingAddressCount;
   }
 }
