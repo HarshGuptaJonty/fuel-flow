@@ -1,10 +1,13 @@
 Todo: ************************************************
 filter in inventory in delivery personn, date range
+take input of products while making entry
+show product added in entry details model popup
+
 
 CHANGES **********************************************
-Note stock items (dynamic)
 
 In-Progress: *****************************************
+Note stock items (dynamic)
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 

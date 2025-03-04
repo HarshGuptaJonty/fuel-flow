@@ -96,7 +96,7 @@
         .filter-section {
             background-color: $border-light;
             padding: 10px;
-            border-radius: 50px;
+            border-radius: 30px;
 
             .filter-input {
                 outline: none;
@@ -228,6 +228,10 @@
     @media (max-width: 1024px) {
         .inventory-container {
             padding: 20px 20px 20px 20px;
+
+            .footer-section{
+                padding: 10px 20px;
+            }
         }
     }
 }

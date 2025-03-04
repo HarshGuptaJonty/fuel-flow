@@ -49,8 +49,8 @@ export class DashboardComponent implements OnInit {
       visible: true,
       enable: true
     }, {
-      title: 'Setting',
-      key: 'setting',
+      title: 'Warehouse',
+      key: 'warehouse',
       visibleIn: 'side',
       visible: true,
       enable: true

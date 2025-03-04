@@ -3,7 +3,7 @@ import { DashboardComponent } from "./dashboard.component";
 import { NgModule } from "@angular/core";
 import { CustomerComponent } from "./customer/customer.component";
 import { InventoryComponent } from "./inventory/inventory.component";
-import { SettingComponent } from "./setting/setting.component";
+import { WarehouseComponent } from "./warehouse/warehouse.component";
 import { DeliveryPersonComponent } from "./delivery-person/delivery-person.component";
 import { ProfileComponent } from "../profile/profile.component";
 
@@ -14,7 +14,7 @@ const routes: Routes = [
         children: [
             { path: 'customers', component: CustomerComponent },
             { path: 'inventory', component: InventoryComponent },
-            { path: 'setting', component: SettingComponent },
+            { path: 'warehouse', component: WarehouseComponent },
             { path: 'delivery', component: DeliveryPersonComponent },
             { path: 'profile', component: ProfileComponent },
             { path: '', redirectTo: 'customers', pathMatch: 'full' }
