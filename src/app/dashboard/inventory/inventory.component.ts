@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -15,6 +15,8 @@ import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ExportService } from '../../services/export.service';
 import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Customer } from '../../../assets/models/Customer';
 
 @Component({
   selector: 'app-inventory',
@@ -22,7 +24,7 @@ import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
-    NewFullEntryComponent
+    NewFullEntryComponent,
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
@@ -36,6 +38,9 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild('customerName') customerName!: ElementRef;
+  @ViewChild('filterArea') filterArea!: ElementRef;
 
   tableStructure = [
     {
@@ -106,11 +111,26 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   isRefreshing = false;
   isSearching = false;
   processedTableData?: any;
+  unchangedProcessedData?: any;
   rawTransactionList: EntryTransaction[] = [];
   entryDataAvaliable = false;
   openTransaction?: EntryTransaction;
+  filterActive = true;
+  focusedFormName = '';
+
+  customerList: Customer[] = [];
+  customerSearchList: Customer[] = [];
+  customerFilterId = '';
+
+  shippingAddressList: string[] = [];
+  shippingAddressSelectedList: string[] = [];
+  shippingAddressSubmitted: string[] = [];
 
   dataSource = new MatTableDataSource<any>([]);
+
+  filterForm: FormGroup = new FormGroup({
+    customerName: new FormControl('')
+  });
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -136,6 +156,18 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         this.isRefreshing = false;
       }
     });
+
+    if (this.customerDataService.getCustomerData()) {
+      this.customerList = Object.values(this.customerDataService.getCustomerList());
+      this.customerSearchList = this.customerList;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: Event): void {
+    if (this.filterArea && !this.filterArea.nativeElement.contains(event.target)) {
+      this.onfocus('');
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -211,7 +243,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     this.openTransaction = undefined;
 
     this.rawTransactionList = this.enterDataService.getSortedTransactionList();
-    this.processedTableData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
+    this.unchangedProcessedData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
+    this.processedTableData = this.unchangedProcessedData;
 
     this.dataSource.data = this.processedTableData;
     this.resetPaginator();
@@ -346,6 +379,74 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  searchCustomer() {
+    const value = this.customerName.nativeElement.value;
+
+    if (value?.length == 0) {
+      this.customerSearchList = this.customerList;
+      this.customerFilterId = '';
+      this.shippingAddressList = [];
+      this.processedTableData = this.unchangedProcessedData
+      this.dataSource.data = this.processedTableData;
+    } else
+      this.customerSearchList = this.customerList.filter((item) =>
+        Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
+      );
+  }
+
+  onSelectCustomer(customer: Customer) {
+    this.customerFilterId = customer.data.userId;
+    this.customerName.nativeElement.value = customer.data.fullName + ' (' + this.formatNumber(customer.data.phoneNumber) + ')';
+    this.customerSearchList = [];
+
+    this.shippingAddressSelectedList = [];
+    this.shippingAddressSubmitted = [];
+    this.shippingAddressList = customer.data.shippingAddress || [];
+
+    this.filterList();
+  }
+
+  submitAddressFilters() {
+    this.focusedFormName = '';
+    this.shippingAddressSubmitted = [...this.shippingAddressSelectedList];
+    this.filterList();
+  }
+
+  toggleSelectAddress(address: string) {
+    const index = this.shippingAddressSelectedList.indexOf(address);
+    if (index !== -1) {
+      this.shippingAddressSelectedList.splice(index, 1);
+    } else {
+      this.shippingAddressSelectedList.push(address);
+    }
+  }
+
+  removeAddress(event: any, index: number) {
+    event.stopPropagation();
+    this.shippingAddressSelectedList.splice(index, 1)
+    this.shippingAddressSubmitted = [...this.shippingAddressSelectedList];
+
+    this.filterList();
+  }
+
+  filterList() {
+    let filterList = this.unchangedProcessedData
+
+    if (this.customerFilterId.length > 0)
+      filterList = filterList.filter((item: any) => item.customer.userId === this.customerFilterId);
+
+    if (this.shippingAddressSubmitted.length > 0)
+      filterList = filterList.filter((item: any) => this.shippingAddressSubmitted.includes(item.shippingAddress));
+
+    this.dataSource.data = filterList;
+  }
+
+  closeFilter() {
+    this.filterActive = false;
+    this.processedTableData = this.unchangedProcessedData
+    this.dataSource.data = this.processedTableData;
+  }
+
   getTemplate(dataType: string) {
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'cnameText') return this.cnameText;
@@ -356,5 +457,15 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   displayedColumns(): string[] {
     return this.tableStructure.map(item => item.key);
+  }
+
+  formatNumber(value?: string) {
+    if (!value)
+      return '';
+    return value.replace(/(\d{5})(\d{5})/, '$1 $2');
+  }
+
+  onfocus(formName: string) {
+    this.focusedFormName = formName;
   }
 }
