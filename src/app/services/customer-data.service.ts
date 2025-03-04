@@ -109,8 +109,9 @@ export class CustomerDataService {
 
   addNewAddress(address: string, userId: string) {
     const obj = this.getCustomerList()[userId];
-    if(obj){
-      const addressList = obj?.data?.shippingAddress || [];
+    if (obj) {
+      let addressList = obj?.data?.shippingAddress || [];
+      addressList = addressList.filter((address: string) => address !== '');
       addressList.push(address);
       obj.data.shippingAddress = addressList;
       this.addNewCustomerFull(obj, true);

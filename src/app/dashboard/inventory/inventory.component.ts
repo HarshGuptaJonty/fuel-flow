@@ -105,8 +105,6 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   ]
 
-  pendingUnit = 0;
-  dueAmount = 0;
   newEntry = false;
   isRefreshing = false;
   isSearching = false;
@@ -115,7 +113,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   rawTransactionList: EntryTransaction[] = [];
   entryDataAvaliable = false;
   openTransaction?: EntryTransaction;
-  filterActive = true;
+  filterActive = false;
   focusedFormName = '';
 
   customerList: Customer[] = [];
@@ -205,6 +203,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       };
     });
 
+    formatForExport.reverse();
+
     if (type === 'excel')
       this.exportService.exportToExcel(formatForExport);
     else if (type === 'pdf')
@@ -236,8 +236,6 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   async refreshEntryData() {
     this.newEntry = false;
-    this.pendingUnit = 0;
-    this.dueAmount = 0;
     this.rawTransactionList = [];
     this.processedTableData = null;
     this.openTransaction = undefined;
@@ -263,9 +261,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     const rate = item.data?.rate || 0;
     const payment = item.data?.payment || 0;
 
-    this.pendingUnit += sent - recieved;
     const totalAmt = sent * rate;
-    this.dueAmount += totalAmt - payment;
 
     return {
       date: dateConverter(item.data?.date || ''),
@@ -300,7 +296,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       item.deliveryBoy?.fullName,
       item.deliveryBoy?.phoneNumber,
       this.deliveryPersonDataService.getAddress(item.deliveryBoy?.userId),
-      item.extraDetails
+      item.extraDetails,
+      item.shippingAddress
     ]
   }
 
@@ -438,13 +435,33 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     if (this.shippingAddressSubmitted.length > 0)
       filterList = filterList.filter((item: any) => this.shippingAddressSubmitted.includes(item.shippingAddress));
 
-    this.dataSource.data = filterList;
+    this.processedTableData = filterList
+    this.dataSource.data = this.processedTableData;
   }
 
   closeFilter() {
     this.filterActive = false;
     this.processedTableData = this.unchangedProcessedData
     this.dataSource.data = this.processedTableData;
+    this.shippingAddressList = [];
+  }
+
+  getStat(type: string): number {
+    let result = 0;
+    if (type === 'sentSum') {
+      for (let obj of this.dataSource.data)
+        result += parseInt(obj.sent);
+    } else if (type === 'recieveSum') {
+      for (let obj of this.dataSource.data)
+        result += parseInt(obj.recieved);
+    } else if (type === 'pending') {
+      for (let obj of this.dataSource.data)
+        result += parseInt(obj.pending);
+    } else if (type === 'dueAmt') {
+      for (let obj of this.dataSource.data)
+        result += parseInt(obj.dueAmt);
+    }
+    return result || 0;
   }
 
   getTemplate(dataType: string) {
