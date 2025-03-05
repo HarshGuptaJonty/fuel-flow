@@ -34,7 +34,7 @@
             </div>
             <div class="justify-content-between d-flex flex-wrap gap-10 pt-1">
                 <button mat-flat-button (click)="onSaveClick()" class="save-btn"
-                    [disabled]="disableSave">{{isEditingProduct?'Update':'Save'}}</button>
+                    [disabled]="productForm.invalid">{{isEditingProduct?'Update':'Save'}}</button>
                 <button mat-flat-button (click)="onCancelClick()" class="custom-btn cancel-btn danger">Cancel</button>
                 <button mat-flat-button (click)="onDeleteClick()" *ngIf="isEditingProduct"
                     class="custom-btn cancel-btn danger">Delete</button>

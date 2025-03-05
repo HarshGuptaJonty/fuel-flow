@@ -142,5 +142,12 @@
                 <span class="name-text" (click)="showMore(value)" tabindex="0">More</span>
             </div>
         </ng-template>
+
+        <ng-template #productDetail let-value let-column="column">
+            <div *ngFor="let data of value.productDetail" class="my-2">
+                <span *ngIf="column.isAmount">{{getValue(data, column.key) | number: '1.2-2'}}</span>
+                <span *ngIf="!column.isAmount" class="nowrap">{{getValue(data, column.key)}}</span>
+            </div>
+        </ng-template>
     </div>
 </div>

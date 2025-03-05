@@ -15,7 +15,7 @@ import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ExportService } from '../../services/export.service';
 import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Customer } from '../../../assets/models/Customer';
 
 @Component({
@@ -36,6 +36,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   @ViewChild('cnameText', { static: true }) cnameText!: TemplateRef<any>;
   @ViewChild('dnameText', { static: true }) dnameText!: TemplateRef<any>;
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
+  @ViewChild('productDetail', { static: true }) productDetail!: TemplateRef<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -63,25 +64,31 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       customClass: 'witdh-limit-200',
       dataType: 'dnameText'
     }, {
-      key: 'sent',
+      key: 'productData.name',
+      label: 'Product',
+      customClass: 'text-right',
+      dataType: 'productDetail'
+    }, {
+      key: 'sentUnits',
       label: 'Sent',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'recieved',
+      key: 'recievedUnits',
       label: 'Recieved',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'pending',
+      key: 'productData.pending',
       label: 'Pending',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'rate',
+      key: 'productData.rate',
       label: 'Rate/Unit',
       customClass: 'text-right',
-      dataType: 'amountText'
+      dataType: 'productDetail',
+      isAmount: true
     }, {
       key: 'totamAmt',
       label: 'Total Amount',
@@ -256,12 +263,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   transformItem(item: EntryTransaction) {
-    const sent = item.data?.sent || 0;
-    const recieved = item.data?.recieved || 0;
-    const rate = item.data?.rate || 0;
     const payment = item.data?.payment || 0;
-
-    const totalAmt = sent * rate;
+    const totalAmt = item.data.total || 0;
 
     return {
       date: dateConverter(item.data?.date || ''),
@@ -275,15 +278,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent,
-      recieved: recieved,
-      pending: sent - recieved,
-      rate: rate,
       totamAmt: totalAmt,
       paymentAmt: payment,
       dueAmt: totalAmt - payment,
       transactionId: item.data?.transactionId,
-      shippingAddress: item.data.shippingAddress
+      shippingAddress: item.data.shippingAddress,
+      productDetail: item.data.selectedProducts
     };
   }
 
@@ -469,6 +469,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     if (dataType === 'cnameText') return this.cnameText;
     if (dataType === 'dnameText') return this.dnameText;
     if (dataType === 'actionText') return this.actionText;
+    if (dataType === 'productDetail') return this.productDetail;
     return this.plainText;
   }
 
@@ -484,5 +485,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   onfocus(formName: string) {
     this.focusedFormName = formName;
+  }
+
+  getValue(obj: any, path: string): any {
+    if (path === 'productData.pending') {
+      return obj.sentUnits - obj.recievedUnits;
+    }
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }

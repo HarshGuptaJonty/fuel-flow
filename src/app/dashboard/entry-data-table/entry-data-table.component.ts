@@ -39,6 +39,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
   @ViewChild('nameText', { static: true }) nameText!: TemplateRef<any>;
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
+  @ViewChild('productDetail', { static: true }) productDetail!: TemplateRef<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -58,25 +59,31 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       customClass: 'witdh-limit-200',
       dataType: 'plainText'
     }, {
-      key: 'sent',
+      key: 'productData.name',
+      label: 'Product',
+      customClass: 'text-right',
+      dataType: 'productDetail'
+    }, {
+      key: 'sentUnits',
       label: 'Sent',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'recieved',
+      key: 'recievedUnits',
       label: 'Recieved',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'pending',
+      key: 'productData.pending',
       label: 'Pending',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'rate',
+      key: 'productData.rate',
       label: 'Rate/Unit',
       customClass: 'text-right',
-      dataType: 'amountText'
+      dataType: 'productDetail',
+      isAmount: true
     }, {
       key: 'totamAmt',
       label: 'Total Amount',
@@ -100,7 +107,6 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }
   ]
 
-  pendingUnit = 0;
   dueAmount = 0;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
@@ -220,7 +226,6 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   async refreshEntryData() {
     this.newEntry = false;
-    this.pendingUnit = 0;
     this.dueAmount = 0;
     this.rawTransactionList = [];
     this.processedTableData = null;
@@ -244,14 +249,10 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   transformItem(item: EntryTransaction) {
-    const sent = item.data?.sent || 0;
-    const recieved = item.data?.recieved || 0;
-    const rate = item.data?.rate || 0;
     const payment = item.data?.payment || 0;
+    const totalAmt = item.data.total || 0;
 
-    this.pendingUnit += sent - recieved;
-    const totalAmt = sent * rate;
-    this.dueAmount += sent * rate - payment;
+    this.dueAmount += totalAmt - payment;
 
     return {
       date: dateConverter(item.data?.date || ''),
@@ -263,15 +264,12 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
         fullName: item.data?.deliveryBoy?.fullName,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent,
-      recieved: recieved,
       shippingAddress: item.data.shippingAddress,
-      pending: this.pendingUnit,
-      rate: rate,
       totamAmt: totalAmt,
       paymentAmt: payment,
       dueAmt: this.dueAmount,
-      transactionId: item.data?.transactionId
+      transactionId: item.data?.transactionId,
+      productDetail: item.data.selectedProducts
     };
   }
 
@@ -332,10 +330,17 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'nameText') return this.nameText;
     if (dataType === 'actionText') return this.actionText;
+    if (dataType === 'productDetail') return this.productDetail;
     return this.plainText;
   }
 
   displayedColumns(): string[] {
     return this.tableStructure.map(item => item.key);
+  }
+
+  getValue(obj: any, path: string): any {
+    if (path === 'productData.pending')
+      return obj.sentUnits - obj.recievedUnits;
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }

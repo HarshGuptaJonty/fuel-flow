@@ -44,9 +44,9 @@
 
         .product-select {
             border: 1px solid $secondary-color;
-            height: 56px;
+            min-height: 56px;
+            padding: 7px 16px;
             border-radius: 5px;
-            padding-left: 16px;
             color: #44474e;
 
             .normal-font {
@@ -74,7 +74,7 @@
 
         .product-select-dropdown {
             position: absolute;
-            top: 100%;
+            top: 0;
             left: 0;
             width: 100%;
             background-color: white;
@@ -83,7 +83,23 @@
             z-index: 10;
             overflow-y: auto;
             border-radius: 5px;
-            max-height: 400px;
+
+            .overflow-y {
+                overflow-y: auto;
+            }
+
+            .b-bottom {
+                border-bottom: 1px solid $secondary-color;
+            }
+
+            .max-height-300 {
+                max-height: 300px;
+                overflow-x: auto;
+            }
+
+            .min-width-445 {
+                min-width: 445px;
+            }
 
             &.hight-no-limit {
                 max-height: unset;
@@ -98,7 +114,11 @@
                 }
             }
 
-            .quantity-input {
+            .product-label {
+                width: 100px;
+            }
+
+            .product-input {
                 width: 100px;
                 padding: 3px 6px;
                 border-radius: 5px;
@@ -115,6 +135,12 @@
                     cursor: pointer;
                 }
             }
+        }
+
+        .nowrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 

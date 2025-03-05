@@ -59,25 +59,43 @@
                     <span class="normal-font" *ngIf="selectedProductList.length === 0">Select product items</span>
                     <span class="product-capsule d-flex align-items-center"
                         *ngFor="let productQuantity of selectedProductList; let i = index">
-                        <span class="p-name bold-text">{{productQuantity.productData.name}}:
-                            {{productQuantity.quantity}}</span>
+                        <span class="p-name bold-text gap">
+                            {{productQuantity.productData.name}}:
+                            <span *ngIf="productQuantity.sentUnits">{{productQuantity.sentUnits}}S</span>
+                            <span *ngIf="productQuantity.recievedUnits">{{productQuantity.recievedUnits}}R</span>
+                        </span>
                         <img src="assets/images/svg/close.svg" alt="X" height="16px" class="ms-1"
                             (click)="removeProduct($event, i)" tabindex="0">
                     </span>
                 </div>
                 <div class="product-select-dropdown" *ngIf="focusedFormName === 'productSelect'">
-                    <div class="product d-flex justify-content-between align-items-center bold-text">
-                        <span>Name</span>
-                        <span class="ms-2">Rate</span>
-                        <span class="me-4">Quantity</span>
+                    <div class="overflow-y">
+                        <div class="min-width-445">
+                            <div class="product d-flex justify-content-between align-items-center bold-text b-bottom">
+                                <span>Name</span>
+                                <div class="d-flex gap">
+                                    <span class="product-label">Rate</span>
+                                    <span class="product-label">Sent</span>
+                                    <span class="product-label">Recieved</span>
+                                </div>
+                            </div>
+                            <div class="max-height-300">
+                                <div class="product d-flex justify-content-between align-items-center"
+                                    *ngFor="let product of productList">
+                                    <span class="bold-text nowrap">{{product.data.name}}</span>
+                                    <div class="d-flex gap">
+                                        <input class="product-input" maxlength="5" min="0" [value]="product.data.rate"
+                                            type="number" [id]="'rate_'+product.data.productId">
+                                        <input class="product-input" maxlength="4" value="0" type="number"
+                                            [id]="'sent_'+product.data.productId" min="0">
+                                        <input class="product-input" maxlength="4" value="0" type="number"
+                                            [id]="'recieved_'+product.data.productId" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="product d-flex justify-content-between align-items-center"
-                        *ngFor="let product of productList">
-                        <span class="bold-text">{{product.data.name}}</span>
-                        <span class="secondary-color">{{product.data.rate | number: '1.2-2'}}</span>
-                        <input class="quantity-input" maxlength="4" type="number" [id]="product.data.productId">
-                    </div>
-                    <div class="product-submit" (click)="submitProductSelection()" tabindex="0">Submit</div>
+                    <div class="product-submit text-center" (click)="submitProductSelection()" tabindex="0">Submit</div>
                 </div>
             </div>
         </div>
@@ -134,27 +152,6 @@
             </div>
             <div class="box-input">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Units Sent</mat-label>
-                    <input matInput placeholder="5" type="number" [maxLength]="3" autocomplete="off"
-                        formControlName="unitsSent" (focus)="onfocus('unitsSent')">
-                </mat-form-field>
-            </div>
-            <div class="box-input">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Units Recieved</mat-label>
-                    <input matInput placeholder="5" type="number" [maxLength]="3" autocomplete="off"
-                        formControlName="unitsRecieved" (focus)="onfocus('unitsRecieved')">
-                </mat-form-field>
-            </div>
-            <div class="box-input">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Rate/Unit</mat-label>
-                    <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="rate"
-                        (focus)="onfocus('rate')">
-                </mat-form-field>
-            </div>
-            <div class="box-input">
-                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Paid Amount</mat-label>
                     <input matInput placeholder="1400" [maxLength]="10" autocomplete="off" formControlName="paidAmt"
                         (focus)="onfocus('paidAmt')">
@@ -168,6 +165,7 @@
                 </mat-form-field>
             </div>
         </div>
+        <div class="mt-2" *ngIf="totalSum>0">Total amount payable: {{totalSum | number: '1.2-2'}}</div>
     </form>
     <div class="error-msg mt-2 bold-text" *ngIf="errorMessage">{{errorMessage}}</div>
     <div class="mt-3 justify-content-between d-flex customer-form flex-wrap gap-3">

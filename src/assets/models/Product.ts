@@ -6,9 +6,9 @@ export interface Product {
         productId: string;
     },
     others?: {
-        createdBy?: string,
-        createdTime?: number,
-        editedBy?: string,
+        createdBy?: string;
+        createdTime?: number;
+        editedBy?: string;
         editedTime?: number;
     }
 }
@@ -19,5 +19,6 @@ export interface ProductQuantity {
         rate: number;
         productId: string;
     },
-    quantity: number;
+    sentUnits: number;
+    recievedUnits: number;
 }

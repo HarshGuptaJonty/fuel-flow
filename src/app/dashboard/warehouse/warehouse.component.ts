@@ -1,7 +1,7 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../assets/models/Product';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,14 +28,13 @@ export class WarehouseComponent implements OnInit {
 
   addNewProduct = false;
   isEditingProduct = false;
-  disableSave = false;
   errorMessage?: string;
   selectedProduct?: Product;
   productList: Product[] = [];
 
   productForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    rate: new FormControl(''),
+    name: new FormControl('', [Validators.required]),
+    rate: new FormControl('', [Validators.required]),
     extraNote: new FormControl('')
   })
 
@@ -118,8 +117,8 @@ export class WarehouseComponent implements OnInit {
           this.addNewProduct = true;
 
           this.productForm = new FormGroup({
-            name: new FormControl(this.selectedProduct?.data.name),
-            rate: new FormControl(this.selectedProduct?.data.rate),
+            name: new FormControl(this.selectedProduct?.data.name, [Validators.required]),
+            rate: new FormControl(this.selectedProduct?.data.rate, [Validators.required]),
             extraNote: new FormControl(this.selectedProduct?.data.extraNote || '')
           })
         } else

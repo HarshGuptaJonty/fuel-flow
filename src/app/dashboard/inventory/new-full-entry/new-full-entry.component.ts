@@ -52,9 +52,6 @@ export class NewFullEntryComponent implements OnInit {
 
   entryForm: FormGroup = new FormGroup({
     date: new FormControl(''),
-    unitsSent: new FormControl(''),
-    unitsRecieved: new FormControl(''),
-    rate: new FormControl(''),
     paidAmt: new FormControl(''),
 
     customerName: new FormControl(''),
@@ -74,6 +71,7 @@ export class NewFullEntryComponent implements OnInit {
   errorMessage?: string;
   focusedFormName = '';
   transactionId = '';
+  totalSum = 0;
 
   customerPhoneNumbers: string[] = [];
   customerList: Customer[] = [];
@@ -115,34 +113,28 @@ export class NewFullEntryComponent implements OnInit {
     if (this.isEditing) {
       this.entryForm = new FormGroup({
         date: new FormControl({ value: moment(this.openTransaction?.data.date || '', 'DD/MM/YYYY').toDate(), disabled: true }),
-        unitsSent: new FormControl(this.openTransaction?.data.sent),
-        unitsRecieved: new FormControl(this.openTransaction?.data.recieved),
-        rate: new FormControl(this.openTransaction?.data.rate),
-        paidAmt: new FormControl(this.openTransaction?.data.payment),
+        paidAmt: new FormControl(this.openTransaction?.data.payment || ''),
 
-        customerName: new FormControl(this.openTransaction?.data.customer?.fullName),
-        customerNumber: new FormControl(this.openTransaction?.data.customer?.phoneNumber),
-        customerId: new FormControl(this.openTransaction?.data.customer?.userId),
-        shippingAddress: new FormControl(this.openTransaction?.data.shippingAddress),
+        customerName: new FormControl(this.openTransaction?.data.customer?.fullName || ''),
+        customerNumber: new FormControl(this.openTransaction?.data.customer?.phoneNumber || ''),
+        customerId: new FormControl(this.openTransaction?.data.customer?.userId || ''),
+        shippingAddress: new FormControl(this.openTransaction?.data.shippingAddress || ''),
 
-        deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName),
-        deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber),
-        deliveryBoyUserId: new FormControl(this.openTransaction?.data.deliveryBoy?.userId),
+        deliveryBoyName: new FormControl(this.openTransaction?.data.deliveryBoy?.fullName || ''),
+        deliveryBoyNumber: new FormControl(this.openTransaction?.data.deliveryBoy?.phoneNumber || ''),
+        deliveryBoyUserId: new FormControl(this.openTransaction?.data.deliveryBoy?.userId || ''),
 
-        extraDetails: new FormControl(this.openTransaction?.data.extraDetails),
+        extraDetails: new FormControl(this.openTransaction?.data.extraDetails || ''),
       });
 
       this.selectedProductList = this.openTransaction?.data.selectedProducts || [];
-
+      this.totalSum = this.openTransaction?.data.total || 0;
       this.customerSelected = true;
       this.shippingAddressSelected = true;
       this.deliveryBoySelected = true;
     } else {
       this.entryForm = new FormGroup({
         date: new FormControl({ value: moment(getDateInDatepickerFormat() || '', 'DDMMYYYY').toDate(), disabled: false }),
-        unitsSent: new FormControl(''),
-        unitsRecieved: new FormControl(''),
-        rate: new FormControl(''),
         paidAmt: new FormControl(''),
 
         customerName: new FormControl(''),
@@ -238,6 +230,9 @@ export class NewFullEntryComponent implements OnInit {
     this.shippingAddressSearchList = this.shippingAddressList;
     this.shippingAddressSelected = false;
     this.entryForm.get('shippingAddress')?.setValue('');
+
+    if (this.shippingAddressList.length === 1)
+      this.onSelectShippingAddress(this.shippingAddressList[0]);
   }
 
   onSelectShippingAddress(selectedAddress: string) {
@@ -309,9 +304,7 @@ export class NewFullEntryComponent implements OnInit {
         date: this.getFormattedDate('DD/MM/YYYY'),
         customer: customer,
         deliveryBoy: deliveryPerson,
-        sent: value.unitsSent,
-        recieved: value.unitsRecieved,
-        rate: value.rate,
+        total: this.totalSum,
         payment: value.paidAmt,
         transactionId: transactionId,
         extraDetails: value.extraDetails,
@@ -355,21 +348,7 @@ export class NewFullEntryComponent implements OnInit {
     this.disableSave = false;
     this.errorMessage = undefined;
 
-    if (this.getFormattedDate('DD/MM/YYYY', value.date).length == 0) {
-      this.disableSave = true;
-      this.errorMessage = 'Please enter date of entry.';
-    } else if (value.unitsSent == 0 && value.unitsRecieved == 0 && value.paidAmt == 0) {
-      this.disableSave = true;
-      this.errorMessage = 'Any of Sent, Recieved or Payment is required.';
-    } else if (value.paidAmt < 0) {
-      this.disableSave = true;
-      this.errorMessage = 'Payment recieved cannot be less than 0.';
-    } else if (value.unitsRecieved > value.unitsSent && value.unitsSent > 0) {
-      this.errorMessage = `Warning: recieved[${value.unitsRecieved}] units is more than pending[${value.unitsSent}] units.`;
-    } else if (value.unitsSent > 0 && value.rate == 0) {
-      this.disableSave = true;
-      this.errorMessage = 'Rate is required if units are sent.';
-    } else if (value.customerName?.length == 0) {
+    if (value.customerName?.length == 0) {
       this.disableSave = true;
       this.errorMessage = "Please enter customer name.";
     } else if (value.customerNumber?.length != 10) {
@@ -378,18 +357,27 @@ export class NewFullEntryComponent implements OnInit {
     } else if (value.customerNumber?.length === 10 && parseInt(String(value.customerNumber).charAt(0)) < 6) {
       this.disableSave = true;
       this.errorMessage = 'Invalid customer number.';
-    } else if (value.deliveryBoyName?.length == 0) {
-      this.disableSave = true;
-      this.errorMessage = "Please enter delivery boy's name.";
     } else if (value.shippingAddress?.length == 0) {
       this.disableSave = true;
       this.errorMessage = "Please enter shipping address.";
+    } else if (this.selectedProductList.length === 0 && value.paidAmt == 0) {
+      this.disableSave = true;
+      this.errorMessage = 'Atleat one product or a payment is required.';
+    } else if (value.deliveryBoyName?.length == 0) {
+      this.disableSave = true;
+      this.errorMessage = "Please enter delivery boy's name.";
     } else if (value.deliveryBoyNumber?.length > 0 && value.deliveryBoyNumber?.length != 10) {
       this.disableSave = true;
       this.errorMessage = 'Delivery boy number is not 10 digits.';
     } else if (value.deliveryBoyNumber?.length > 0 && parseInt(String(value.deliveryBoyNumber).charAt(0)) < 6) {
       this.disableSave = true;
       this.errorMessage = 'Invalid delivery boy number.';
+    } else if (this.getFormattedDate('DD/MM/YYYY', value.date).length == 0) {
+      this.disableSave = true;
+      this.errorMessage = 'Please enter date of entry.';
+    } else if (value.paidAmt < 0) {
+      this.disableSave = true;
+      this.errorMessage = 'Payment recieved cannot be less than 0.';
     } else if (!this.deliveryBoySelected) {
       const numberToSearch: string = this.entryForm.get('deliveryBoyNumber')?.value;
       if (numberToSearch?.length === 10 && this.deliveryPhoneNumbers.includes(numberToSearch)) {
@@ -449,50 +437,47 @@ export class NewFullEntryComponent implements OnInit {
   removeProduct(event: any, index: number) {
     event.stopPropagation();
 
-    let rate = this.entryForm.get('rate')?.value;
     const product = this.selectedProductList[index];
-    rate -= (product.productData.rate || 0) * product.quantity;
+    this.totalSum -= (product.productData.rate || 0) * product.sentUnits;
 
-    if (rate < 0) rate = 0;
+    if (this.totalSum < 0) this.totalSum = 0;
 
-    this.entryForm.get('rate')?.setValue(rate);
     this.selectedProductList.splice(index, 1);
+    this.checkForDataValidation(this.entryForm.value);
   }
 
   submitProductSelection() {
     this.selectedProductList = [];
-    let rate = 0;
-    let unitsSent = 0;
-    let unitsRecieved = 0;
+    this.totalSum = 0;
 
     for (let item of this.productList) {
-      const element = document.getElementById(item.data.productId) as HTMLInputElement;
-      if (element) {
-        const quantity = parseInt(element.value);
-        if (quantity && quantity !== 0) {
+      const rateElement = document.getElementById(`rate_${item.data.productId}`) as HTMLInputElement;
+      const sentElement = document.getElementById(`sent_${item.data.productId}`) as HTMLInputElement;
+      const recievedElement = document.getElementById(`recieved_${item.data.productId}`) as HTMLInputElement;
+
+      if (rateElement && sentElement && recievedElement) {
+        const rate = parseInt(rateElement.value);
+        const sentUnits = parseInt(sentElement.value);
+        const recievedUnits = parseInt(recievedElement.value);
+
+        if (sentUnits && sentUnits > 0 || recievedUnits && recievedUnits > 0) {
           this.selectedProductList.push({
             productData: {
               name: item.data.name,
-              rate: item.data.rate || 0,
+              rate: sentUnits > 0 ? rate : 0,
               productId: item.data.productId
             },
-            quantity: quantity
+            sentUnits: sentUnits,
+            recievedUnits: recievedUnits
           })
-          if (quantity > 0) {
-            let dataRate = item.data.rate || 0;
-            rate += dataRate * quantity;
-            unitsSent += quantity;
-          } else {
-            unitsRecieved += quantity * -1;
-          }
+          let dataRate = item.data.rate || 0;
+          this.totalSum += dataRate * sentUnits;
         }
       }
     }
 
-    this.entryForm.get('rate')?.setValue(rate);
-    this.entryForm.get('unitsSent')?.setValue(unitsSent);
-    this.entryForm.get('unitsRecieved')?.setValue(unitsRecieved);
     this.focusedFormName = '';
+    this.checkForDataValidation(this.entryForm.value);
   }
 
   getFormattedDate(format: string, date = this.entryForm.get('date')?.value): string {
@@ -511,14 +496,20 @@ export class NewFullEntryComponent implements OnInit {
   onfocus(formName: string) {
     this.focusedFormName = formName;
 
-    setTimeout(() => {
-      if (formName === 'productSelect') {
+    if (formName === 'productSelect') {
+      setTimeout(() => {
         for (let item of this.selectedProductList) {
-          const element = document.getElementById(item.productData.productId) as HTMLInputElement;
-          if (element)
-            element.value = '' + item.quantity;
+          const rateElement = document.getElementById(`rate_${item.productData.productId}`) as HTMLInputElement;
+          const sentElement = document.getElementById(`sent_${item.productData.productId}`) as HTMLInputElement;
+          const recievedElement = document.getElementById(`recieved_${item.productData.productId}`) as HTMLInputElement;
+
+          if (rateElement && sentElement && recievedElement) {
+            rateElement.value = item.productData.rate.toString();
+            sentElement.value = item.sentUnits.toString();
+            recievedElement.value = item.recievedUnits.toString();
+          }
         }
-      }
-    }, 100);
+      }, 100);
+    }
   }
 }
