@@ -2,7 +2,8 @@ Todo: ************************************************
 filter in inventory in delivery personn, date range
 take input of products while making entry
 show product added in entry details model popup
-
+disable save if rate not entered while adding new product
+show products added in table
 
 CHANGES **********************************************
 

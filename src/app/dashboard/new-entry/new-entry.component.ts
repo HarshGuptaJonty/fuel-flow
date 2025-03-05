@@ -326,7 +326,7 @@ export class NewEntryComponent implements OnInit {
   formatNumber(value?: string) {
     if (!value)
       return '';
-    return value.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+    return value.replace(/(\d{5})(\d{5})/, '$1 $2');
   }
 
   onfocus(formName: string) {

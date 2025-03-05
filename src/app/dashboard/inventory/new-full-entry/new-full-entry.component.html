@@ -47,10 +47,37 @@
                 </mat-form-field>
                 <div class="select-dropdown"
                     *ngIf="shippingAddressSearchList.length > 0 && focusedFormName === 'shippingAddress' && customerSelected">
-                    <div class="profile" *ngFor="let address of shippingAddressSearchList" (click)="onSelectShippingAddress(address)"
-                        tabindex="0">
+                    <div class="profile" *ngFor="let address of shippingAddressSearchList"
+                        (click)="onSelectShippingAddress(address)" tabindex="0">
                         <span class="bold-text me-2">{{address}}</span>
                     </div>
+                </div>
+            </div>
+            <div class="w-100 p-relative h-100">
+                <div class="product-select d-flex align-items-center gap flex-wrap" (click)="onfocus('productSelect')"
+                    tabindex="0">
+                    <span class="normal-font" *ngIf="selectedProductList.length === 0">Select product items</span>
+                    <span class="product-capsule d-flex align-items-center"
+                        *ngFor="let productQuantity of selectedProductList; let i = index">
+                        <span class="p-name bold-text">{{productQuantity.productData.name}}:
+                            {{productQuantity.quantity}}</span>
+                        <img src="assets/images/svg/close.svg" alt="X" height="16px" class="ms-1"
+                            (click)="removeProduct($event, i)" tabindex="0">
+                    </span>
+                </div>
+                <div class="product-select-dropdown" *ngIf="focusedFormName === 'productSelect'">
+                    <div class="product d-flex justify-content-between align-items-center bold-text">
+                        <span>Name</span>
+                        <span class="ms-2">Rate</span>
+                        <span class="me-4">Quantity</span>
+                    </div>
+                    <div class="product d-flex justify-content-between align-items-center"
+                        *ngFor="let product of productList">
+                        <span class="bold-text">{{product.data.name}}</span>
+                        <span class="secondary-color">{{product.data.rate | number: '1.2-2'}}</span>
+                        <input class="quantity-input" maxlength="4" type="number" [id]="product.data.productId">
+                    </div>
+                    <div class="product-submit" (click)="submitProductSelection()" tabindex="0">Submit</div>
                 </div>
             </div>
         </div>
@@ -149,6 +176,9 @@
             <button mat-flat-button (click)="onDeleteClick()" *ngIf="isEditing"
                 class="custom-btn cancel-btn danger">Delete</button>
         </div>
-        <button mat-flat-button (click)="onSaveClick()" class="save-btn" [disabled]="disableSave">Save</button>
+        <div class="gap-3 d-flex flex-wrap">
+            <button mat-flat-button (click)="onRefreshData()" class="custom-btn normal">Refresh</button>
+            <button mat-flat-button (click)="onSaveClick()" class="save-btn" [disabled]="disableSave">Save</button>
+        </div>
     </div>
 </div>

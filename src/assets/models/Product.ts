@@ -12,3 +12,12 @@ export interface Product {
         editedTime?: number;
     }
 }
+
+export interface ProductQuantity {
+    productData: {
+        name: string;
+        rate: number;
+        productId: string;
+    },
+    quantity: number;
+}

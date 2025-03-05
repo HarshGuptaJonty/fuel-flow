@@ -17,6 +17,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { CustomerDataService } from '../../../services/customer-data.service';
+import { Product, ProductQuantity } from '../../../../assets/models/Product';
+import { ProductService } from '../../../services/product.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-new-full-entry',
@@ -85,17 +88,27 @@ export class NewFullEntryComponent implements OnInit {
   deliveryBoysSearchList: DeliveryPerson[] = [];
   deliveryBoySelected = false;
 
+  productList: Product[] = [];
+  selectedProductList: ProductQuantity[] = [];
+
   constructor(
     private accountService: AccountService,
     private entryDataService: EntryDataService,
     private confirmationModelService: ConfirmationModelService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private customerDataService: CustomerDataService
+    private customerDataService: CustomerDataService,
+    private productService: ProductService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
     this.isEditing = !!this.openTransaction;
     this.transactionId = this.openTransaction?.data.transactionId || '';
+
+    this.productService.isDataChanged?.subscribe(flag => {
+      if (flag)
+        this.productList = Object.values(this.productService.getProductList() || {});
+    })
 
     if (this.isEditing) {
       this.entryForm = new FormGroup({
@@ -116,6 +129,8 @@ export class NewFullEntryComponent implements OnInit {
 
         extraDetails: new FormControl(this.openTransaction?.data.extraDetails),
       });
+
+      this.selectedProductList = this.openTransaction?.data.selectedProducts || [];
 
       this.customerSelected = true;
       this.shippingAddressSelected = true;
@@ -141,23 +156,8 @@ export class NewFullEntryComponent implements OnInit {
       });
     }
 
-    if (this.customerDataService.getCustomerData()) {
-      this.customerList = Object.values(this.customerDataService.getCustomerList());
-      this.customerPhoneNumbers = this.customerList.map((user: any) => user?.data?.phoneNumber);
-      this.customerSearchList = this.customerList;
-
-      if (this.isEditing && this.openTransaction?.data.customer?.userId) {
-        const customerObject = this.customerDataService.getCustomerList()[this.openTransaction.data.customer.userId];
-        this.shippingAddressList = customerObject?.data?.shippingAddress || [];
-        this.shippingAddressSearchList = this.shippingAddressList;
-      }
-    }
-
-    if (this.deliveryPersonDataService.hasDeliveryPersonData()) {
-      this.deliveryBoysList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
-      this.deliveryPhoneNumbers = this.deliveryBoysList.map((user: any) => user?.data?.phoneNumber);
-      this.deliveryBoysSearchList = this.deliveryBoysList;
-    }
+    this.loadCustomerData();
+    this.loadDeliveryPersonData();
 
     this.entryForm.valueChanges.subscribe((value) => this.checkForDataValidation(value));
 
@@ -174,6 +174,52 @@ export class NewFullEntryComponent implements OnInit {
   clickout(event: Event) {
     if (this.formSection && !this.formSection.nativeElement.contains(event.target))
       this.focusedFormName = '';
+  }
+
+  loadCustomerData(showNotification = false) {
+    if (this.customerDataService.getCustomerData()) {
+      this.customerList = Object.values(this.customerDataService.getCustomerList());
+      this.customerPhoneNumbers = this.customerList.map((user: any) => user?.data?.phoneNumber);
+      this.customerSearchList = this.customerList;
+
+      if (this.isEditing && this.openTransaction?.data.customer?.userId) {
+        const customerObject = this.customerDataService.getCustomerList()[this.openTransaction.data.customer.userId];
+        this.shippingAddressList = customerObject?.data?.shippingAddress || [];
+        this.shippingAddressSearchList = this.shippingAddressList;
+      }
+    } else if (showNotification) {
+      this.notificationService.showNotification({
+        heading: 'No Customer data found!',
+        duration: 5000,
+        leftBarColor: this.notificationService.color.yellow
+      });
+    }
+  }
+
+  loadDeliveryPersonData(showNotification = false) {
+    if (this.deliveryPersonDataService.hasDeliveryPersonData()) {
+      this.deliveryBoysList = Object.values(this.deliveryPersonDataService.getDeliveryPersonList());
+      this.deliveryPhoneNumbers = this.deliveryBoysList.map((user: any) => user?.data?.phoneNumber);
+      this.deliveryBoysSearchList = this.deliveryBoysList;
+    } else if (showNotification) {
+      this.notificationService.showNotification({
+        heading: 'No Delivery person data found!',
+        duration: 5000,
+        leftBarColor: this.notificationService.color.yellow
+      });
+    }
+  }
+
+  onRefreshData() {
+    this.notificationService.showNotification({
+      heading: 'Data Refreshing...',
+      message: 'Downloading new data!',
+      duration: 5000,
+      leftBarColor: this.notificationService.color.green
+    });
+    this.productList = Object.values(this.productService.getProductList() || {});
+    this.loadCustomerData(true);
+    this.loadDeliveryPersonData(true);
   }
 
   onSelectCustomer(customer: Customer) {
@@ -264,7 +310,8 @@ export class NewFullEntryComponent implements OnInit {
         payment: value.paidAmt,
         transactionId: transactionId,
         extraDetails: value.extraDetails,
-        shippingAddress: value.shippingAddress
+        shippingAddress: value.shippingAddress,
+        selectedProducts: this.selectedProductList
       }, others: {
         createdBy: createdBy,
         createdTime: createdTime,
@@ -394,6 +441,55 @@ export class NewFullEntryComponent implements OnInit {
       );
   }
 
+  removeProduct(event: any, index: number) {
+    event.stopPropagation();
+
+    let rate = this.entryForm.get('rate')?.value;
+    const product = this.selectedProductList[index];
+    rate -= (product.productData.rate || 0) * product.quantity;
+
+    if (rate < 0) rate = 0;
+
+    this.entryForm.get('rate')?.setValue(rate);
+    this.selectedProductList.splice(index, 1);
+  }
+
+  submitProductSelection() {
+    this.selectedProductList = [];
+    let rate = 0;
+    let unitsSent = 0;
+    let unitsRecieved = 0;
+
+    for (let item of this.productList) {
+      const element = document.getElementById(item.data.productId) as HTMLInputElement;
+      if (element) {
+        const quantity = parseInt(element.value);
+        if (quantity && quantity !== 0) {
+          this.selectedProductList.push({
+            productData: {
+              name: item.data.name,
+              rate: item.data.rate || 0,
+              productId: item.data.productId
+            },
+            quantity: quantity
+          })
+          if (quantity > 0) {
+            let dataRate = item.data.rate || 0;
+            rate += dataRate * quantity;
+            unitsSent += quantity;
+          } else {
+            unitsRecieved += quantity * -1;
+          }
+        }
+      }
+    }
+    
+    this.entryForm.get('rate')?.setValue(rate);
+    this.entryForm.get('unitsSent')?.setValue(unitsSent);
+    this.entryForm.get('unitsRecieved')?.setValue(unitsRecieved);
+    this.focusedFormName = '';
+  }
+
   getFormattedDate(format: string, date = this.entryForm.get('date')?.value): string {
     const formatted = date ? moment(date).format(format) : '';
     if (formatted === 'Invalid date')
@@ -404,10 +500,20 @@ export class NewFullEntryComponent implements OnInit {
   formatNumber(value?: string) {
     if (!value)
       return '';
-    return value.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+    return value.replace(/(\d{5})(\d{5})/, '$1 $2');
   }
 
   onfocus(formName: string) {
     this.focusedFormName = formName;
+
+    setTimeout(() => {
+      if (formName === 'productSelect') {
+        for (let item of this.selectedProductList) {
+          const element = document.getElementById(item.productData.productId) as HTMLInputElement;
+          if (element)
+            element.value = '' + item.quantity;
+        }
+      }
+    }, 100);
   }
 }

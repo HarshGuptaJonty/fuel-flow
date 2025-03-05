@@ -41,6 +41,81 @@
             padding: 3px 5px;
             border-radius: 5px;
         }
+
+        .product-select {
+            border: 1px solid $secondary-color;
+            height: 56px;
+            border-radius: 5px;
+            padding-left: 16px;
+            color: #44474e;
+
+            .normal-font {
+                font-family: var(--mdc-outlined-text-field-label-text-font, var(--mat-sys-body-large-font));
+            }
+
+            .product-capsule {
+                background-color: $border-light;
+                padding: 0px 6px;
+                border-radius: 50px;
+            }
+
+            .p-name {
+                color: black;
+                padding-top: 3px;
+                font-size: 15px;
+            }
+
+            &:hover {
+                cursor: pointer;
+                border-color: black;
+                color: black;
+            }
+        }
+
+        .product-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid gray;
+            z-index: 10;
+            overflow-y: auto;
+            border-radius: 5px;
+            max-height: 400px;
+
+            &.hight-no-limit {
+                max-height: unset;
+            }
+
+            .product {
+                padding: 7px 10px;
+
+                &:hover {
+                    background-color: $border-very-light2;
+                    cursor: pointer;
+                }
+            }
+
+            .quantity-input {
+                width: 100px;
+                padding: 3px 6px;
+                border-radius: 5px;
+                border: 1px solid $secondary-color;
+            }
+
+            .product-submit {
+                background-color: #40916c;
+                padding: 7px 10px;
+                color: white;
+
+                &:hover {
+                    background-color: #2d6a4f;
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     .error-msg {
@@ -60,8 +135,13 @@
         background-color: $border-light;
         color: $primary-web-dark;
 
-        &.danger {
-            &:hover {
+        &:hover {
+            &.normal {
+                background-color: $primary-mat-color;
+                color: white;
+            }
+
+            &.danger {
                 background-color: $primary-web-red;
                 color: white;
             }

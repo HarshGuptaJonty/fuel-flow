@@ -1,3 +1,5 @@
+import { ProductQuantity } from "./Product";
+
 export interface EntryTransaction {
     data: {
         date?: string,
@@ -9,7 +11,8 @@ export interface EntryTransaction {
         payment?: number,
         transactionId: string,
         extraDetails?: string,
-        shippingAddress?: string
+        shippingAddress?: string,
+        selectedProducts?: ProductQuantity[]
     }, others?: {
         createdBy?: string,
         createdTime?: number,
