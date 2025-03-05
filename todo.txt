@@ -8,7 +8,6 @@ show products added in table
 CHANGES **********************************************
 
 In-Progress: *****************************************
-Note stock items (dynamic)
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -34,6 +33,8 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+take input of products in new entry
+Note stock items (dynamic)
 reverse exporing data, lates will be in bottom
 show sum in inventory
 filter in inventory in customer, address

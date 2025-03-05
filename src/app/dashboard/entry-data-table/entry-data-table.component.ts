@@ -5,7 +5,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { dateConverter } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
-import { NewEntryComponent } from "../new-entry/new-entry.component";
+import { NewFullEntryComponent } from "../inventory/new-full-entry/new-full-entry.component";
 import { EntryDataService } from '../../services/entry-data.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NotificationService } from '../../services/notification.service';
@@ -23,7 +23,7 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    NewEntryComponent,
+    NewFullEntryComponent,
     MatPaginatorModule
   ],
   templateUrl: './entry-data-table.component.html',

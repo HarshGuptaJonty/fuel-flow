@@ -1,3 +1,12 @@
+<div class="new-full-entry" *ngIf="newEntry">
+    <div class="model-box">
+        <app-new-full-entry (onCancel)="newEntry=false; openTransaction = undefined" (onSubmit)="saveEntry($event)"
+            [openTransaction]="openTransaction" (onDelete)="deleteEntry(openTransaction)"
+            [customerObject]="customerObject">
+        </app-new-full-entry>
+    </div>
+</div>
+
 <div class="data-table-container h-100">
 
     <div class="detail-section d-flex" *ngIf="isCustomer">
@@ -25,13 +34,6 @@
             *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export PDF</span>
         </div>
-    </div>
-
-    <div *ngIf="newEntry">
-        <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit"
-            [openTransaction]="openTransaction" (onCancel)="newEntry = false; openTransaction = undefined"
-            (onSubmit)="saveEntry($event)" (onDelete)="deleteEntry(openTransaction)">
-        </app-new-entry>
     </div>
 
     <div class="w-100 table-div">

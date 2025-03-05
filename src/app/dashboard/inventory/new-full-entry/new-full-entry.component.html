@@ -135,15 +135,15 @@
             <div class="box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Units Sent</mat-label>
-                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsSent"
-                        (focus)="onfocus('unitsSent')">
+                    <input matInput placeholder="5" type="number" [maxLength]="3" autocomplete="off"
+                        formControlName="unitsSent" (focus)="onfocus('unitsSent')">
                 </mat-form-field>
             </div>
             <div class="box-input">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Units Recieved</mat-label>
-                    <input matInput placeholder="5" [maxLength]="3" autocomplete="off" formControlName="unitsRecieved"
-                        (focus)="onfocus('unitsRecieved')">
+                    <input matInput placeholder="5" type="number" [maxLength]="3" autocomplete="off"
+                        formControlName="unitsRecieved" (focus)="onfocus('unitsRecieved')">
                 </mat-form-field>
             </div>
             <div class="box-input">

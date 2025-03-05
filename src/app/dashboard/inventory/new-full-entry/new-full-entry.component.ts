@@ -42,6 +42,7 @@ import { NotificationService } from '../../../services/notification.service';
 export class NewFullEntryComponent implements OnInit {
 
   @Input() openTransaction?: EntryTransaction;
+  @Input() customerObject?: Customer;
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
@@ -109,6 +110,7 @@ export class NewFullEntryComponent implements OnInit {
       if (flag)
         this.productList = Object.values(this.productService.getProductList() || {});
     })
+    this.productList = Object.values(this.productService.getProductList() || {});
 
     if (this.isEditing) {
       this.entryForm = new FormGroup({
@@ -168,6 +170,9 @@ export class NewFullEntryComponent implements OnInit {
 
     this.entryForm.get('deliveryBoyName')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
+
+    if (this.customerObject)
+      this.onSelectCustomer(this.customerObject);
   }
 
   @HostListener('document:click', ['$event'])
@@ -214,7 +219,7 @@ export class NewFullEntryComponent implements OnInit {
     this.notificationService.showNotification({
       heading: 'Data Refreshing...',
       message: 'Downloading new data!',
-      duration: 5000,
+      duration: 1000,
       leftBarColor: this.notificationService.color.green
     });
     this.productList = Object.values(this.productService.getProductList() || {});
@@ -483,7 +488,7 @@ export class NewFullEntryComponent implements OnInit {
         }
       }
     }
-    
+
     this.entryForm.get('rate')?.setValue(rate);
     this.entryForm.get('unitsSent')?.setValue(unitsSent);
     this.entryForm.get('unitsRecieved')?.setValue(unitsRecieved);
