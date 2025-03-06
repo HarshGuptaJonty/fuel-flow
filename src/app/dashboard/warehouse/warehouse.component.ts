@@ -11,6 +11,7 @@ import { ProductService } from '../../services/product.service';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { NotificationService } from '../../services/notification.service';
 import { AdminDataService } from '../../services/admin-data.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-warehouse',
@@ -30,6 +31,7 @@ export class WarehouseComponent implements OnInit {
   isEditingProduct = false;
   errorMessage?: string;
   selectedProduct?: Product;
+  queryProductId?: string;
   productList: Product[] = [];
 
   productForm: FormGroup = new FormGroup({
@@ -39,6 +41,7 @@ export class WarehouseComponent implements OnInit {
   })
 
   constructor(
+    private route: ActivatedRoute,
     private accountService: AccountService,
     private productService: ProductService,
     private confirmationModelService: ConfirmationModelService,
@@ -47,6 +50,10 @@ export class WarehouseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.queryProductId = params['productId'];
+    });
+
     this.refreshEntryData();
 
     this.productService.isDataChanged?.subscribe(flag => {
@@ -61,6 +68,11 @@ export class WarehouseComponent implements OnInit {
 
     let objects = this.productService.getProductList() || {};
     this.productList = Object.values(objects);
+
+    if (this.queryProductId && this.productList.length > 0) {
+      this.selectedProduct = objects?.[this.queryProductId];
+      this.queryProductId = undefined;
+    }
   }
 
   onAddNewProduct() {

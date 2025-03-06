@@ -146,7 +146,11 @@
         <ng-template #productDetail let-value let-column="column">
             <div *ngFor="let data of value.productDetail" class="my-2">
                 <span *ngIf="column.isAmount">{{getValue(data, column.key) | number: '1.2-2'}}</span>
-                <span *ngIf="!column.isAmount" class="nowrap">{{getValue(data, column.key)}}</span>
+                <span *ngIf="!column.isAmount" class="nowrap">
+                    <span *ngIf="!column.isLink">{{getValue(data, column.key)}}</span>
+                    <span *ngIf="column.isLink" class="name-text" (click)="openProduct(data)">
+                        {{getValue(data, column.key)}}</span>
+                </span>
             </div>
         </ng-template>
     </div>

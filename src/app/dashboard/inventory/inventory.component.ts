@@ -67,7 +67,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       key: 'productData.name',
       label: 'Product',
       customClass: 'text-right',
-      dataType: 'productDetail'
+      dataType: 'productDetail',
+      isLink: true
     }, {
       key: 'sentUnits',
       label: 'Sent',
@@ -374,6 +375,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         leftBarColor: this.notificationService.color.yellow
       });
     }
+  }
+
+  openProduct(product: any) {
+    this.router.navigate(['/dashboard/warehouse'], { queryParams: { productId: product.productData.productId } });
   }
 
   searchCustomer() {

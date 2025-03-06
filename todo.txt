@@ -1,4 +1,5 @@
 Todo: ************************************************
+update version code and last update date at last
 filter in inventory in delivery personn, date range
 take input of products while making entry
 show product added in entry details model popup
@@ -6,12 +7,11 @@ worok on exports
 show pending units in customer page
 ask if product is elibable for recieve
 add comments in all component
-make product linkable
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
-show products added in table
+make product linkable
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -37,6 +37,7 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+show products added in table
 disable save if rate not entered while adding new product
 take input of products in new entry
 Note stock items (dynamic)
