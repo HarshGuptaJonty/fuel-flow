@@ -493,9 +493,20 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   getValue(obj: any, path: string): any {
-    if (path === 'productData.pending') {
-      return obj.sentUnits - obj.recievedUnits;
-    }
+    const returnable = obj?.productData?.productReturnable || false;
+
+    if (path === 'productData.pending')
+      if (returnable)
+        return obj.sentUnits - obj.recievedUnits;
+      else
+        return '-';
+
+    if (path === 'recievedUnits')
+      if (returnable)
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+      else
+        return '-';
+
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }

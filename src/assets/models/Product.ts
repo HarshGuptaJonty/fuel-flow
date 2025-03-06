@@ -4,6 +4,7 @@ export interface Product {
         rate?: number;
         extraNote?: string;
         productId: string;
+        productReturnable: boolean;
     },
     others?: {
         createdBy?: string;
@@ -18,6 +19,7 @@ export interface ProductQuantity {
         name: string;
         rate: number;
         productId: string;
+        productReturnable: boolean;
     },
     sentUnits: number;
     recievedUnits: number;

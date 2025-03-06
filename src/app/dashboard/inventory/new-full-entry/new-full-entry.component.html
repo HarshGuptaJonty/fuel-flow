@@ -89,6 +89,7 @@
                                         <input class="product-input" maxlength="4" value="0" type="number"
                                             [id]="'sent_'+product.data.productId" min="0">
                                         <input class="product-input" maxlength="4" value="0" type="number"
+                                            [disabled]="!product.data.productReturnable"
                                             [id]="'recieved_'+product.data.productId" min="0">
                                     </div>
                                 </div>

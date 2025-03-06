@@ -465,7 +465,8 @@ export class NewFullEntryComponent implements OnInit {
             productData: {
               name: item.data.name,
               rate: sentUnits > 0 ? rate : 0,
-              productId: item.data.productId
+              productId: item.data.productId,
+              productReturnable: item.data.productReturnable || false
             },
             sentUnits: sentUnits,
             recievedUnits: recievedUnits

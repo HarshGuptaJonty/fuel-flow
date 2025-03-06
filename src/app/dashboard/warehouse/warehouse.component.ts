@@ -12,6 +12,7 @@ import { ConfirmationModelService } from '../../services/confirmation-model.serv
 import { NotificationService } from '../../services/notification.service';
 import { AdminDataService } from '../../services/admin-data.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-warehouse',
@@ -21,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatChipsModule
   ],
   templateUrl: './warehouse.component.html',
   styleUrl: './warehouse.component.scss'
@@ -29,6 +31,7 @@ export class WarehouseComponent implements OnInit {
 
   addNewProduct = false;
   isEditingProduct = false;
+  isProductReturnable = true;
   errorMessage?: string;
   selectedProduct?: Product;
   queryProductId?: string;
@@ -91,6 +94,7 @@ export class WarehouseComponent implements OnInit {
 
     const productData = this.productForm.value;
     productData.productId = productId;
+    productData.productReturnable = this.isProductReturnable;
 
     const newProduct = {
       data: productData,
@@ -127,6 +131,7 @@ export class WarehouseComponent implements OnInit {
         if (this.selectedProduct) {
           this.isEditingProduct = true;
           this.addNewProduct = true;
+          this.isProductReturnable = this.selectedProduct?.data.productReturnable || false;
 
           this.productForm = new FormGroup({
             name: new FormControl(this.selectedProduct?.data.name, [Validators.required]),

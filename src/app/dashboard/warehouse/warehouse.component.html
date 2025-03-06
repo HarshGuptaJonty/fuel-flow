@@ -9,30 +9,38 @@
     </div>
 
     <div class="product-form mb-2" *ngIf="addNewProduct">
-        <form [formGroup]="productForm" class="d-flex justify-content-between gap-10">
-            <div class="gap-10 d-flex flex-grow-1 flex-wrap pt-1">
-                <div class="box-input">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Product Name</mat-label>
-                        <input matInput placeholder="LPG 14KG" [maxLength]="40" autocomplete="off"
-                            formControlName="name">
-                    </mat-form-field>
+        <form [formGroup]="productForm" class="adjust-form justify-content-between gap-10">
+            <div class="flex-grow-1">
+                <div class="gap-10 d-flex flex-grow-1 flex-wrap pt-1">
+                    <div class="box-input">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Product Name</mat-label>
+                            <input matInput placeholder="LPG 14KG" [maxLength]="40" autocomplete="off"
+                                formControlName="name">
+                        </mat-form-field>
+                    </div>
+                    <div class="box-input">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Rate/Unit</mat-label>
+                            <input matInput placeholder="1200" [maxLength]="6" autocomplete="off"
+                                formControlName="rate">
+                        </mat-form-field>
+                    </div>
+                    <div class="flex-grow-1">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Extra Note</mat-label>
+                            <input matInput placeholder="Product must be handeled carefully." autocomplete="off"
+                                formControlName="extraNote">
+                        </mat-form-field>
+                    </div>
                 </div>
-                <div class="box-input">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Rate/Unit</mat-label>
-                        <input matInput placeholder="1200" [maxLength]="50" autocomplete="off" formControlName="rate">
-                    </mat-form-field>
-                </div>
-                <div class="box-input flex-grow-1">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Extra Note</mat-label>
-                        <input matInput placeholder="Product must be handeled carefully." autocomplete="off"
-                            formControlName="extraNote">
-                    </mat-form-field>
-                </div>
+                <mat-chip-listbox class="mat-mdc-chip-set-stacked mt-1 w-25">
+                    <mat-chip-option [selected]="isProductReturnable"
+                        (click)="isProductReturnable =! isProductReturnable">
+                        Product should be returned!</mat-chip-option>
+                </mat-chip-listbox>
             </div>
-            <div class="justify-content-between d-flex flex-wrap gap-10 pt-1">
+            <div class="justify-content-between d-flex flex-wrap gap-10 pt-1 pb-2">
                 <button mat-flat-button (click)="onSaveClick()" class="save-btn"
                     [disabled]="productForm.invalid">{{isEditingProduct?'Update':'Save'}}</button>
                 <button mat-flat-button (click)="onCancelClick()" class="custom-btn cancel-btn danger">Cancel</button>
@@ -51,6 +59,7 @@
             <div class="other-details" *ngIf="selectedProduct == product">
                 <div class="mb-2" *ngIf="product.data.extraNote"><span class="bold-text">Note:</span>
                     {{product.data.extraNote}}</div>
+                <div class="mb-2 bold-text" *ngIf="product.data.productReturnable">Product is returnable!</div>
                 <div class="mt-2"><span class="bold-text">Created By:</span> {{createByName(product.others?.createdBy)}}
                 </div>
                 <div><span class="bold-text">Time:</span> {{createdTime(product.others?.createdTime)}}</div>

@@ -344,8 +344,20 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   getValue(obj: any, path: string): any {
+    const returnable = obj?.productData?.productReturnable || false;
+
     if (path === 'productData.pending')
-      return obj.sentUnits - obj.recievedUnits;
+      if (returnable)
+        return obj.sentUnits - obj.recievedUnits;
+      else
+        return '-';
+
+    if (path === 'recievedUnits')
+      if (returnable)
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+      else
+        return '-';
+
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }
