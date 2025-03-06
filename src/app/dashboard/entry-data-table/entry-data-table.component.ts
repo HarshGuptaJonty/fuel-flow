@@ -331,6 +331,30 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     this.router.navigate(['/dashboard/warehouse'], { queryParams: { productId: product.productData.productId } });
   }
 
+  getStat(type: string): number {
+    let result = 0;
+    if (type === 'sentSum') {
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.sentUnits);
+      }
+    } else if (type === 'recieveSum') {
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.recievedUnits);
+      }
+    } else if (type === 'pending') {
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+      }
+    }
+    return result || 0;
+  }
+
   getTemplate(dataType: string) {
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'nameText') return this.nameText;

@@ -10,10 +10,6 @@
 <div class="data-table-container h-100">
 
     <div class="detail-section d-flex" *ngIf="isCustomer">
-        <div class="data-card d-flex flex-column" [ngClass]="{'danger':dueAmount>0}">
-            <span class="bold-text">Due Amount</span>
-            <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
-        </div>
         <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn"
             (click)="newEntry=!newEntry" tabindex="0">
             <span class="bold-text">New Entry</span>
@@ -61,6 +57,13 @@
                 'This delivery person has not delivered any units!'}}
             </div>
         </div>
+    </div>
+
+    <div class="footer-section d-flex justify-content-end gap-15 flex-wrap">
+        <span>Sent: {{getStat('sentSum')}}</span>
+        <span>Recieved: {{getStat('recieveSum')}}</span>
+        <span>Pending: {{getStat('pending')}}</span>
+        <span>Due Amount: {{dueAmount | number: '1.2-2'}}</span>
     </div>
 
     <ng-template #plainText let-value let-column="column">

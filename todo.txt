@@ -4,13 +4,12 @@ filter in inventory in delivery personn, date range
 take input of products while making entry
 show product added in entry details model popup
 worok on exports
-show pending units in customer page
 add comments in all component
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
-ask if product is elibable for recieving
+show pending units and due amount in footer in customer page
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -36,6 +35,7 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+ask if product is elibable for recieving
 make product linkable
 show products added in table
 disable save if rate not entered while adding new product

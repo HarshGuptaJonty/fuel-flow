@@ -17,10 +17,6 @@
             &:hover {
                 background-color: $border-very-light;
             }
-
-            &.danger {
-                border-bottom: 3px solid $primary-web-red;
-            }
         }
 
         .entry-btn {
@@ -100,6 +96,19 @@
 
     .no-data {
         height: calc(100% - 60px);
+    }
+
+    .gap-15 {
+        gap: 15px;
+    }
+
+    .footer-section {
+        border-top-left-radius: 15px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: $border-light;
+        padding: 10px 40px;
     }
 }
 

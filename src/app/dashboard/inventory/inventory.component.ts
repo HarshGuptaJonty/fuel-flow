@@ -454,14 +454,23 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   getStat(type: string): number {
     let result = 0;
     if (type === 'sentSum') {
-      for (let obj of this.dataSource.data)
-        result += parseInt(obj.sent);
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.sentUnits);
+      }
     } else if (type === 'recieveSum') {
-      for (let obj of this.dataSource.data)
-        result += parseInt(obj.recieved);
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.recievedUnits);
+      }
     } else if (type === 'pending') {
-      for (let obj of this.dataSource.data)
-        result += parseInt(obj.pending);
+      for (let obj of this.dataSource.data) {
+        for (let product of obj.productDetail)
+          if (product.productData.productReturnable)
+            result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+      }
     } else if (type === 'dueAmt') {
       for (let obj of this.dataSource.data)
         result += parseInt(obj.dueAmt);
