@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { EntryDetailModelService } from '../../services/entry-detail-model.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 import { ExportService } from '../../services/export.service';
 import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
@@ -201,28 +200,10 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       forExport = this.dataSource.data;
     }
 
-    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
-      return {
-        Date: item.date,
-        'Delivery Person Name': item.deliveryBoy?.fullName,
-        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
-        'Shipping Address': item.shippingAddress,
-        'Sent Quantity': item.sent,
-        'Received Quantity': item.recieved,
-        'Pending Units': item.pending,
-        'Rate/Unit': item.rate,
-        'Total Amount': item.totamAmt,
-        'Payment Amount': item.paymentAmt,
-        'Due Amount': item.dueAmt
-      };
-    });
-
-    formatForExport.reverse();
-
     if (type === 'excel')
-      this.exportService.exportToExcel(formatForExport, this.customerObject?.data.fullName);
+      this.exportService.exportToExcel(forExport, false, this.customerObject?.data.fullName);
     else if (type === 'pdf')
-      this.exportService.exportToPdf(formatForExport, this.customerObject?.data.fullName);
+      this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
   }
 
   async refreshEntryData() {
@@ -259,17 +240,19 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       date: dateConverter(item.data?.date || ''),
       customer: {
         fullName: item.data?.customer?.fullName,
+        phoneNumber: item.data?.customer?.phoneNumber,
         userId: item.data?.customer?.userId
       },
       deliveryBoy: {
         fullName: item.data?.deliveryBoy?.fullName,
+        phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      shippingAddress: item.data.shippingAddress,
       totamAmt: totalAmt,
       paymentAmt: payment,
       dueAmt: this.dueAmount,
       transactionId: item.data?.transactionId,
+      shippingAddress: item.data.shippingAddress,
       productDetail: item.data.selectedProducts
     };
   }
@@ -335,21 +318,24 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     let result = 0;
     if (type === 'sentSum') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.sentUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits);
       }
     } else if (type === 'recieveSum') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.recievedUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.recievedUnits);
       }
     } else if (type === 'pending') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
       }
     }
     return result || 0;

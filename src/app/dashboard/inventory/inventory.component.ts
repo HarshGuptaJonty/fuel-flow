@@ -14,7 +14,6 @@ import { NewFullEntryComponent } from "./new-full-entry/new-full-entry.component
 import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ExportService } from '../../services/export.service';
-import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Customer } from '../../../assets/models/Customer';
 
@@ -193,30 +192,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       forExport = this.dataSource.data;
     }
 
-    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
-      return {
-        Date: item.date,
-        'Customer Name': item.customer?.fullName,
-        // 'Customer Phone': item.customer?.phoneNumber,
-        'Delivery Person Name': item.deliveryBoy?.fullName,
-        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
-        'Shipping Address': item.shippingAddress,
-        'Sent Quantity': item.sent,
-        'Received Quantity': item.recieved,
-        'Pending Units': item.pending,
-        'Rate/Unit': item.rate,
-        'Total Amount': item.totamAmt,
-        'Payment Amount': item.paymentAmt,
-        'Due Amount': item.dueAmt
-      };
-    });
-
-    formatForExport.reverse();
-
     if (type === 'excel')
-      this.exportService.exportToExcel(formatForExport);
+      this.exportService.exportToExcel(forExport);
     else if (type === 'pdf')
-      this.exportService.exportToPdf(formatForExport);
+      this.exportService.exportToPdf(forExport);
   }
 
   refreshData() {
@@ -455,21 +434,24 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     let result = 0;
     if (type === 'sentSum') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.sentUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits);
       }
     } else if (type === 'recieveSum') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.recievedUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.recievedUnits);
       }
     } else if (type === 'pending') {
       for (let obj of this.dataSource.data) {
-        for (let product of obj.productDetail)
-          if (product.productData.productReturnable)
-            result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+        if (obj.productDetail)
+          for (let product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
       }
     } else if (type === 'dueAmt') {
       for (let obj of this.dataSource.data)

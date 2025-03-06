@@ -3,13 +3,12 @@ update version code and last update date at last
 filter in inventory in delivery personn, date range
 take input of products while making entry
 show product added in entry details model popup
-worok on exports
 add comments in all component
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
-show pending units and due amount in footer in customer page
+worok on exports
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -35,6 +34,7 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+show pending units and due amount in footer in customer page
 ask if product is elibable for recieving
 make product linkable
 show products added in table

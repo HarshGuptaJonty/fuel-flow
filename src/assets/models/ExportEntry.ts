@@ -1,15 +1,20 @@
-export interface InventoryExportEntry {
-    Date: string;
-    'Customer Name'?: string;
-    // 'Customer Phone': string;
-    'Shipping Address'?: string;
-    'Delivery Person Name': string;
-    // 'Delivery Person Phone'?: string;
-    'Sent Quantity'?: number;
-    'Received Quantity'?: number;
-    'Pending Units'?: number;
-    'Rate/Unit'?: number;
-    'Total Amount'?: number;
-    'Payment Amount'?: number;
-    'Due Amount'?: number;
+import { ProductQuantity } from "./Product";
+
+export interface DataForExportFormat {
+    date: string,
+    customer: {
+        fullName: string,
+        phoneNumber: string,
+        userId: string
+    },
+    deliveryBoy: {
+        fullName?: string,
+        phoneNumber?: string,
+        userId: string
+    },
+    totamAmt: number;
+    paymentAmt: number;
+    transactionId: string;
+    shippingAddress: string;
+    productDetail: ProductQuantity[];
 }
