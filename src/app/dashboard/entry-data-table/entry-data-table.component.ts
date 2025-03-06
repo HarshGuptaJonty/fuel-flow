@@ -60,7 +60,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }, {
       key: 'productData.name',
       label: 'Product',
-      customClass: 'text-right',
+      customClass: 'witdh-limit-200',
       dataType: 'productDetail',
       isLink: true
     }, {

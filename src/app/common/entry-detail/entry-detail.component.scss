@@ -14,6 +14,10 @@
     background-color: rgb(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
 
+    .gap {
+        gap: 15px;
+    }
+
     .model-box {
         width: 50%;
         min-width: 540px;
@@ -69,10 +73,52 @@
         }
     }
 
+    .table-section {
+        overflow-y: auto;
+    }
+
     .nowrap {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .custom-table {
+        .custom-header-row {
+            background-color: $border-light;
+        }
+
+        .custom-row:nth-child(even) {
+            background-color: $border-very-light;
+        }
+
+        .custom-header-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .custom-mat-cell {
+            font-family: "Comfortaa", serif;
+        }
+
+        .text-right {
+            text-align: end
+        }
+
+        .witdh-limit-200 {
+            max-width: 200px;
+        }
+
+        .name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: $primary-mat-color;
+
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
     }
 
     @media (max-width: 600px) {

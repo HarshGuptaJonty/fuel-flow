@@ -148,8 +148,9 @@
                 <span *ngIf="column.isAmount">{{getValue(data, column.key) | number: '1.2-2'}}</span>
                 <span *ngIf="!column.isAmount" class="nowrap">
                     <span *ngIf="!column.isLink">{{getValue(data, column.key)}}</span>
-                    <span *ngIf="column.isLink" class="name-text" (click)="openProduct(data)">
-                        {{getValue(data, column.key)}}</span>
+                    <div *ngIf="column.isLink" class="name-text" (click)="openProduct(data)">
+                        {{getValue(data, column.key)}}
+                    </div>
                 </span>
             </div>
         </ng-template>

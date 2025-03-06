@@ -65,7 +65,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }, {
       key: 'productData.name',
       label: 'Product',
-      customClass: 'text-right',
+      customClass: 'witdh-limit-200',
       dataType: 'productDetail',
       isLink: true
     }, {

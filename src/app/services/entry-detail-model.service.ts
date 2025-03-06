@@ -48,7 +48,8 @@ export class EntryDetailModelService {
       createdBy: this.adminDataService.getAdminName(entry.others?.createdBy),
       createdTime: formatDateAndTime(entry.others?.createdTime),
       editedBy: this.adminDataService.getAdminName(entry.others?.editedBy),
-      editedTime: formatDateAndTime(entry.others?.editedTime)
+      editedTime: formatDateAndTime(entry.others?.editedTime),
+      productDetail: entry.data.selectedProducts
     }
   }
 
