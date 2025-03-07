@@ -4,13 +4,10 @@ filter in inventory in delivery personn, date range
 seperate pending units count
 show icon for non returnable or returnable
 show description if space available in product list while making entry
-show detailed stats in customer page
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
-check lint
-show detailed stats in inventory
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -36,6 +33,9 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+show detailed stats in customer page
+check lint
+show detailed stats in inventory
 take input of products while making entry
 show product added in entry details model popup
 worok on exports

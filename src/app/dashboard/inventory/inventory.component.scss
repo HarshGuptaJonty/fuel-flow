@@ -5,7 +5,7 @@
 
     .inventory-container {
         user-select: none;
-        padding: 20px 40px 0px 40px;
+        padding: 10px 20px 0px 20px;
         height: calc(100vh - 70px);
         min-width: 500px;
 
@@ -214,9 +214,9 @@
 
         .footer-section {
             width: 99.9vw;
-            margin-left: -40px;
+            margin-left: -20px;
             background-color: $border-light;
-            padding: 10px 40px;
+            padding: 10px 20px;
             min-width: 500px;
 
             .list-view {
@@ -247,7 +247,7 @@
 
     @media (max-width: 1024px) {
         .inventory-container {
-            padding: 20px 20px 0px 20px;
+            padding: 10px 20px 0px 20px;
 
             .footer-section {
                 padding: 10px 20px;

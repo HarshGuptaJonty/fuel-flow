@@ -1,7 +1,7 @@
 @import '../../../assets/styles/color.scss';
 
 .data-table-container {
-    padding: 0px 50px 40px 50px;
+    padding: 0px 50px 5px 50px;
 
     .detail-section {
         flex-wrap: wrap;
@@ -102,19 +102,56 @@
         gap: 15px;
     }
 
-    .footer-section {
-        border-top-left-radius: 15px;
+    .parent-footer {
+        overflow-y: auto;
         position: absolute;
         bottom: 0;
-        right: 0;
+        left: 380px;
+        width: -webkit-fill-available;
+    }
+
+    .footer-section {
         background-color: $border-light;
-        padding: 10px 40px;
+        padding: 10px 50px;
+        min-width: max-content;
+
+        .list-view {
+            position: absolute;
+            bottom: 39px;
+            background-color: white;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 5px;
+            min-width: 150px;
+            max-width: 250px;
+            gap: 5px;
+            padding: 7px 10px;
+        }
+
+        .isclickable {
+            color: $primary-mat-color;
+
+            &:hover {
+                cursor: pointer;
+                font-weight: bold;
+            }
+        }
     }
 }
 
 @media (max-width: 1440px) {
     .data-table-container {
-        padding: 0px 25px 40px 25px;
+        padding: 0px 25px 5px 25px;
+
+        .parent-footer {
+            left: 300px;
+        }
+
+        .footer-section {
+            padding: 10px 25px;
+        }
     }
 }
 

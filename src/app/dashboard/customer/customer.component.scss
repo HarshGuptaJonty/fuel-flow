@@ -5,6 +5,10 @@
     user-select: none;
     overflow-y: auto;
 
+    .gap {
+        gap: 10px;
+    }
+
     .list-section {
         width: 20%;
         min-width: 380px;
@@ -59,11 +63,57 @@
         min-width: 410px;
         height: calc(100vh - 70px);
         overflow-y: auto;
+
+        .footer-section {
+            gap: 15px;
+            background-color: $border-light;
+            padding: 10px 50px;
+
+            .nowrap {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .p-relative {
+                position: relative;
+            }
+
+            .list-view {
+                position: absolute;
+                bottom: 29px;
+                background-color: white;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                z-index: 10;
+                max-height: 600px;
+                overflow-y: auto;
+                border-radius: 5px;
+                min-width: 180px;
+                max-width: 250px;
+                gap: 5px;
+                padding: 7px 10px;
+            }
+
+            .isclickable {
+                color: $primary-mat-color;
+
+                &:hover {
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+            }
+        }
     }
 
     @media (max-width: 1440px) {
         .list-section {
             min-width: 300px;
+        }
+
+        .details-section {
+            .footer-section {
+                padding: 10px 25px;
+            }
         }
     }
 }

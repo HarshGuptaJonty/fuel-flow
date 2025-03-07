@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="filter-section mt-3 d-flex justify-content-between" *ngIf="filterActive" #filterArea>
+        <div class="filter-section mt-2 d-flex justify-content-between" *ngIf="filterActive" #filterArea>
             <div class="gap d-flex w-100 flex-wrap flex-grow-1">
                 <div class="p-relative">
                     <input class="filter-input capsule" #customerName [maxLength]="30" autocomplete="off"
@@ -103,7 +103,7 @@
                 tabindex="0">
         </div>
 
-        <div class="w-100 table-div mt-4 flex-grow-1">
+        <div class="w-100 table-div mt-2 flex-grow-1">
             <table *ngIf="dataSource.data && dataSource.data.length>0" mat-table [dataSource]="dataSource"
                 class="custom-table">
                 <tr mat-header-row *matHeaderRowDef="displayedColumns()" class="custom-header-row nowrap"></tr>

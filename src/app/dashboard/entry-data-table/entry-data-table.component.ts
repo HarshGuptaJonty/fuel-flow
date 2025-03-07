@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
@@ -33,6 +33,9 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   @Input() customerObject?: Customer;
   @Input() deliveryPersonObject?: DeliveryPerson;
   @Input() isCustomer = true;
+
+  @Output() updateDataSource = new EventEmitter<any>();
+  @Output() updateDueAmount = new EventEmitter<number>();
 
   @ViewChild('plainText', { static: true }) plainText!: TemplateRef<any>;
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
@@ -221,6 +224,8 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
     this.dataSource.data = this.processedTableData;
     this.resetPaginator();
+    this.updateDataSource.emit(this.processedTableData);
+    this.updateDueAmount.emit(this.dueAmount);
   }
 
   resetPaginator() {
@@ -312,33 +317,6 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   openProduct(product: any) {
     this.router.navigate(['/dashboard/warehouse'], { queryParams: { productId: product.productData.productId } });
-  }
-
-  getStat(type: string): number {
-    let result = 0;
-    if (type === 'sentSum') {
-      for (const obj of this.dataSource.data) {
-        if (obj.productDetail)
-          for (const product of obj.productDetail)
-            if (product.productData.productReturnable)
-              result += parseInt(product.sentUnits);
-      }
-    } else if (type === 'recieveSum') {
-      for (const obj of this.dataSource.data) {
-        if (obj.productDetail)
-          for (const product of obj.productDetail)
-            if (product.productData.productReturnable)
-              result += parseInt(product.recievedUnits);
-      }
-    } else if (type === 'pending') {
-      for (const obj of this.dataSource.data) {
-        if (obj.productDetail)
-          for (const product of obj.productDetail)
-            if (product.productData.productReturnable)
-              result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
-      }
-    }
-    return result || 0;
   }
 
   getTemplate(dataType: string) {
