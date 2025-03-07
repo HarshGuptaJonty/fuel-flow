@@ -61,6 +61,14 @@ export class EntryDataService {
     return false;
   }
 
+  deliveryPersonHasData(deliveryPersonId?: string) {
+    if (this.isDataChanged && this.getTransactionList()) {
+      return (Object.values(this.getTransactionList()) as EntryTransaction[])
+        .filter((obj: any) => obj?.data?.deliveryBoy?.userId === deliveryPersonId).length > 0
+    }
+    return false;
+  }
+
   getCustomerTransactionList(customerId?: string): EntryTransaction[] {
     if (this.isDataChanged && this.getTransactionList()) {
       return (Object.values(this.getTransactionList()) as EntryTransaction[])

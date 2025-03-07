@@ -54,24 +54,29 @@
                 </div>
             </div>
             <div class="w-100 p-relative h-100">
-                <div class="product-select d-flex align-items-center gap flex-wrap" (click)="onfocus('productSelect')"
-                    tabindex="0">
-                    <span class="normal-font" *ngIf="selectedProductList.length === 0">Select product items</span>
-                    <span class="product-capsule d-flex align-items-center"
-                        *ngFor="let productQuantity of selectedProductList; let i = index">
-                        <span class="p-name bold-text gap">
-                            {{productQuantity.productData.name}}:
-                            <span *ngIf="productQuantity.sentUnits">{{productQuantity.sentUnits}}S</span>
-                            <span *ngIf="productQuantity.recievedUnits">{{productQuantity.recievedUnits}}R</span>
+                <div class="d-flex gap flex-wrap">
+                    <div class="product-select d-flex align-items-center gap flex-wrap flex-grow-1"
+                        (click)="onfocus('productSelect')" tabindex="0">
+                        <span class="normal-font" *ngIf="selectedProductList.length === 0">Select product items</span>
+                        <span class="product-capsule d-flex align-items-center"
+                            *ngFor="let productQuantity of selectedProductList; let i = index">
+                            <span class="p-name bold-text gap">
+                                {{productQuantity.productData.name}}:
+                                <span *ngIf="productQuantity.sentUnits">{{productQuantity.sentUnits}}S</span>
+                                <span *ngIf="productQuantity.recievedUnits">{{productQuantity.recievedUnits}}R</span>
+                            </span>
+                            <img src="assets/images/svg/close.svg" alt="X" height="16px" class="ms-1"
+                                (click)="removeProduct($event, i)" tabindex="0">
                         </span>
-                        <img src="assets/images/svg/close.svg" alt="X" height="16px" class="ms-1"
-                            (click)="removeProduct($event, i)" tabindex="0">
-                    </span>
+                    </div>
+                    <button *ngIf="allowAddProduct" mat-flat-button (click)="addProduct()"
+                        class="custom-btn normal height-auto">Add Product</button>
                 </div>
                 <div class="product-select-dropdown" *ngIf="focusedFormName === 'productSelect'">
                     <div class="overflow-y">
                         <div class="min-width-445">
-                            <div class="product d-flex justify-content-between align-items-center bold-text b-bottom">
+                            <div
+                                class="product-header d-flex justify-content-between align-items-center bold-text b-bottom">
                                 <span>Name</span>
                                 <div class="d-flex gap">
                                     <span class="product-label">Rate</span>

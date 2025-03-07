@@ -32,6 +32,7 @@ export class WarehouseComponent implements OnInit {
   addNewProduct = false;
   isEditingProduct = false;
   isProductReturnable = true;
+  openAddProduct = false;
   errorMessage?: string;
   selectedProduct?: Product;
   queryProductId?: string;
@@ -55,6 +56,7 @@ export class WarehouseComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.queryProductId = params['productId'];
+      this.openAddProduct = !!params['addProduct'];
     });
 
     this.refreshEntryData();
@@ -63,6 +65,8 @@ export class WarehouseComponent implements OnInit {
       if (flag)
         this.refreshEntryData();
     })
+
+    if (this.openAddProduct) this.onAddNewProduct();
   }
 
   refreshEntryData() {

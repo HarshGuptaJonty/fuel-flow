@@ -20,6 +20,7 @@ import { CustomerDataService } from '../../../services/customer-data.service';
 import { Product, ProductQuantity } from '../../../../assets/models/Product';
 import { ProductService } from '../../../services/product.service';
 import { NotificationService } from '../../../services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-full-entry',
@@ -68,6 +69,8 @@ export class NewFullEntryComponent implements OnInit {
 
   disableSave = true;
   isEditing = false;
+  isRefreshedForProduct = false;
+  allowAddProduct = false;
   errorMessage?: string;
   focusedFormName = '';
   transactionId = '';
@@ -97,7 +100,8 @@ export class NewFullEntryComponent implements OnInit {
     private deliveryPersonDataService: DeliveryPersonDataService,
     private customerDataService: CustomerDataService,
     private productService: ProductService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -494,10 +498,39 @@ export class NewFullEntryComponent implements OnInit {
     return value.replace(/(\d{5})(\d{5})/, '$1 $2');
   }
 
+  addProduct() {
+    this.onCancel.emit();
+    this.router.navigate(['/dashboard/warehouse'], { queryParams: { addProduct: true } });
+  }
+
   onfocus(formName: string) {
     this.focusedFormName = formName;
 
     if (formName === 'productSelect') {
+      if (this.productList.length === 0) {
+        if (this.isRefreshedForProduct === false) {
+          this.notificationService.showNotification({
+            heading: 'No product found',
+            message: 'No product list found, please refresh and try again.',
+            duration: 4000,
+            leftBarColor: this.notificationService.color.yellow
+          })
+          this.isRefreshedForProduct = true;
+        } else {
+          this.notificationService.showNotification({
+            heading: 'No product found',
+            message: 'Please add products before making any entry.',
+            duration: 4000,
+            leftBarColor: this.notificationService.color.red
+          })
+          this.allowAddProduct = true;
+        }
+        this.focusedFormName = '';
+      } else {
+        this.isRefreshedForProduct = false;
+        this.allowAddProduct = false;
+      }
+
       setTimeout(() => {
         for (let item of this.selectedProductList) {
           const rateElement = document.getElementById(`rate_${item.productData.productId}`) as HTMLInputElement;

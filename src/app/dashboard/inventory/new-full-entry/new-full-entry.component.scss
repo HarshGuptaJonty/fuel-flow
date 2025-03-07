@@ -105,11 +105,16 @@
                 max-height: unset;
             }
 
+            .product-header {
+                padding: 7px 10px;
+                background-color: $border-very-light2;
+            }
+
             .product {
                 padding: 7px 10px;
 
                 &:hover {
-                    background-color: $border-very-light2;
+                    background-color: $light-color;
                     cursor: pointer;
                 }
             }
@@ -165,6 +170,11 @@
 
         background-color: $border-light;
         color: $primary-web-dark;
+
+        &.height-auto {
+            height: auto;
+            min-height: 30px;
+        }
 
         &:hover {
             &.normal {

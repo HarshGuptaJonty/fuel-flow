@@ -2,11 +2,13 @@ Todo: ************************************************
 update version code and last update date at last
 filter in inventory in delivery personn, date range
 take input of products while making entry
-add comments in all component
+check lint
+seperate pending units count
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
+add comments in all component
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -198,3 +200,48 @@ TESTING THINGS
      . User can also add new entries here
      . New entries added here will require to provide customer and delivery person details
      . User can create new customer or delivery person from here also, by addig new entries
+
+TESTSCRIPT (MANUAL) *************************************************
+
+1.   Add Customer via + button on top of customer list in customer page
+     a.   Name should be bwtween 30 to 30 characters and is required
+     b.   Phone number should be 10 digits indian number only and is required
+     c.   Customer address is not mandatory
+     d.   shipping address is not mandatory but needed to make entry
+     e.   Can add upto 10 shipping addresses and while removing one the selected will be removed
+     f.   extra details is not mandatory
+     g.   On click of same, the customer profile will be saved and visible in left panel customer list of customer page
+2.   Viewing customer profile in customer page by clicking on profile in customer list
+     a.   On clicking customer user can see profile details along with available transactions
+     b.   User can see name, phone number, address, and all shipping addresses in the top of screen 
+     c.   Each data will have a copy icon at the end that will copy the respective data upon click (notification will pop upon clicking)
+     d.   A button will appear on top right of screen for editing customer profile
+     e.   User can also see when was this profile created just above edit button
+     f.   On clicking shipping address chip, the UI will display all addresses added seperately id there is more than one shipping address
+3.   Editing Customer profile in customer page by clicking on edit profile button on top right of screen
+     a.   On clicking of edit profile, UI will open profile in edit mode with all available details
+     b.   After editing details as per validations of [1] user can save the details to update data in database
+     c.   On save the data will auto update in customer list and a notification will pop
+4.   Deleting customer profile
+     a.   In edit mode user can delete customer profile by clickng delete button only shown in delete mode
+     b.   On click of delete UI will ask for confirmation before deleting the data from database
+     c.   In confirmation UI will remove the customer data from customer list
+     d.   Customer profile deletion is not possible if there is any transacion on the name of customer shown in notification
+     e.   Upon successful deleting user will get notification of success
+5.   Add delivery via + button on top of delivery person list in delivery page
+     a.   Name should be bwtween 30 to 30 characters and is required
+     b.   Phone number should be 10 digits indian number only and is required
+     c.   Address is not mandatory
+     d.   Extra details is not mandatory
+     e.   On click of same, the delivery person profile will be saved and visible in left panel delivery person list of delivery page
+6.   Viewing delivery person profile in delivery page by clicking on profile in delivery person list
+     a.   on click of delivery person, user can see the profile details along with deliveries made by this person
+     b.   User can see name, number, address in the top of screen
+     c.   Each data will have a copy icon at the end that will copy the respective data upon click (notification will pop upon clicking)
+     d.   A button will appear on top right of screen for editing customer profile
+     e.   User can also see when was this profile created just above edit button
+7.   Editing Delivery person profile
+     a.   Same as [3]
+8.   Deleting delivery person profile
+     a.   Same as [4]
+
