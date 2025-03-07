@@ -3,6 +3,6 @@ export const LOCAL_STORAGE_KEYS = {
   USER_PROFILE: 'user_profile',
   CUSTOMER_DATA: 'customer_data',
   DELIVERY_PERSON_DATA: 'delivery_person_data',
-  CURRENT_VERSION: '1.0.1',
-  LAST_UPDATED: '3 March 2025'
+  CURRENT_VERSION: '1.0.14',
+  LAST_UPDATED: '7 March 2025'
 }

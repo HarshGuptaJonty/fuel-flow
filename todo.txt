@@ -1,7 +1,6 @@
 Todo: ************************************************
 update version code and last update date at last
 filter in inventory in delivery personn, date range
-seperate pending units count
 show icon for non returnable or returnable
 show description if space available in product list while making entry
 
@@ -33,6 +32,7 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+seperate pending units count
 show detailed stats in customer page
 check lint
 show detailed stats in inventory
