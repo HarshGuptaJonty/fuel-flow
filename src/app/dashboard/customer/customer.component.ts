@@ -158,6 +158,13 @@ export class CustomerComponent implements OnInit {
   updateDataSource(event: any) {
     this.dataSource.data = event;
 
+    this.statistics = {
+      sentSum: 0,
+      recieveSum: 0,
+      pending: 0,
+      dueAmount: 0
+    };
+
     for (const obj of this.dataSource.data) {
       if (obj.productDetail)
         for (const product of obj.productDetail)
