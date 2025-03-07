@@ -134,10 +134,10 @@ export class NewAccountComponent implements OnInit, AfterViewInit {
       this.accountForm.get('userId')?.setValue(this.accountId);
 
     if (this.userType === 'customer') {
-      let addressArray = []
+      const addressArray = []
 
       for (let i = 0; i < this.shippingAddressCount; i++) {
-        let data: string = this.accountForm?.get('shippingAddress' + (i + 1))?.value || '';
+        const data: string = this.accountForm?.get('shippingAddress' + (i + 1))?.value || '';
         if (data.length > 0) // add address only if there is data
           addressArray.push(data)
       }

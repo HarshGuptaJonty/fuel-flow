@@ -1,14 +1,16 @@
 Todo: ************************************************
 update version code and last update date at last
 filter in inventory in delivery personn, date range
-take input of products while making entry
-check lint
 seperate pending units count
+show icon for non returnable or returnable
+show description if space available in product list while making entry
+show detailed stats in customer page
 
 CHANGES **********************************************
 
 In-Progress: *****************************************
-add comments in all component
+check lint
+show detailed stats in inventory
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -34,6 +36,7 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.0.1**
+take input of products while making entry
 show product added in entry details model popup
 worok on exports
 show pending units and due amount in footer in customer page

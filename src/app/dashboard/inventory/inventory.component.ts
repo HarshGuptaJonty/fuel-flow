@@ -16,6 +16,8 @@ import { DeliveryPersonDataService } from '../../services/delivery-person-data.s
 import { ExportService } from '../../services/export.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Customer } from '../../../assets/models/Customer';
+import { Product, ProductQuantity } from '../../../assets/models/Product';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-inventory',
@@ -41,6 +43,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('customerName') customerName!: ElementRef;
   @ViewChild('filterArea') filterArea!: ElementRef;
+  @ViewChild('statArea') statArea!: ElementRef;
 
   tableStructure = [
     {
@@ -122,6 +125,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   openTransaction?: EntryTransaction;
   filterActive = false;
   focusedFormName = '';
+  statistics: any = {};
 
   customerList: Customer[] = [];
   customerSearchList: Customer[] = [];
@@ -130,6 +134,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   shippingAddressList: string[] = [];
   shippingAddressSelectedList: string[] = [];
   shippingAddressSubmitted: string[] = [];
+
+  productList: Product[] = [];
+  productSelectedList: Product[] = [];
+  productSubmitted: Product[] = [];
 
   dataSource = new MatTableDataSource<any>([]);
 
@@ -146,7 +154,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     private router: Router,
     private customerDataService: CustomerDataService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private exportService: ExportService
+    private exportService: ExportService,
+    private productService: ProductService
   ) { }
 
   ngOnInit(): void {
@@ -166,13 +175,21 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       this.customerList = Object.values(this.customerDataService.getCustomerList());
       this.customerSearchList = this.customerList;
     }
+
+    this.productService.isDataChanged.subscribe(flag => {
+      if (flag)
+        this.productList = Object.values(this.productService.getProductList());
+    })
   }
 
   @HostListener('document:click', ['$event'])
   onClick(event: Event): void {
-    if (this.filterArea && !this.filterArea.nativeElement.contains(event.target)) {
+    if (this.filterArea && !this.filterArea.nativeElement.contains(event.target) &&
+      ['customerName', 'addressDropdowm', 'productDropdown'].includes(this.focusedFormName))
       this.onfocus('');
-    }
+    if (this.statArea && !this.statArea.nativeElement.contains(event.target) &&
+      ['sentList', 'recieveList', 'pendingList'].includes(this.focusedFormName))
+      this.onfocus('');
   }
 
   ngAfterViewChecked(): void {
@@ -393,6 +410,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     this.filterList();
   }
 
+  submitProductFilters() {
+    this.focusedFormName = '';
+    this.productSubmitted = [...this.productSelectedList];
+    this.filterList();
+  }
+
   toggleSelectAddress(address: string) {
     const index = this.shippingAddressSelectedList.indexOf(address);
     if (index !== -1) {
@@ -402,10 +425,29 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  toggleSelectProduct(product: Product) {
+    const index = this.productSelectedList.indexOf(product);
+    if (index !== -1) {
+      this.productSelectedList.splice(index, 1);
+    } else {
+      this.productSelectedList.push(product);
+    }
+  }
+
   removeAddress(event: any, index: number) {
     event.stopPropagation();
+    this.onfocus('');
     this.shippingAddressSelectedList.splice(index, 1)
     this.shippingAddressSubmitted = [...this.shippingAddressSelectedList];
+
+    this.filterList();
+  }
+
+  removeProduct(event: any, index: number) {
+    event.stopPropagation();
+    this.onfocus('');
+    this.productSelectedList.splice(index, 1)
+    this.productSubmitted = [...this.productSelectedList];
 
     this.filterList();
   }
@@ -419,6 +461,13 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     if (this.shippingAddressSubmitted.length > 0)
       filterList = filterList.filter((item: any) => this.shippingAddressSubmitted.includes(item.shippingAddress));
 
+    if (this.productSubmitted.length > 0)
+      filterList = filterList.filter((item: any) => {
+        if (item.productDetail)
+          return this.productSelectedList.some((product: Product) => item.productDetail.some((productQuantity: ProductQuantity) => product.data.productId === productQuantity.productData.productId));
+        return false;
+      });
+
     this.processedTableData = filterList
     this.dataSource.data = this.processedTableData;
   }
@@ -428,36 +477,102 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     this.processedTableData = this.unchangedProcessedData
     this.dataSource.data = this.processedTableData;
     this.shippingAddressList = [];
+    this.productSelectedList = [];
+    this.productSubmitted = [];
   }
 
   getStat(type: string): number {
     let result = 0;
     if (type === 'sentSum') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.sentUnits);
       }
     } else if (type === 'recieveSum') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.recievedUnits);
       }
     } else if (type === 'pending') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
       }
     } else if (type === 'dueAmt') {
-      for (let obj of this.dataSource.data)
+      for (const obj of this.dataSource.data)
         result += parseInt(obj.dueAmt);
     }
     return result || 0;
+  }
+
+  getDetailedStat(focus: string, type: string) {
+    this.onfocus(focus);
+
+    const object: any = {};
+    if (type === 'sentSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail) {
+          for (const product of obj.productDetail) {
+            const sent = parseInt(product.sentUnits);
+
+            if (object?.[product.productData.productId]) {
+              object[product.productData.productId].value += sent;
+            } else {
+              object[product.productData.productId] = {
+                name: product.productData.name,
+                customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                value: sent
+              }
+            }
+          }
+        }
+      }
+      this.statistics.sentList = Object.values(object);
+    } else if (type === 'recieveSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable) {
+              const receive = parseInt(product.recievedUnits);
+
+              if (object?.[product.productData.productId]) {
+                object[product.productData.productId].value += receive;
+              } else {
+                object[product.productData.productId] = {
+                  name: product.productData.name,
+                  customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                  value: receive
+                }
+              }
+            }
+      }
+      this.statistics.recieveList = Object.values(object);
+    } else if (type === 'pending') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable) {
+              const pending = parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+
+              if (object?.[product.productData.productId]) {
+                object[product.productData.productId].value += pending;
+              } else {
+                object[product.productData.productId] = {
+                  name: product.productData.name,
+                  customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                  value: pending
+                }
+              }
+            }
+      }
+      this.statistics.pendingList = Object.values(object);
+    }
   }
 
   getTemplate(dataType: string) {

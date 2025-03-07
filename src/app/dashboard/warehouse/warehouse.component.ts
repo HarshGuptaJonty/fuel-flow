@@ -73,7 +73,7 @@ export class WarehouseComponent implements OnInit {
     this.addNewProduct = false;
     this.selectedProduct = undefined;
 
-    let objects = this.productService.getProductList() || {};
+    const objects = this.productService.getProductList() || {};
     this.productList = Object.values(objects);
 
     if (this.queryProductId && this.productList.length > 0) {
@@ -83,6 +83,7 @@ export class WarehouseComponent implements OnInit {
   }
 
   onAddNewProduct() {
+    this.isProductReturnable = true;
     this.addNewProduct = !this.addNewProduct;
     if (this.addNewProduct) {
       this.isEditingProduct = false;

@@ -56,7 +56,7 @@
                 <span class="bold-text">{{product.data.name}}</span>
                 <span class="secondary-color">{{product.data.rate | number: '1.2-2'}}</span>
             </div>
-            <div class="other-details" *ngIf="selectedProduct == product">
+            <div class="other-details" *ngIf="selectedProduct === product">
                 <div class="mb-2" *ngIf="product.data.extraNote"><span class="bold-text">Note:</span>
                     {{product.data.extraNote}}</div>
                 <div class="mb-2 bold-text" *ngIf="product.data.productReturnable">Product is returnable!</div>
@@ -70,17 +70,19 @@
                     <span class="bold-text">Time:</span> {{createdTime(product.others?.editedTime)}}
                 </div>
                 <div class="w-75 mt-2 d-flex justify-content-between secondary-color">
-                    <span class="action-text blue"
-                        (click)="selectedProduct = undefined; $event.stopPropagation()">Close</span>
-                    <span class="action-text blue" (click)="onEditClick(); $event.stopPropagation()">Edit</span>
-                    <span class="action-text red" (click)="onDeleteClick(); $event.stopPropagation()">Delete</span>
+                    <span class="action-text blue" (click)="selectedProduct = undefined; $event.stopPropagation()"
+                        tabindex="0">Close</span>
+                    <span class="action-text blue" (click)="onEditClick(); $event.stopPropagation()"
+                        tabindex="0">Edit</span>
+                    <span class="action-text red" (click)="onDeleteClick(); $event.stopPropagation()"
+                        tabindex="0">Delete</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="d-flex align-items-center flex-column no-product justify-content-center h-75"
-        *ngIf="productList.length == 0">
+        *ngIf="productList.length === 0">
         <img src="assets/images/banner/no-result.png" alt="">
         <div class="m-4 text-center bold-text">No Product to show.<br>Please add new products.
         </div>

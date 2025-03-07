@@ -68,8 +68,8 @@ export class EntryDetailComponent implements OnInit {
   ngOnInit(): void {
     this.entryDetailModelService.entryData$.subscribe((value) => {
       if (value?.productDetail) {
-        let tableData = value.productDetail
-        let processedData: any[] = [];
+        const tableData = value.productDetail
+        const processedData: any[] = [];
 
         tableData.forEach((element: ProductQuantity) => {
           processedData.push({

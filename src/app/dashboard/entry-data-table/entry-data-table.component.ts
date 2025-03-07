@@ -317,23 +317,23 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   getStat(type: string): number {
     let result = 0;
     if (type === 'sentSum') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.sentUnits);
       }
     } else if (type === 'recieveSum') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.recievedUnits);
       }
     } else if (type === 'pending') {
-      for (let obj of this.dataSource.data) {
+      for (const obj of this.dataSource.data) {
         if (obj.productDetail)
-          for (let product of obj.productDetail)
+          for (const product of obj.productDetail)
             if (product.productData.productReturnable)
               result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
       }

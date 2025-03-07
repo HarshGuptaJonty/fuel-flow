@@ -5,8 +5,8 @@
 
     .inventory-container {
         user-select: none;
-        padding: 20px 40px 20px 40px;
-        max-height: calc(100vh - 70px);
+        padding: 20px 40px 0px 40px;
+        height: calc(100vh - 70px);
         min-width: 500px;
 
         .gap {
@@ -116,13 +116,9 @@
                 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
                 border: 1px solid gray;
                 z-index: 10;
-                max-height: 200px;
+                max-height: 600px;
                 overflow-y: auto;
                 border-radius: 10px;
-
-                &.hight-no-limit {
-                    max-height: unset;
-                }
 
                 .profile {
                     padding: 7px 10px;
@@ -140,25 +136,25 @@
                 border-radius: 5px;
             }
 
-            .address-capsule {
+            .field-capsule {
                 background-color: $border-light;
                 padding: 0px 6px;
                 border-radius: 50px;
             }
 
-            .address-selector {
+            .field-selector {
                 background-color: white;
                 min-width: 300px;
-                max-width: 350px;
                 overflow: auto;
                 scrollbar-width: none;
+                max-width: 100%;
 
                 &:hover {
                     cursor: pointer;
                 }
             }
 
-            .address-submit {
+            .field-submit {
                 background-color: #40916c;
                 padding: 7px 10px;
                 color: white;
@@ -217,20 +213,45 @@
         }
 
         .footer-section {
-            position: absolute;
-            bottom: 0;
-            left: 0;
+            width: 99.9vw;
+            margin-left: -40px;
             background-color: $border-light;
             padding: 10px 40px;
+            min-width: 500px;
+
+            .list-view {
+                position: absolute;
+                bottom: 39px;
+                background-color: white;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                z-index: 10;
+                max-height: 600px;
+                overflow-y: auto;
+                border-radius: 5px;
+                min-width: 150px;
+                max-width: 250px;
+                gap: 5px;
+                padding: 7px 10px;
+            }
+
+            .isclickable {
+                color: $primary-mat-color;
+
+                &:hover {
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+            }
         }
     }
 
     @media (max-width: 1024px) {
         .inventory-container {
-            padding: 20px 20px 20px 20px;
+            padding: 20px 20px 0px 20px;
 
-            .footer-section{
+            .footer-section {
                 padding: 10px 20px;
+                margin-left: -20px;
             }
         }
     }

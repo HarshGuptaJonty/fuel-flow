@@ -91,7 +91,7 @@
 </ng-template>
 
 <ng-template #linkText let-value let-column="column">
-    <span (click)="openProduct(value.productId)" class="nowrap name-text">{{value?.[column.key]}}</span>
+    <span (click)="openProduct(value.productId)" class="nowrap name-text" tabindex="0">{{value?.[column.key]}}</span>
 </ng-template>
 
 <ng-template #amountText let-value let-column="column">

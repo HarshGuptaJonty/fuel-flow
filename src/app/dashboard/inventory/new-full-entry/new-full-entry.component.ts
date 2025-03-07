@@ -454,7 +454,7 @@ export class NewFullEntryComponent implements OnInit {
     this.selectedProductList = [];
     this.totalSum = 0;
 
-    for (let item of this.productList) {
+    for (const item of this.productList) {
       const rateElement = document.getElementById(`rate_${item.data.productId}`) as HTMLInputElement;
       const sentElement = document.getElementById(`sent_${item.data.productId}`) as HTMLInputElement;
       const recievedElement = document.getElementById(`recieved_${item.data.productId}`) as HTMLInputElement;
@@ -475,7 +475,7 @@ export class NewFullEntryComponent implements OnInit {
             sentUnits: sentUnits,
             recievedUnits: recievedUnits
           })
-          let dataRate = item.data.rate || 0;
+          const dataRate = item.data.rate || 0;
           this.totalSum += dataRate * sentUnits;
         }
       }
@@ -532,7 +532,7 @@ export class NewFullEntryComponent implements OnInit {
       }
 
       setTimeout(() => {
-        for (let item of this.selectedProductList) {
+        for (const item of this.selectedProductList) {
           const rateElement = document.getElementById(`rate_${item.productData.productId}`) as HTMLInputElement;
           const sentElement = document.getElementById(`sent_${item.productData.productId}`) as HTMLInputElement;
           const recievedElement = document.getElementById(`recieved_${item.productData.productId}`) as HTMLInputElement;

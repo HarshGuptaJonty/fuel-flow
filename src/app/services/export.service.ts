@@ -4,7 +4,6 @@ import { DataForExportFormat } from '../../assets/models/ExportEntry';
 import { NotificationService } from './notification.service';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { EntryTransaction } from '../../assets/models/EntryTransaction';
 
 @Injectable({
   providedIn: 'root'
@@ -26,14 +25,14 @@ export class ExportService {
   }
 
   private convertData(data: DataForExportFormat[], includeCustomerName = true) {
-    let convertedFormat: any[] = [];
+    const convertedFormat: any[] = [];
     data.reverse();
 
     data.forEach((item: DataForExportFormat) => {
       if (item.productDetail && item.productDetail.length > 0) {
         let isFirstRow = true;
-        for (let product of item.productDetail) {
-          let newObject: any = {};
+        for (const product of item.productDetail) {
+          const newObject: any = {};
 
           let recieve = product.recievedUnits.toString();
           if (!product.productData.productReturnable)
@@ -76,7 +75,7 @@ export class ExportService {
           convertedFormat.push(newObject);
         }
       } else {
-        let newObject: any = {};
+        const newObject: any = {};
         newObject['Date'] = item.date || '';
         if (includeCustomerName) newObject['Customer'] = item.customer.fullName || '';
         newObject['Address'] = item.shippingAddress || '';
