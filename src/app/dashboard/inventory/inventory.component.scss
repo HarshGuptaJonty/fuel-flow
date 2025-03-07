@@ -5,12 +5,26 @@
 
     .inventory-container {
         user-select: none;
-        padding: 20px 40px 20px 40px;
-        max-height: calc(100vh - 70px);
+        padding: 10px 20px 0px 20px;
+        height: calc(100vh - 70px);
         min-width: 500px;
+
+        .gap {
+            gap: 10px;
+        }
 
         .gap-15 {
             gap: 15px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.limit-width-150 {
+                max-width: 150px;
+            }
         }
 
         .capsule {
@@ -32,10 +46,6 @@
                 &:hover {
                     background-color: $border-very-light;
                 }
-            }
-
-            &.danger {
-                border-bottom: 3px solid $primary-web-red;
             }
 
             &.entry-btn {
@@ -65,6 +75,96 @@
             }
         }
 
+        .filter-icon {
+            margin-top: 2px;
+            margin-left: -34px;
+            margin-right: 15px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .close-icon {
+            height: 40px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .filter-section {
+            background-color: $border-light;
+            padding: 10px;
+            border-radius: 30px;
+
+            .filter-input {
+                outline: none;
+                min-width: 300px;
+            }
+
+            .p-relative {
+                position: relative;
+            }
+
+            .select-dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                border: 1px solid gray;
+                z-index: 10;
+                max-height: 600px;
+                overflow-y: auto;
+                border-radius: 10px;
+
+                .profile {
+                    padding: 7px 10px;
+
+                    &:hover {
+                        background-color: $border-very-light2;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .dropdown-number {
+                background-color: $border-light;
+                padding: 3px 5px;
+                border-radius: 5px;
+            }
+
+            .field-capsule {
+                background-color: $border-light;
+                padding: 0px 6px;
+                border-radius: 50px;
+            }
+
+            .field-selector {
+                background-color: white;
+                min-width: 300px;
+                overflow: auto;
+                scrollbar-width: none;
+                max-width: 100%;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+
+            .field-submit {
+                background-color: #40916c;
+                padding: 7px 10px;
+                color: white;
+
+                &:hover {
+                    background-color: #2d6a4f;
+                    cursor: pointer;
+                }
+            }
+        }
 
         .custom-table {
             .custom-header-row {
@@ -87,6 +187,10 @@
                 text-align: end
             }
 
+            .witdh-limit-200 {
+                max-width: 200px;
+            }
+
             .name-text {
                 white-space: nowrap;
                 overflow: hidden;
@@ -107,11 +211,48 @@
         .table-div {
             overflow-y: auto;
         }
+
+        .footer-section {
+            width: 99.9vw;
+            margin-left: -20px;
+            background-color: $border-light;
+            padding: 10px 20px;
+            min-width: 500px;
+
+            .list-view {
+                position: absolute;
+                bottom: 39px;
+                background-color: white;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                z-index: 10;
+                max-height: 600px;
+                overflow-y: auto;
+                border-radius: 5px;
+                min-width: 150px;
+                max-width: 250px;
+                gap: 5px;
+                padding: 7px 10px;
+            }
+
+            .isclickable {
+                color: $primary-mat-color;
+
+                &:hover {
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+            }
+        }
     }
 
     @media (max-width: 1024px) {
         .inventory-container {
-            padding: 20px 20px 20px 20px;
+            padding: 10px 20px 0px 20px;
+
+            .footer-section {
+                padding: 10px 20px;
+                margin-left: -20px;
+            }
         }
     }
 }

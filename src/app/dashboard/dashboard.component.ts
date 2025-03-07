@@ -49,8 +49,8 @@ export class DashboardComponent implements OnInit {
       visible: true,
       enable: true
     }, {
-      title: 'Setting',
-      key: 'setting',
+      title: 'Warehouse',
+      key: 'warehouse',
       visibleIn: 'top',
       visible: true,
       enable: true
@@ -121,16 +121,16 @@ export class DashboardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
-    if (this.activeNavMenu === 'inventory') {
-      this.visibleInMenuItem('setting', this.screenWidth <= 850 ? 'side' : 'top');
-      this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
-      this.visibleInMenuItem('inventory', 'top');
-      this.visibleInMenuItem('customers', 'top');
-    } else {
-      this.visibleInMenuItem('setting', this.screenWidth <= 1150 ? 'side' : 'top');
+    if (this.activeNavMenu === 'customers' || this.activeNavMenu === 'delivery') {
+      this.visibleInMenuItem('warehouse', this.screenWidth <= 1150 ? 'side' : 'top');
       this.visibleInMenuItem('inventory', this.screenWidth <= 750 ? 'side' : 'top');
       this.visibleInMenuItem('delivery', this.screenWidth <= 650 ? 'side' : 'top');
       this.visibleInMenuItem('customers', this.screenWidth <= 550 ? 'side' : 'top');
+    } else {
+      this.visibleInMenuItem('warehouse', this.screenWidth <= 850 ? 'side' : 'top');
+      this.visibleInMenuItem('delivery', this.screenWidth <= 520 ? 'side' : 'top');
+      this.visibleInMenuItem('inventory', 'top');
+      this.visibleInMenuItem('customers', 'top');
     }
   }
 
@@ -138,6 +138,10 @@ export class DashboardComponent implements OnInit {
   clickout(event: Event) {
     if (this.profileIcon && !this.profileIcon.nativeElement.contains(event.target))
       this.showMenuCardInfo = false;
+  }
+
+  takeMeToDashboard() {
+    this.router.navigate(['/dashboard/customer']);
   }
 
   computeUserData() {

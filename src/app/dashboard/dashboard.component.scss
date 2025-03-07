@@ -11,8 +11,12 @@
         min-height: 70px;
         border-bottom: 1px solid $border-light;
 
-        .fire-icon {
+        .logo-section {
             margin-left: -10px;
+
+            &:hover {
+                cursor: pointer;
+            }
         }
 
         .search-box {

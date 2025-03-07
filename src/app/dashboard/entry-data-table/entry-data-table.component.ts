@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, Component, Input, OnChanges, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Customer } from '../../../assets/models/Customer';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EntryTransaction } from '../../../assets/models/EntryTransaction';
 import { dateConverter } from '../../shared/commonFunctions';
 import { MatButtonModule } from '@angular/material/button';
-import { NewEntryComponent } from "../new-entry/new-entry.component";
+import { NewFullEntryComponent } from "../inventory/new-full-entry/new-full-entry.component";
 import { EntryDataService } from '../../services/entry-data.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NotificationService } from '../../services/notification.service';
@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { ConfirmationModelService } from '../../services/confirmation-model.service';
 import { EntryDetailModelService } from '../../services/entry-detail-model.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
 import { ExportService } from '../../services/export.service';
 import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
 
@@ -23,7 +22,7 @@ import { DeliveryPerson } from '../../../assets/models/DeliveryPerson';
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    NewEntryComponent,
+    NewFullEntryComponent,
     MatPaginatorModule
   ],
   templateUrl: './entry-data-table.component.html',
@@ -35,10 +34,14 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   @Input() deliveryPersonObject?: DeliveryPerson;
   @Input() isCustomer = true;
 
+  @Output() updateDataSource = new EventEmitter<any>();
+  @Output() updateDueAmount = new EventEmitter<number>();
+
   @ViewChild('plainText', { static: true }) plainText!: TemplateRef<any>;
   @ViewChild('amountText', { static: true }) amountText!: TemplateRef<any>;
   @ViewChild('nameText', { static: true }) nameText!: TemplateRef<any>;
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
+  @ViewChild('productDetail', { static: true }) productDetail!: TemplateRef<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -53,25 +56,37 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       customClass: 'witdh-limit-200',
       dataType: 'nameText'
     }, {
-      key: 'sent',
+      key: 'shippingAddress',
+      label: 'Address',
+      customClass: 'witdh-limit-200',
+      dataType: 'plainText'
+    }, {
+      key: 'productData.name',
+      label: 'Product',
+      customClass: 'witdh-limit-200',
+      dataType: 'productDetail',
+      isLink: true
+    }, {
+      key: 'sentUnits',
       label: 'Sent',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'recieved',
+      key: 'recievedUnits',
       label: 'Recieved',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'pending',
+      key: 'productData.pending',
       label: 'Pending',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'rate',
+      key: 'productData.rate',
       label: 'Rate/Unit',
       customClass: 'text-right',
-      dataType: 'amountText'
+      dataType: 'productDetail',
+      isAmount: true
     }, {
       key: 'totamAmt',
       label: 'Total Amount',
@@ -95,7 +110,6 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }
   ]
 
-  pendingUnit = 0;
   dueAmount = 0;
   processedTableData?: any;
   rawTransactionList: EntryTransaction[] = [];
@@ -189,30 +203,14 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       forExport = this.dataSource.data;
     }
 
-    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
-      return {
-        Date: item.date,
-        'Delivery Person Name': item.deliveryBoy?.fullName,
-        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
-        'Sent Quantity': item.sent,
-        'Received Quantity': item.recieved,
-        'Pending Units': item.pending,
-        'Rate/Unit': item.rate,
-        'Total Amount': item.totamAmt,
-        'Payment Amount': item.paymentAmt,
-        'Due Amount': item.dueAmt
-      };
-    });
-
     if (type === 'excel')
-      this.exportService.exportToExcel(formatForExport, `${this.customerObject?.data.fullName}_`);
+      this.exportService.exportToExcel(forExport, false, this.customerObject?.data.fullName);
     else if (type === 'pdf')
-      this.exportService.exportToPdf(formatForExport, `${this.customerObject?.data.fullName}_`);
+      this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
   }
 
   async refreshEntryData() {
     this.newEntry = false;
-    this.pendingUnit = 0;
     this.dueAmount = 0;
     this.rawTransactionList = [];
     this.processedTableData = null;
@@ -226,6 +224,8 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
     this.dataSource.data = this.processedTableData;
     this.resetPaginator();
+    this.updateDataSource.emit(this.processedTableData);
+    this.updateDueAmount.emit(this.dueAmount);
   }
 
   resetPaginator() {
@@ -236,33 +236,29 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   transformItem(item: EntryTransaction) {
-    const sent = item.data?.sent || 0;
-    const recieved = item.data?.recieved || 0;
-    const rate = item.data?.rate || 0;
     const payment = item.data?.payment || 0;
+    const totalAmt = item.data.total || 0;
 
-    this.pendingUnit += sent - recieved;
-    const totalAmt = sent * rate;
-    this.dueAmount += sent * rate - payment;
+    this.dueAmount += totalAmt - payment;
 
     return {
       date: dateConverter(item.data?.date || ''),
       customer: {
         fullName: item.data?.customer?.fullName,
+        phoneNumber: item.data?.customer?.phoneNumber,
         userId: item.data?.customer?.userId
       },
       deliveryBoy: {
         fullName: item.data?.deliveryBoy?.fullName,
+        phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent > 0 ? sent : '',
-      recieved: recieved > 0 ? recieved : '',
-      pending: this.pendingUnit,
-      rate: rate > 0 ? rate : '',
-      totamAmt: totalAmt > 0 ? totalAmt : '',
-      paymentAmt: payment > 0 ? payment : '',
+      totamAmt: totalAmt,
+      paymentAmt: payment,
       dueAmt: this.dueAmount,
-      transactionId: item.data?.transactionId
+      transactionId: item.data?.transactionId,
+      shippingAddress: item.data.shippingAddress,
+      productDetail: item.data.selectedProducts
     };
   }
 
@@ -319,14 +315,37 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }
   }
 
+  openProduct(product: any) {
+    this.router.navigate(['/dashboard/warehouse'], { queryParams: { productId: product.productData.productId } });
+  }
+
   getTemplate(dataType: string) {
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'nameText') return this.nameText;
     if (dataType === 'actionText') return this.actionText;
+    if (dataType === 'productDetail') return this.productDetail;
     return this.plainText;
   }
 
   displayedColumns(): string[] {
     return this.tableStructure.map(item => item.key);
+  }
+
+  getValue(obj: any, path: string): any {
+    const returnable = obj?.productData?.productReturnable || false;
+
+    if (path === 'productData.pending')
+      if (returnable)
+        return obj.sentUnits - obj.recievedUnits;
+      else
+        return '-';
+
+    if (path === 'recievedUnits')
+      if (returnable)
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+      else
+        return '-';
+
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }

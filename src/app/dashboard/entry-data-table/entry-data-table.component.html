@@ -1,14 +1,15 @@
+<div class="new-full-entry" *ngIf="newEntry">
+    <div class="model-box">
+        <app-new-full-entry (onCancel)="newEntry=false; openTransaction = undefined" (onSubmit)="saveEntry($event)"
+            [openTransaction]="openTransaction" (onDelete)="deleteEntry(openTransaction)"
+            [customerObject]="customerObject">
+        </app-new-full-entry>
+    </div>
+</div>
+
 <div class="data-table-container h-100">
 
     <div class="detail-section d-flex" *ngIf="isCustomer">
-        <div class="data-card d-flex flex-column" [ngClass]="{'danger':pendingUnit>0}">
-            <span class="bold-text">Pending Units</span>
-            <span class="secondary-color mt-1">{{pendingUnit}} Units</span>
-        </div>
-        <div class="data-card d-flex flex-column" [ngClass]="{'danger':dueAmount>0}">
-            <span class="bold-text">Due Amount</span>
-            <span class="secondary-color mt-1">{{dueAmount | number: '1.2-2'}} Rs</span>
-        </div>
         <div *ngIf="!newEntry" class="data-card d-flex flex-column justify-content-center entry-btn"
             (click)="newEntry=!newEntry" tabindex="0">
             <span class="bold-text">New Entry</span>
@@ -25,13 +26,6 @@
             *ngIf="processedTableData && processedTableData.length>0">
             <span class="bold-text">Export PDF</span>
         </div>
-    </div>
-
-    <div *ngIf="newEntry">
-        <app-new-entry [customerObject]="customerObject" [pendingCount]="pendingUnit"
-            [openTransaction]="openTransaction" (onCancel)="newEntry = false; openTransaction = undefined"
-            (onSubmit)="saveEntry($event)" (onDelete)="deleteEntry(openTransaction)">
-        </app-new-entry>
     </div>
 
     <div class="w-100 table-div">
@@ -83,6 +77,18 @@
         <div class="nowrap">
             <span class="name-text" (click)="editEntry(value)" tabindex="0" *ngIf="isCustomer">Edit | </span>
             <span class="name-text" (click)="showMore(value)" tabindex="0">More</span>
+        </div>
+    </ng-template>
+
+    <ng-template #productDetail let-value let-column="column">
+        <div *ngFor="let data of value.productDetail" class="my-2">
+            <span *ngIf="column.isAmount">{{getValue(data, column.key) | number: '1.2-2'}}</span>
+            <span *ngIf="!column.isAmount" class="nowrap">
+                <span *ngIf="!column.isLink">{{getValue(data, column.key)}}</span>
+                <div *ngIf="column.isLink" class="name-text" (click)="openProduct(data)" tabindex="0">
+                    {{getValue(data, column.key)}}
+                </div>
+            </span>
         </div>
     </ng-template>
 </div>

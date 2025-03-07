@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -14,7 +14,10 @@ import { NewFullEntryComponent } from "./new-full-entry/new-full-entry.component
 import { CustomerDataService } from '../../services/customer-data.service';
 import { DeliveryPersonDataService } from '../../services/delivery-person-data.service';
 import { ExportService } from '../../services/export.service';
-import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Customer } from '../../../assets/models/Customer';
+import { Product, ProductQuantity } from '../../../assets/models/Product';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-inventory',
@@ -22,7 +25,7 @@ import { InventoryExportEntry } from '../../../assets/models/ExportEntry';
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
-    NewFullEntryComponent
+    NewFullEntryComponent,
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
@@ -34,8 +37,13 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   @ViewChild('cnameText', { static: true }) cnameText!: TemplateRef<any>;
   @ViewChild('dnameText', { static: true }) dnameText!: TemplateRef<any>;
   @ViewChild('actionText', { static: true }) actionText!: TemplateRef<any>;
+  @ViewChild('productDetail', { static: true }) productDetail!: TemplateRef<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild('customerName') customerName!: ElementRef;
+  @ViewChild('filterArea') filterArea!: ElementRef;
+  @ViewChild('statArea') statArea!: ElementRef;
 
   tableStructure = [
     {
@@ -48,30 +56,42 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       customClass: 'witdh-limit-200',
       dataType: 'cnameText'
     }, {
+      key: 'shippingAddress',
+      label: 'Address',
+      customClass: 'witdh-limit-200',
+      dataType: 'plainText'
+    }, {
       key: 'deliveryBoy',
       label: 'Delivery',
       customClass: 'witdh-limit-200',
       dataType: 'dnameText'
     }, {
-      key: 'sent',
+      key: 'productData.name',
+      label: 'Product',
+      customClass: 'witdh-limit-200',
+      dataType: 'productDetail',
+      isLink: true
+    }, {
+      key: 'sentUnits',
       label: 'Sent',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'recieved',
+      key: 'recievedUnits',
       label: 'Recieved',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'pending',
+      key: 'productData.pending',
       label: 'Pending',
       customClass: 'text-right',
-      dataType: 'plainText'
+      dataType: 'productDetail'
     }, {
-      key: 'rate',
+      key: 'productData.rate',
       label: 'Rate/Unit',
       customClass: 'text-right',
-      dataType: 'amountText'
+      dataType: 'productDetail',
+      isAmount: true
     }, {
       key: 'totamAmt',
       label: 'Total Amount',
@@ -95,17 +115,35 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   ]
 
-  pendingUnit = 0;
-  dueAmount = 0;
   newEntry = false;
   isRefreshing = false;
   isSearching = false;
   processedTableData?: any;
+  unchangedProcessedData?: any;
   rawTransactionList: EntryTransaction[] = [];
   entryDataAvaliable = false;
   openTransaction?: EntryTransaction;
+  filterActive = false;
+  focusedFormName = '';
+  statistics: any = {};
+
+  customerList: Customer[] = [];
+  customerSearchList: Customer[] = [];
+  customerFilterId = '';
+
+  shippingAddressList: string[] = [];
+  shippingAddressSelectedList: string[] = [];
+  shippingAddressSubmitted: string[] = [];
+
+  productList: Product[] = [];
+  productSelectedList: Product[] = [];
+  productSubmitted: Product[] = [];
 
   dataSource = new MatTableDataSource<any>([]);
+
+  filterForm: FormGroup = new FormGroup({
+    customerName: new FormControl('')
+  });
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -116,7 +154,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     private router: Router,
     private customerDataService: CustomerDataService,
     private deliveryPersonDataService: DeliveryPersonDataService,
-    private exportService: ExportService
+    private exportService: ExportService,
+    private productService: ProductService
   ) { }
 
   ngOnInit(): void {
@@ -131,6 +170,26 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         this.isRefreshing = false;
       }
     });
+
+    if (this.customerDataService.getCustomerData()) {
+      this.customerList = Object.values(this.customerDataService.getCustomerList());
+      this.customerSearchList = this.customerList;
+    }
+
+    this.productService.isDataChanged.subscribe(flag => {
+      if (flag)
+        this.productList = Object.values(this.productService.getProductList());
+    })
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: Event): void {
+    if (this.filterArea && !this.filterArea.nativeElement.contains(event.target) &&
+      ['customerName', 'addressDropdowm', 'productDropdown'].includes(this.focusedFormName))
+      this.onfocus('');
+    if (this.statArea && !this.statArea.nativeElement.contains(event.target) &&
+      ['sentList', 'recieveList', 'pendingList'].includes(this.focusedFormName))
+      this.onfocus('');
   }
 
   ngAfterViewChecked(): void {
@@ -150,27 +209,10 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       forExport = this.dataSource.data;
     }
 
-    const formatForExport: InventoryExportEntry[] = forExport.map((item: any) => {
-      return {
-        Date: item.date,
-        'Customer Name': item.customer?.fullName,
-        // 'Customer Phone': item.customer?.phoneNumber,
-        'Delivery Person Name': item.deliveryBoy?.fullName,
-        // 'Delivery Person Phone': item.deliveryBoy?.phoneNumber,
-        'Sent Quantity': item.sent,
-        'Received Quantity': item.recieved,
-        'Pending Units': item.pending,
-        'Rate/Unit': item.rate,
-        'Total Amount': item.totamAmt,
-        'Payment Amount': item.paymentAmt,
-        'Due Amount': item.dueAmt
-      };
-    });
-
     if (type === 'excel')
-      this.exportService.exportToExcel(formatForExport);
+      this.exportService.exportToExcel(forExport);
     else if (type === 'pdf')
-      this.exportService.exportToPdf(formatForExport);
+      this.exportService.exportToPdf(forExport);
   }
 
   refreshData() {
@@ -198,14 +240,13 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
   async refreshEntryData() {
     this.newEntry = false;
-    this.pendingUnit = 0;
-    this.dueAmount = 0;
     this.rawTransactionList = [];
     this.processedTableData = null;
     this.openTransaction = undefined;
 
     this.rawTransactionList = this.enterDataService.getSortedTransactionList();
-    this.processedTableData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
+    this.unchangedProcessedData = this.rawTransactionList.map((item: EntryTransaction) => this.transformItem(item)).reverse();
+    this.processedTableData = this.unchangedProcessedData;
 
     this.dataSource.data = this.processedTableData;
     this.resetPaginator();
@@ -219,14 +260,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   transformItem(item: EntryTransaction) {
-    const sent = item.data?.sent || 0;
-    const recieved = item.data?.recieved || 0;
-    const rate = item.data?.rate || 0;
     const payment = item.data?.payment || 0;
-
-    this.pendingUnit += sent - recieved;
-    const totalAmt = sent * rate;
-    this.dueAmount += totalAmt - payment;
+    const totalAmt = item.data.total || 0;
 
     return {
       date: dateConverter(item.data?.date || ''),
@@ -240,14 +275,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      sent: sent > 0 ? sent : '',
-      recieved: recieved > 0 ? recieved : '',
-      pending: sent - recieved > 0 ? sent - recieved : '',
-      rate: rate > 0 ? rate : '',
-      totamAmt: totalAmt > 0 ? totalAmt : '',
-      paymentAmt: payment > 0 ? payment : '',
-      dueAmt: totalAmt - payment > 0 ? totalAmt - payment : '',
-      transactionId: item.data?.transactionId
+      totamAmt: totalAmt,
+      paymentAmt: payment,
+      dueAmt: totalAmt - payment,
+      transactionId: item.data?.transactionId,
+      shippingAddress: item.data.shippingAddress,
+      productDetail: item.data.selectedProducts
     };
   }
 
@@ -260,7 +293,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       item.deliveryBoy?.fullName,
       item.deliveryBoy?.phoneNumber,
       this.deliveryPersonDataService.getAddress(item.deliveryBoy?.userId),
-      item.extraDetails
+      item.extraDetails,
+      item.shippingAddress
     ]
   }
 
@@ -339,15 +373,246 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  openProduct(product: any) {
+    this.router.navigate(['/dashboard/warehouse'], { queryParams: { productId: product.productData.productId } });
+  }
+
+  searchCustomer() {
+    const value = this.customerName.nativeElement.value;
+
+    if (value?.length == 0) {
+      this.customerSearchList = this.customerList;
+      this.customerFilterId = '';
+      this.shippingAddressList = [];
+      this.processedTableData = this.unchangedProcessedData
+      this.dataSource.data = this.processedTableData;
+    } else
+      this.customerSearchList = this.customerList.filter((item) =>
+        Object.values(item.data || {}).toString()?.toLowerCase()?.includes(value?.toLowerCase())
+      );
+  }
+
+  onSelectCustomer(customer: Customer) {
+    this.customerFilterId = customer.data.userId;
+    this.customerName.nativeElement.value = customer.data.fullName + ' (' + this.formatNumber(customer.data.phoneNumber) + ')';
+    this.customerSearchList = [];
+
+    this.shippingAddressSelectedList = [];
+    this.shippingAddressSubmitted = [];
+    this.shippingAddressList = customer.data.shippingAddress || [];
+
+    this.filterList();
+  }
+
+  submitAddressFilters() {
+    this.focusedFormName = '';
+    this.shippingAddressSubmitted = [...this.shippingAddressSelectedList];
+    this.filterList();
+  }
+
+  submitProductFilters() {
+    this.focusedFormName = '';
+    this.productSubmitted = [...this.productSelectedList];
+    this.filterList();
+  }
+
+  toggleSelectAddress(address: string) {
+    const index = this.shippingAddressSelectedList.indexOf(address);
+    if (index !== -1) {
+      this.shippingAddressSelectedList.splice(index, 1);
+    } else {
+      this.shippingAddressSelectedList.push(address);
+    }
+  }
+
+  toggleSelectProduct(product: Product) {
+    const index = this.productSelectedList.indexOf(product);
+    if (index !== -1) {
+      this.productSelectedList.splice(index, 1);
+    } else {
+      this.productSelectedList.push(product);
+    }
+  }
+
+  removeAddress(event: any, index: number) {
+    event.stopPropagation();
+    this.onfocus('');
+    this.shippingAddressSelectedList.splice(index, 1)
+    this.shippingAddressSubmitted = [...this.shippingAddressSelectedList];
+
+    this.filterList();
+  }
+
+  removeProduct(event: any, index: number) {
+    event.stopPropagation();
+    this.onfocus('');
+    this.productSelectedList.splice(index, 1)
+    this.productSubmitted = [...this.productSelectedList];
+
+    this.filterList();
+  }
+
+  filterList() {
+    let filterList = this.unchangedProcessedData
+
+    if (this.customerFilterId.length > 0)
+      filterList = filterList.filter((item: any) => item.customer.userId === this.customerFilterId);
+
+    if (this.shippingAddressSubmitted.length > 0)
+      filterList = filterList.filter((item: any) => this.shippingAddressSubmitted.includes(item.shippingAddress));
+
+    if (this.productSubmitted.length > 0)
+      filterList = filterList.filter((item: any) => {
+        if (item.productDetail)
+          return this.productSelectedList.some((product: Product) => item.productDetail.some((productQuantity: ProductQuantity) => product.data.productId === productQuantity.productData.productId));
+        return false;
+      });
+
+    this.processedTableData = filterList
+    this.dataSource.data = this.processedTableData;
+  }
+
+  closeFilter() {
+    this.filterActive = false;
+    this.processedTableData = this.unchangedProcessedData
+    this.dataSource.data = this.processedTableData;
+    this.shippingAddressList = [];
+    this.productSelectedList = [];
+    this.productSubmitted = [];
+  }
+
+  getStat(type: string): number {
+    let result = 0;
+    if (type === 'sentSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits);
+      }
+    } else if (type === 'recieveSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.recievedUnits);
+      }
+    } else if (type === 'pending') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+      }
+    } else if (type === 'dueAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.dueAmt);
+    }
+    return result || 0;
+  }
+
+  getDetailedStat(focus: string, type: string) {
+    this.onfocus(focus);
+
+    const object: any = {};
+    if (type === 'sentSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail) {
+          for (const product of obj.productDetail) {
+            const sent = parseInt(product.sentUnits);
+
+            if (object?.[product.productData.productId]) {
+              object[product.productData.productId].value += sent;
+            } else {
+              object[product.productData.productId] = {
+                name: product.productData.name,
+                customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                value: sent
+              }
+            }
+          }
+        }
+      }
+      this.statistics.sentList = Object.values(object);
+    } else if (type === 'recieveSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable) {
+              const receive = parseInt(product.recievedUnits);
+
+              if (object?.[product.productData.productId]) {
+                object[product.productData.productId].value += receive;
+              } else {
+                object[product.productData.productId] = {
+                  name: product.productData.name,
+                  customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                  value: receive
+                }
+              }
+            }
+      }
+      this.statistics.recieveList = Object.values(object);
+    } else if (type === 'pending') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable) {
+              const pending = parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+
+              if (object?.[product.productData.productId]) {
+                object[product.productData.productId].value += pending;
+              } else {
+                object[product.productData.productId] = {
+                  name: product.productData.name,
+                  customClass: product.productData.productReturnable ? '' : 'secondary-color',
+                  value: pending
+                }
+              }
+            }
+      }
+      this.statistics.pendingList = Object.values(object);
+    }
+  }
+
   getTemplate(dataType: string) {
     if (dataType === 'amountText') return this.amountText;
     if (dataType === 'cnameText') return this.cnameText;
     if (dataType === 'dnameText') return this.dnameText;
     if (dataType === 'actionText') return this.actionText;
+    if (dataType === 'productDetail') return this.productDetail;
     return this.plainText;
   }
 
   displayedColumns(): string[] {
     return this.tableStructure.map(item => item.key);
+  }
+
+  formatNumber(value?: string) {
+    if (!value)
+      return '';
+    return value.replace(/(\d{5})(\d{5})/, '$1 $2');
+  }
+
+  onfocus(formName: string) {
+    this.focusedFormName = formName;
+  }
+
+  getValue(obj: any, path: string): any {
+    const returnable = obj?.productData?.productReturnable || false;
+
+    if (path === 'productData.pending')
+      if (returnable)
+        return obj.sentUnits - obj.recievedUnits;
+      else
+        return '-';
+
+    if (path === 'recievedUnits')
+      if (returnable)
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+      else
+        return '-';
+
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 }

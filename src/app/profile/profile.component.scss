@@ -1,11 +1,49 @@
+@import '../../assets/styles/color.scss';
+
 .profile-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
     overflow-y: auto;
+    background-color: $border-light;
 
-    .under-development {
-        min-width: 320px;
+    .profile-box {
+        max-width: 600px;
+        min-width: 520px;
+        width: 40%;
+        background-color: white;
+        min-height: 50%;
+        border-radius: 20px;
+        padding: 40px 45px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+
+        .profile-image {
+            height: 65px;
+            width: 65px;
+            border-radius: 33px;
+            object-fit: cover;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .top-section {
+            padding-bottom: 20px;
+            border-bottom: 1px solid $border-light;
+        }
+
+        .detail-section {
+            padding: 0px 15px 0px 7px;
+            min-height: 50px;
+        }
+    }
+
+    .version {
+        user-select: none;
+        position: absolute;
+        right: 30px;
+        bottom: 20px;
+        font-family: "Comfortaa", serif;
+        letter-spacing: 1px;
+
+        &:hover {
+            font-weight: bold;
+        }
     }
 }

@@ -16,10 +16,21 @@
             (click)="copyData(data.address)" tabindex="0">
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.shippingAddress">
-        <span class="me-3 label-span small-text noWrap">Shipping Address</span>
+        <span *ngIf="data.shippingAddress.length > 1" class="me-3 label-span small-text noWrap show-more-address"
+            (click)="showMoreAddress = !showMoreAddress" tabindex="0">Shipping Address...</span>
+        <span *ngIf="data.shippingAddress.length === 1" class="me-3 label-span small-text noWrap">Shipping
+            Address</span>
         <span class="bold-text letter-spacing-1 me-2 noWrap">{{data.shippingAddress}}</span>
         <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy shipping address"
-            (click)="copyData(data.shippingAddress)" tabindex="0">
+            (click)="copyData(data.shippingAddress[0])" tabindex="0">
+    </div>
+    <div *ngIf="showMoreAddress">
+        <div class="d-flex align-items-center mt-2" *ngFor="let address of data.shippingAddress; let i = index">
+            <span class="me-3 label-span small-text noWrap">Shipping Address ({{i+1}})</span>
+            <span class="bold-text letter-spacing-1 me-2 noWrap">{{address}}</span>
+            <img src="../../../assets/images/svg/copy.svg" alt="copy" class="copy-icon" title="Copy shipping address"
+                (click)="copyData(address)" tabindex="0">
+        </div>
     </div>
     <div class="d-flex align-items-center mt-1" *ngIf="data.extraNote">
         <span class="me-3 label-span small-text">Extra Note</span>

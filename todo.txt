@@ -1,13 +1,64 @@
 Todo: ************************************************
+update version code and last update date at last
+filter in inventory in delivery personn, date range
+show icon for non returnable or returnable
+show description if space available in product list while making entry
 
+CHANGES **********************************************
+
+In-Progress: *****************************************
+
+ADVANCE **********************************************
+Export in Excel in which sheets are created for seperate customers and total added in the end 
+On click on Pending Units badge in inventory, show customers with active pending
+On click of due amount badge in inventory, show custoners with active due amount
+Make row selectable for exporting purpose in inventory
+Make rows selectable for exporting purpose in customer page
+Show admins list
+Show entries made by specific admin
+show entried edited by specific admin
+Admins access to website
+keyword search feature in inventory
+keyword search featre in customer
+keyword search feature in delivery person
+statistics page to view daily/weekly/monthly sales
+Paid to delivery person and due amount
+
+BASIC ************************************************
 resend otp feature
 login stayed login untill logged out manually
 make variables private
 notification comeing frol right
 
-In-Progress: *****************************************
-
 Done: ************************************************
+**V1.0.1**
+seperate pending units count
+show detailed stats in customer page
+check lint
+show detailed stats in inventory
+take input of products while making entry
+show product added in entry details model popup
+worok on exports
+show pending units and due amount in footer in customer page
+ask if product is elibable for recieving
+make product linkable
+show products added in table
+disable save if rate not entered while adding new product
+take input of products in new entry
+Note stock items (dynamic)
+reverse exporing data, lates will be in bottom
+show sum in inventory
+filter in inventory in customer, address
+add address in export field
+show all address in necessary places
+show shipping address in full entry detail model popup
+select address when making entry
+show negative or 0 in website and export files
+multiple shipping address
+show version in auth and profile
+
+**V1.0.0**
+complete profile section
 write test cases
 fix lint issues
 table in delivery boy
@@ -152,3 +203,48 @@ TESTING THINGS
      . User can also add new entries here
      . New entries added here will require to provide customer and delivery person details
      . User can create new customer or delivery person from here also, by addig new entries
+
+TESTSCRIPT (MANUAL) *************************************************
+
+1.   Add Customer via + button on top of customer list in customer page
+     a.   Name should be bwtween 30 to 30 characters and is required
+     b.   Phone number should be 10 digits indian number only and is required
+     c.   Customer address is not mandatory
+     d.   shipping address is not mandatory but needed to make entry
+     e.   Can add upto 10 shipping addresses and while removing one the selected will be removed
+     f.   extra details is not mandatory
+     g.   On click of same, the customer profile will be saved and visible in left panel customer list of customer page
+2.   Viewing customer profile in customer page by clicking on profile in customer list
+     a.   On clicking customer user can see profile details along with available transactions
+     b.   User can see name, phone number, address, and all shipping addresses in the top of screen 
+     c.   Each data will have a copy icon at the end that will copy the respective data upon click (notification will pop upon clicking)
+     d.   A button will appear on top right of screen for editing customer profile
+     e.   User can also see when was this profile created just above edit button
+     f.   On clicking shipping address chip, the UI will display all addresses added seperately id there is more than one shipping address
+3.   Editing Customer profile in customer page by clicking on edit profile button on top right of screen
+     a.   On clicking of edit profile, UI will open profile in edit mode with all available details
+     b.   After editing details as per validations of [1] user can save the details to update data in database
+     c.   On save the data will auto update in customer list and a notification will pop
+4.   Deleting customer profile
+     a.   In edit mode user can delete customer profile by clickng delete button only shown in delete mode
+     b.   On click of delete UI will ask for confirmation before deleting the data from database
+     c.   In confirmation UI will remove the customer data from customer list
+     d.   Customer profile deletion is not possible if there is any transacion on the name of customer shown in notification
+     e.   Upon successful deleting user will get notification of success
+5.   Add delivery via + button on top of delivery person list in delivery page
+     a.   Name should be bwtween 30 to 30 characters and is required
+     b.   Phone number should be 10 digits indian number only and is required
+     c.   Address is not mandatory
+     d.   Extra details is not mandatory
+     e.   On click of same, the delivery person profile will be saved and visible in left panel delivery person list of delivery page
+6.   Viewing delivery person profile in delivery page by clicking on profile in delivery person list
+     a.   on click of delivery person, user can see the profile details along with deliveries made by this person
+     b.   User can see name, number, address in the top of screen
+     c.   Each data will have a copy icon at the end that will copy the respective data upon click (notification will pop upon clicking)
+     d.   A button will appear on top right of screen for editing customer profile
+     e.   User can also see when was this profile created just above edit button
+7.   Editing Delivery person profile
+     a.   Same as [3]
+8.   Deleting delivery person profile
+     a.   Same as [4]
+

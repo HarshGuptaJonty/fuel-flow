@@ -54,7 +54,7 @@ describe('CustomerDataService', () => {
         fullName: 'Customer 1',
         phoneNumber: '1234567890',
         address: '',
-        shippingAddress: '',
+        shippingAddress: [''],
         extraNote: '',
         userId: 'user1'
       },
@@ -107,7 +107,7 @@ describe('CustomerDataService', () => {
         fullName: 'Customer 1',
         phoneNumber: '1234567890',
         address: '',
-        shippingAddress: '',
+        shippingAddress: [''],
         extraNote: '',
         userId: 'user1'
       },

@@ -21,7 +21,7 @@ export function timeAgo(past: number, present: number = Date.now()) {
 
 export function getNumberInformat(number: string) {
   if (number && number.length == 10)
-    return number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
+    return number.slice(0, 5) + '-' + number.slice(5);
   return number;
 }
 
@@ -29,7 +29,7 @@ export function copyData(data: string, notificationService: NotificationService)
   navigator.clipboard.writeText(data).then(() => {
 
     notificationService.showNotification({
-      heading: 'Coppied to clipboard.',
+      heading: 'Copied to clipboard.',
       duration: 5000,
       leftBarColor: '#3A7D44'
     });
@@ -82,4 +82,16 @@ export function generateDateTimeKey(): string { // HHmmss
   min = min < 10 ? '0' + min : min;
   hour = hour < 10 ? '0' + hour : hour;
   return `${hour}${min}${sec}`;
+}
+
+export function formatDateAndTime(timestamp?: number) {
+  if (!timestamp)
+    return null;
+
+  const date = new Date(timestamp);
+
+  const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+
+  return `${formattedDate} at ${formattedTime}`;
 }

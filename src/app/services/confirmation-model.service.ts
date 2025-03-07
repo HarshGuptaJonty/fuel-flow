@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, take } from 'rxjs';
 import { ConfirmationModel } from '../../assets/models/ConfirmationModel';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class ConfirmationModelService {
 
   showModel(data: ConfirmationModel) {
     this.confirmationModelData.next(data);
-    return this.onButtonClick;
+    return this.onButtonClick.pipe(take(1));
   }
 
   hideModel() {

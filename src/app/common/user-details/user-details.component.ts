@@ -31,10 +31,12 @@ export class UserDetailsComponent implements OnChanges {
   computedData: any = {
     createdOn: 0
   }
+  showMoreAddress = false;
 
   ngOnChanges(): void {
     this.data = this.userObject?.data;
     this.others = this.userObject?.others;
+    this.showMoreAddress = false;
 
     this.computedData.createdOn = timeAgoWithMsg(this.others?.createdTime)
   }

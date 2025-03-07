@@ -7,6 +7,12 @@
         font-size: 28px;
     }
 
+    .custom-btn {
+        min-width: 150px;
+        font-family: "Comfortaa", serif;
+        border-radius: 5px;
+    }
+
     .limit-textarea {
         &-1 {
             min-height: 40px;
@@ -26,16 +32,23 @@
             font-size: 14px;
             color: $primary-web-red;
         }
+
+        .remove-address-btn {
+            height: auto;
+            font-family: "Comfortaa", serif;
+            border-radius: 5px;
+            background-color: #e3e3e4;
+            color: $primary-web-dark;
+
+            &:hover {
+                background-color: $primary-web-red;
+                color: white;
+            }
+        }
     }
 
     .button-section {
         max-width: 800px;
-
-        .custom-btn {
-            min-width: 150px;
-            font-family: "Comfortaa", serif;
-            border-radius: 5px;
-        }
 
         .cancel-btn {
             background-color: #e3e3e4;

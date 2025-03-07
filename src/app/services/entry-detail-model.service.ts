@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EntryTransaction, UserData } from '../../assets/models/EntryTransaction';
 import { AdminDataService } from './admin-data.service';
+import { formatDateAndTime } from '../shared/commonFunctions';
 
 @Injectable({
   providedIn: 'root'
@@ -33,23 +34,22 @@ export class EntryDetailModelService {
   formatData(entry: EntryTransaction) {
     return {
       transactionId: entry.data.transactionId,
+      shippingAddress: entry.data.shippingAddress,
       cName: entry.data.customer?.fullName,
-      cNumber: entry.data.customer?.phoneNumber?.toString().replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3'),
+      cNumber: entry.data.customer?.phoneNumber?.toString().replace(/(\d{5})(\d{5})/, '$1 $2'),
       date: this.formatDate(entry.data.date),
-      sent: entry.data.sent,
-      recieved: entry.data.recieved,
-      rate: entry.data.rate,
-      totalAmt: (entry.data?.rate || 0) * (entry.data?.sent || 0),
+      totalAmt: entry.data?.total,
       paymentAmt: entry.data.payment,
-      paymentDueAmt: (entry.data?.rate || 0) * (entry.data?.sent || 0) - (entry.data.payment || 0),
+      paymentDueAmt: (entry.data?.total || 0) - (entry.data.payment || 0),
       dName: entry.data.deliveryBoy?.fullName,
-      dNumber: entry.data.deliveryBoy?.phoneNumber?.toString().replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3'),
+      dNumber: entry.data.deliveryBoy?.phoneNumber?.toString().replace(/(\d{5})(\d{5})/, '$1 $2'),
       dId: entry.data.deliveryBoy?.userId,
       extraDetails: entry.data.extraDetails,
       createdBy: this.adminDataService.getAdminName(entry.others?.createdBy),
-      createdTime: this.formatDateAndTime(entry.others?.createdTime),
+      createdTime: formatDateAndTime(entry.others?.createdTime),
       editedBy: this.adminDataService.getAdminName(entry.others?.editedBy),
-      editedTime: this.formatDateAndTime(entry.others?.editedTime)
+      editedTime: formatDateAndTime(entry.others?.editedTime),
+      productDetail: entry.data.selectedProducts
     }
   }
 
@@ -61,17 +61,5 @@ export class EntryDetailModelService {
     const date = new Date(`${year}-${month}-${day}`);
 
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-  }
-
-  formatDateAndTime(timestamp?: number) {
-    if (!timestamp)
-      return null;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-    const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-
-    return `${formattedDate} at ${formattedTime}`;
   }
 }

@@ -41,7 +41,51 @@
         <app-user-details *ngIf="selectedCustomer" [userObject]="selectedCustomer" [userId]="userId"
             (onProfileEdit)="onProfileEdit()"></app-user-details>
 
-        <app-entry-data-table [customerObject]="selectedCustomer" class="flex-grow-1"></app-entry-data-table>
+        <app-entry-data-table [customerObject]="selectedCustomer" (updateDataSource)="updateDataSource($event)"
+            (updateDueAmount)="updateDueAmount($event)" class="flex-grow-1"></app-entry-data-table>
+
+        <div class="footer-section d-flex gap-15 flex-wrap" #statArea>
+            <div class="p-relative d-flex">
+                <div class="list-view d-flex flex-column"
+                    *ngIf="statistics?.sentList?.length>0 && focusedFormName === 'sentList'">
+                    <div class="d-flex justify-content-between gap" *ngFor="let obj of statistics?.sentList">
+                        <span class="nowrap" [ngClass]="obj.customClass">{{obj.name}}</span>
+                        <span>{{obj.value}}</span>
+                    </div>
+                </div>
+                <span class="isclickable" (click)="getDetailedStat('sentList', 'sentSum')" tabindex="0">
+                    Sent: {{statistics.sentSum}}
+                </span>
+            </div>
+
+            <div class="p-relative d-flex">
+                <div class="list-view d-flex flex-column"
+                    *ngIf="statistics?.recieveList?.length>0 && focusedFormName === 'recieveList'">
+                    <div class="d-flex justify-content-between gap" *ngFor="let obj of statistics?.recieveList">
+                        <span class="nowrap" [ngClass]="obj.customClass">{{obj.name}}</span>
+                        <span>{{obj.value}}</span>
+                    </div>
+                </div>
+                <span class="isclickable" (click)="getDetailedStat('recieveList', 'recieveSum')" tabindex="0">
+                    Recieved: {{statistics.recieveSum}}
+                </span>
+            </div>
+
+            <div class="p-relative d-flex">
+                <div class="list-view d-flex flex-column"
+                    *ngIf="statistics?.pendingList?.length>0 && focusedFormName === 'pendingList'">
+                    <div class="d-flex justify-content-between gap" *ngFor="let obj of statistics?.pendingList">
+                        <span class="nowrap" [ngClass]="obj.customClass">{{obj.name}}</span>
+                        <span>{{obj.value}}</span>
+                    </div>
+                </div>
+                <span class="isclickable" (click)="getDetailedStat('pendingList', 'pending')" tabindex="0">
+                    Pending: {{statistics.pending}}
+                </span>
+            </div>
+
+            <span>Due Amount: {{dueAmount | number: '1.2-2'}}</span>
+        </div>
     </div>
     <div *ngIf="!selectedCustomer && !addNewCustomer"
         class="details-section d-flex justify-content-center align-items-center flex-column">

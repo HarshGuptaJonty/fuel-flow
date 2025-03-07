@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { EntryDetailModelService } from './entry-detail-model.service';
 import { AdminDataService } from './admin-data.service';
-import { EntryTransaction, UserData } from '../../assets/models/EntryTransaction';
+import { EntryTransaction } from '../../assets/models/EntryTransaction';
+import { formatDateAndTime } from '../shared/commonFunctions';
 
 describe('EntryDetailModelService', () => {
   let service: EntryDetailModelService;
@@ -98,12 +99,12 @@ describe('EntryDetailModelService', () => {
   });
 
   it('should format date and time correctly', () => {
-    const formattedDateTime = service.formatDateAndTime(1610000000000);
+    const formattedDateTime = formatDateAndTime(1610000000000);
     expect(formattedDateTime).toBe('07 January 2021 at 11:43:20 am');
   });
 
   it('should return null for invalid timestamp', () => {
-    const formattedDateTime = service.formatDateAndTime(undefined);
+    const formattedDateTime = formatDateAndTime(undefined);
     expect(formattedDateTime).toBeNull();
   });
 });

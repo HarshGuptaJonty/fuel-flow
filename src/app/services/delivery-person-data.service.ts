@@ -6,6 +6,7 @@ import { FirebaseService } from './firebase.service';
 import { NotificationService } from './notification.service';
 import { AccountService } from './account.service';
 import { DeliveryPerson } from '../../assets/models/DeliveryPerson';
+import { EntryDataService } from './entry-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class DeliveryPersonDataService {
     private afAuth: AngularFireAuth,
     private firebaseService: FirebaseService,
     private notificationService: NotificationService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private entryDataService: EntryDataService
   ) {
     const storedVacancy = sessionStorage.getItem(LOCAL_STORAGE_KEYS.DELIVERY_PERSON_DATA);
     if (storedVacancy)
@@ -80,6 +82,15 @@ export class DeliveryPersonDataService {
   }
 
   deleteDeliveryPerson(userId: string) {
+    if (this.entryDataService.deliveryPersonHasData(userId)) {
+      this.notificationService.showNotification({
+        heading: 'Process denied.',
+        message: 'Delivery person with deliveries cannot be deleted, please delete the deliveries first!',
+        duration: 7000,
+        leftBarColor: this.notificationService.color?.yellow
+      });
+      return;
+    }
     this.firebaseService.setData(`deliveryPerson/bucket/${userId}`, null)
       .then(() => {
         const objects = this.getDeliveryPersonList();

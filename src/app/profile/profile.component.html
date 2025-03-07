@@ -1,7 +1,45 @@
 <div class="profile-container">
-    <div class="d-flex align-items-center flex-column under-development">
-        <img src="assets/images/banner/no-result.png" alt="">
-        <div class="m-4 text-center bold-text">Page Under Development.<br>Thank you for your patience.
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="profile-box">
+            <div class="d-flex top-section">
+                <div>
+                    <img class="profile-image" title="Profile" *ngIf="!profilePicLink && adminProfileData?.male"
+                        src="assets/images/svg/profile_male.svg" alt="Male profile Image">
+                    <img class="profile-image" title="Profile" *ngIf="!profilePicLink && !adminProfileData?.male"
+                        src="assets/images/svg/profile_female.svg" alt="Male profile Image">
+                    <img class="profile-image" title="Profile" *ngIf="profilePicLink" [src]="profilePicLink"
+                        alt="Male profile Image" (error)="profilePicLink = undefined">
+                </div>
+                <div class="d-flex justify-content-center flex-column ms-3">
+                    <div class="heading bold-text">{{adminProfileData?.fullName}}</div>
+                    <div class="secondary-color">+{{adminProfileData?.contact?.countryCode || '91'}}
+                        {{getNumberInformat(adminProfileData?.contact?.phoneNumber)}}</div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between detail-section">
+                <div class="bold-text">Name</div>
+                <div>{{adminProfileData?.fullName}}</div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between detail-section">
+                <div class="bold-text">Contact Number</div>
+                <div>+{{adminProfileData?.contact?.countryCode || '91'}}
+                    {{getNumberInformat(adminProfileData?.contact?.phoneNumber)}}</div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between detail-section">
+                <div class="bold-text">Gender</div>
+                <div>{{adminProfileData?.male ? 'Male':'Female'}}</div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between detail-section">
+                <div class="bold-text">Account Created</div>
+                <div>{{formatDateAndTime(adminProfileData?.importantTimes?.createdAt)}}</div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between detail-section">
+                <div class="bold-text">Last Login</div>
+                <div>{{formatDateAndTime(adminProfileData?.importantTimes?.lastSeen)}}</div>
+            </div>
         </div>
+    </div>
+    <div class="version secondary-color">
+        <span [title]="localStorage.LAST_UPDATED">v{{localStorage.CURRENT_VERSION}}</span>
     </div>
 </div>
