@@ -5,9 +5,9 @@ show description if space available in product list while making entry
 update version code and last update date at last
 
 CHANGES **********************************************
-date range in filter
 
 In-Progress: *****************************************
+date range in filter
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 

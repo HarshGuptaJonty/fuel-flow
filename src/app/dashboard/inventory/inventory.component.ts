@@ -18,6 +18,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Customer } from '../../../assets/models/Customer';
 import { Product, ProductQuantity } from '../../../assets/models/Product';
 import { ProductService } from '../../services/product.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import moment from 'moment';
 
 @Component({
   selector: 'app-inventory',
@@ -26,6 +29,8 @@ import { ProductService } from '../../services/product.service';
     MatTableModule,
     MatPaginatorModule,
     NewFullEntryComponent,
+    MatFormFieldModule,
+    MatDatepickerModule
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
@@ -126,6 +131,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   filterActive = false;
   focusedFormName = '';
   statistics: any = {};
+  startDateFilter?: string;
+  endDateFilter?: string;
 
   customerList: Customer[] = [];
   customerSearchList: Customer[] = [];
@@ -452,6 +459,13 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     this.filterList();
   }
 
+  dateRangeChange(dateRangeStart: HTMLInputElement, dateRangeEnd: HTMLInputElement) {
+    this.startDateFilter = dateRangeStart.value;
+    this.endDateFilter = dateRangeEnd.value;
+
+    this.filterList();
+  }
+
   filterList() {
     let filterList = this.unchangedProcessedData
 
@@ -468,6 +482,19 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         return false;
       });
 
+    if (this.startDateFilter && this.endDateFilter) {
+      const startDate = moment(this.startDateFilter || '', 'DD/MM/YYYY').toDate();
+      const endDate = moment(this.endDateFilter || '', 'DD/MM/YYYY').toDate();
+
+      filterList = filterList.filter((item: any) => {
+        if (item.date) {
+          const itemDate = new Date(item.date);
+          return itemDate >= startDate && itemDate <= endDate;
+        }
+        return true;
+      })
+    }
+
     this.processedTableData = filterList
     this.dataSource.data = this.processedTableData;
   }
@@ -479,6 +506,8 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     this.shippingAddressList = [];
     this.productSelectedList = [];
     this.productSubmitted = [];
+    this.startDateFilter = undefined;
+    this.endDateFilter = undefined;
   }
 
   getStat(type: string): number {

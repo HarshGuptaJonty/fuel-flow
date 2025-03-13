@@ -98,6 +98,18 @@
                             *ngIf="productSelectedList.length>0">Submit</div>
                     </div>
                 </div>
+                <mat-form-field class="date-range-picker field-selector capsule" (click)="onfocus('datePicker')"
+                    tabindex="0">
+                    <mat-label>Enter a date range</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate #dateRangeStart (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+                            placeholder="Start date">
+                        <input matEndDate #dateRangeEnd (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+                            placeholder="End date">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
             </div>
             <img src="assets/images/svg/close-circle.svg" alt="Close" class="close-icon ms-2" (click)="closeFilter()"
                 tabindex="0">
