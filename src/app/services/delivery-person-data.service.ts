@@ -28,6 +28,8 @@ export class DeliveryPersonDataService {
     const storedVacancy = sessionStorage.getItem(LOCAL_STORAGE_KEYS.DELIVERY_PERSON_DATA);
     if (storedVacancy)
       this.deliveryPersonData?.next(JSON.parse(storedVacancy));
+    else
+      this.refreshData();
   }
 
   setDeliveryPersonData(data: any) {

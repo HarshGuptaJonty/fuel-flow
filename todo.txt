@@ -1,10 +1,11 @@
 Todo: ************************************************
-update version code and last update date at last
-filter in inventory in delivery personn, date range
+filter in inventory in delivery personn
 show icon for non returnable or returnable
 show description if space available in product list while making entry
+update version code and last update date at last
 
 CHANGES **********************************************
+date range in filter
 
 In-Progress: *****************************************
 
@@ -31,7 +32,9 @@ make variables private
 notification comeing frol right
 
 Done: ************************************************
-**V1.0.1**
+**V1.1.1**
+rate not taking while making entry
+**V1.0.14**
 seperate pending units count
 show detailed stats in customer page
 check lint

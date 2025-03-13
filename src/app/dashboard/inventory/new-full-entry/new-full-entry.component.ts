@@ -475,8 +475,7 @@ export class NewFullEntryComponent implements OnInit {
             sentUnits: sentUnits,
             recievedUnits: recievedUnits
           })
-          const dataRate = item.data.rate || 0;
-          this.totalSum += dataRate * sentUnits;
+          this.totalSum += rate * sentUnits;
         }
       }
     }

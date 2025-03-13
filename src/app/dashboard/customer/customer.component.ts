@@ -169,14 +169,14 @@ export class CustomerComponent implements OnInit {
       if (obj.productDetail)
         for (const product of obj.productDetail)
           if (product.productData.productReturnable)
-            this.statistics.sentUnits += parseInt(product.sentUnits);
+            this.statistics.sentSum += parseInt(product.sentUnits);
     }
 
     for (const obj of this.dataSource.data) {
       if (obj.productDetail)
         for (const product of obj.productDetail)
           if (product.productData.productReturnable)
-            this.statistics.recievedUnits += parseInt(product.recievedUnits);
+            this.statistics.recieveSum += parseInt(product.recievedUnits);
     }
 
     for (const obj of this.dataSource.data) {
@@ -185,6 +185,8 @@ export class CustomerComponent implements OnInit {
           if (product.productData.productReturnable)
             this.statistics.pending += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
     }
+
+    console.log(this.statistics);
   }
 
   getDetailedStat(focus: string, type: string) {
