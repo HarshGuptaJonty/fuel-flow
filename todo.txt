@@ -7,7 +7,6 @@ update version code and last update date at last
 CHANGES **********************************************
 
 In-Progress: *****************************************
-date range in filter
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -32,7 +31,8 @@ make variables private
 notification comeing frol right
 
 Done: ************************************************
-**V1.1.1**
+**V1.1.2**
+date range in filter
 rate not taking while making entry
 **V1.0.14**
 seperate pending units count
