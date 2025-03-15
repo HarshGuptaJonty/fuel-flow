@@ -14,8 +14,9 @@ export class ExportService {
     private notificationService: NotificationService
   ) { }
 
-  exportToExcel(data: DataForExportFormat[], includeCustomerName = true, filePrefix = 'Inventory'): void {
+  exportToExcel(data: DataForExportFormat[], allTotalExportData: any, includeCustomerName = true, filePrefix = 'Inventory'): void {
     const convertedFormat = this.convertData(data, includeCustomerName);
+    convertedFormat.push(allTotalExportData);
 
     const fileName = filePrefix + '_' + this.generateFileName();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(convertedFormat);
@@ -90,7 +91,7 @@ export class ExportService {
             newObject['Due Amount'] = '';
           }
 
-          exportTotal['Sent'] += newObject['Sent'];
+          exportTotal['Sent'] += product.productData.productReturnable ? newObject['Sent'] : 0;
           exportTotal['Receieved'] += recieve === '' ? 0 : newObject['Receieved'];
           exportTotal['Pending'] += pending === '' ? 0 : newObject['Pending'];
 

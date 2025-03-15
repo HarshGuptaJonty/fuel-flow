@@ -185,8 +185,6 @@ export class CustomerComponent implements OnInit {
           if (product.productData.productReturnable)
             this.statistics.pending += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
     }
-
-    console.log(this.statistics);
   }
 
   getDetailedStat(focus: string, type: string) {

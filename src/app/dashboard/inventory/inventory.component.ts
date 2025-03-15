@@ -210,22 +210,20 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
 
     const forAllTotal: any = {};
 
-    forAllTotal['Product'] = 'Total';
+    forAllTotal['Product'] = 'All Total';
     forAllTotal['Sent'] = this.getStat('sentSum');
     forAllTotal['Receieved'] = this.getStat('recieveSum');
     forAllTotal['Pending'] = this.getStat('pending');
     forAllTotal['Total Amount'] = this.getStat('totAmt');
-    forAllTotal['Payment'] = this.getStat('paidAmt');
+    forAllTotal['Paid Amount'] = this.getStat('paidAmt');
     forAllTotal['Due Amount'] = this.getStat('dueAmt');
-
-    console.log(forAllTotal);
 
     if ((this.paginator?.pageSize || 100) >= this.dataSource.data.length) {
       //no need to ask for full data or visible data as the data is more than the page size
       forExport = [...this.dataSource.data];
 
       if (type === 'excel')
-        this.exportService.exportToExcel(forExport);
+        this.exportService.exportToExcel(forExport, forAllTotal);
       else if (type === 'pdf')
         this.exportService.exportToPdf(forExport);
     } else {
@@ -253,7 +251,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         }
 
         if (type === 'excel')
-          this.exportService.exportToExcel(forExport);
+          this.exportService.exportToExcel(forExport, forAllTotal);
         else if (type === 'pdf')
           this.exportService.exportToPdf(forExport);
       });

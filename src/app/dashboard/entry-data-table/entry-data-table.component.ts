@@ -204,7 +204,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
     }
 
     if (type === 'excel')
-      this.exportService.exportToExcel(forExport, false, this.customerObject?.data.fullName);
+      this.exportService.exportToExcel(forExport, {}, false, this.customerObject?.data.fullName);
     else if (type === 'pdf')
       this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
   }
