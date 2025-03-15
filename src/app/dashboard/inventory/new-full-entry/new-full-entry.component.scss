@@ -97,8 +97,8 @@
                 overflow-x: auto;
             }
 
-            .min-width-445 {
-                min-width: 445px;
+            .min-width-490 {
+                min-width: 490px;
             }
 
             &.hight-no-limit {
@@ -121,6 +121,17 @@
 
             .product-label {
                 width: 100px;
+
+                &-2 {
+                    @extend .product-label;
+
+                    @media (max-width: 800px) {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        width: 70px;
+                    }
+                }
             }
 
             .product-input {
@@ -128,6 +139,14 @@
                 padding: 3px 6px;
                 border-radius: 5px;
                 border: 1px solid $secondary-color;
+
+                &-2 {
+                    @extend .product-input;
+
+                    @media (max-width: 800px) {
+                        width: 70px;
+                    }
+                }
 
                 &:disabled {
                     border: 1px solid $border-light;
@@ -151,6 +170,10 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+
+            &.limit-width-130 {
+                min-width: 130px;
+            }
         }
     }
 

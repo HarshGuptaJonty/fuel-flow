@@ -23,4 +23,5 @@ export interface ProductQuantity {
     },
     sentUnits: number;
     recievedUnits: number;
+    paymentAmt: number;
 }

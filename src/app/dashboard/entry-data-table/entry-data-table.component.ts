@@ -193,20 +193,92 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   export(type: string) {
-    let forExport;
-    if (this.dataSource.data.length > 5) {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      const endIndex = startIndex + this.paginator.pageSize;
-      const displayedRows = this.dataSource.data.slice(startIndex, endIndex);
-      forExport = displayedRows;
-    } else {
-      forExport = this.dataSource.data;
-    }
+    let forExport = [];
 
-    if (type === 'excel')
-      this.exportService.exportToExcel(forExport, {}, false, this.customerObject?.data.fullName);
-    else if (type === 'pdf')
-      this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
+    const forAllTotal: any = {};
+
+    forAllTotal['Product'] = 'All Total';
+    forAllTotal['Sent'] = this.getStat('sentSum');
+    forAllTotal['Receieved'] = this.getStat('recieveSum');
+    forAllTotal['Pending'] = this.getStat('pending');
+    forAllTotal['Total Amount'] = this.getStat('totAmt');
+    forAllTotal['Paid Amount'] = this.getStat('paidAmt');
+    forAllTotal['Due Amount'] = this.getStat('dueAmt');
+
+    if ((this.paginator?.pageSize || 40) >= this.dataSource.data.length) {
+      //no need to ask for full data or visible data as the data is more than the page size
+      forExport = [...this.dataSource.data];
+
+      if (type === 'excel')
+        this.exportService.exportToExcel(forExport, forAllTotal, false, this.customerObject?.data.fullName);
+      else if (type === 'pdf')
+        this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
+    } else {
+      //ask for visble data or full data
+      this.confirmationModelService.showModel({
+        heading: 'Export Length?',
+        message: 'Please choose if you want to export full data or only the visible part?',
+        leftButton: {
+          text: 'Export Full Data',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE
+        },
+        rightButton: {
+          text: 'Only Visible Data',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE
+        }
+      }).subscribe(result => {
+        this.confirmationModelService.hideModel();
+        if (result === 'left')
+          forExport = [...this.dataSource.data];
+        else {
+          const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+          const endIndex = startIndex + this.paginator.pageSize;
+          const displayedRows = [...this.dataSource.data].slice(startIndex, endIndex);
+          forExport = displayedRows;
+        }
+
+        if (type === 'excel')
+          this.exportService.exportToExcel(forExport, forAllTotal, false, this.customerObject?.data.fullName);
+        else if (type === 'pdf')
+          this.exportService.exportToPdf(forExport, false, this.customerObject?.data.fullName);
+      });
+    }
+  }
+
+  getStat(type: string): number {
+    let result = 0;
+    if (type === 'sentSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits);
+      }
+    } else if (type === 'recieveSum') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.recievedUnits);
+      }
+    } else if (type === 'pending') {
+      for (const obj of this.dataSource.data) {
+        if (obj.productDetail)
+          for (const product of obj.productDetail)
+            if (product.productData.productReturnable)
+              result += parseInt(product.sentUnits) - parseInt(product.recievedUnits);
+      }
+    } else if (type === 'dueAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.dueAmt);
+    } else if (type === 'totAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.totalAmt);
+    } else if (type === 'paidAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.paymentAmt);
+    }
+    return result || 0;
   }
 
   async refreshEntryData() {

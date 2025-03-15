@@ -328,7 +328,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   forSearch(item: any) {
-    return [
+    const searchArray = [
       item.date,
       item.customer?.fullName,
       item.customer?.phoneNumber,
@@ -339,6 +339,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       item.extraDetails,
       item.shippingAddress
     ]
+
+    if (item.productDetail)
+      for (const product of item.productDetail)
+        searchArray.push(product.productData.name);
+
+    return searchArray.join(' ');
   }
 
   onSearch(event: any) {

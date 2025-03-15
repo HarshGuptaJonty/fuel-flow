@@ -74,28 +74,35 @@
                 </div>
                 <div class="product-select-dropdown" *ngIf="focusedFormName === 'productSelect'">
                     <div class="overflow-y">
-                        <div class="min-width-445">
+                        <div class="min-width-490">
                             <div
                                 class="product-header d-flex justify-content-between align-items-center bold-text b-bottom">
-                                <span>Name</span>
+                                <span class="nowrap limit-width-130 me-1">Name</span>
                                 <div class="d-flex gap">
-                                    <span class="product-label">Rate</span>
-                                    <span class="product-label">Sent</span>
-                                    <span class="product-label">Recieved</span>
+                                    <span class="product-label-2">Rate</span>
+                                    <span class="product-label-2">Sent</span>
+                                    <span class="product-label-2">Recieved</span>
+                                    <span class="product-label">Payment</span>
                                 </div>
                             </div>
                             <div class="max-height-300">
                                 <div class="product d-flex justify-content-between align-items-center"
                                     *ngFor="let product of productList">
-                                    <span class="bold-text nowrap">{{product.data.name}}</span>
+                                    <span class="bold-text nowrap limit-width-130 me-1">{{product.data.name}}</span>
                                     <div class="d-flex gap">
-                                        <input class="product-input" maxlength="5" min="0" [value]="product.data.rate"
-                                            type="number" [id]="'rate_'+product.data.productId">
-                                        <input class="product-input" maxlength="4" value="0" type="number"
-                                            [id]="'sent_'+product.data.productId" min="0">
-                                        <input class="product-input" maxlength="4" value="0" type="number"
+                                        <input class="product-input-2" [value]="product.data.rate" type="number"
+                                            onKeyPress="if(this.value.length==4) return false;"
+                                            [id]="'rate_'+product.data.productId">
+                                        <input class="product-input-2" value="0" type="number"
+                                            onKeyPress="if(this.value.length==4) return false;"
+                                            [id]="'sent_'+product.data.productId">
+                                        <input class="product-input-2" value="0" type="number"
+                                            onKeyPress="if(this.value.length==4) return false;"
                                             [disabled]="!product.data.productReturnable"
-                                            [id]="'recieved_'+product.data.productId" min="0">
+                                            [id]="'recieved_'+product.data.productId">
+                                        <input class="product-input" value="0" type="number"
+                                            onKeyPress="if(this.value.length==6) return false;"
+                                            [id]="'payment_'+product.data.productId">
                                     </div>
                                 </div>
                             </div>

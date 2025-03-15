@@ -50,6 +50,11 @@ export class EntryDetailComponent implements OnInit {
       customClass: 'text-right',
       dataType: 'amountText'
     }, {
+      key: 'paymentAmt',
+      label: 'Payment',
+      customClass: 'text-right',
+      dataType: 'amountText'
+    }, {
       key: 'totalAmt',
       label: 'Total',
       customClass: 'text-right',
@@ -79,6 +84,7 @@ export class EntryDetailComponent implements OnInit {
             pendingUnits: (element.sentUnits || 0) - (element.recievedUnits || 0),
             rate: element.productData.rate,
             totalAmt: (element.sentUnits || 0) * (element.productData.rate || 0),
+            paymentAmt: element.paymentAmt,
             productId: element.productData.productId
           })
         });

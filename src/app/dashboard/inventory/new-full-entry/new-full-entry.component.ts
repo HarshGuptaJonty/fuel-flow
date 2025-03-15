@@ -168,7 +168,7 @@ export class NewFullEntryComponent implements OnInit {
     this.entryForm.get('deliveryBoyNumber')?.valueChanges.subscribe((value) => this.deliveryBoyDataChanged(value));
 
     if (this.customerObject)
-      this.onSelectCustomer(this.customerObject);
+      this.onSelectCustomer(this.customerObject, false);
   }
 
   @HostListener('document:click', ['$event'])
@@ -223,7 +223,7 @@ export class NewFullEntryComponent implements OnInit {
     this.loadDeliveryPersonData(true);
   }
 
-  onSelectCustomer(customer: Customer) {
+  onSelectCustomer(customer: Customer, isUserSelect = true) {
     this.entryForm.get('customerName')?.setValue(customer.data?.fullName);
     this.entryForm.get('customerNumber')?.setValue(customer.data?.phoneNumber);
     this.customerSelected = true;
@@ -233,7 +233,9 @@ export class NewFullEntryComponent implements OnInit {
     this.shippingAddressList = customer.data?.shippingAddress || [];
     this.shippingAddressSearchList = this.shippingAddressList;
     this.shippingAddressSelected = false;
-    this.entryForm.get('shippingAddress')?.setValue('');
+
+    if (isUserSelect) // dont remove address when user is editing from customer page
+      this.entryForm.get('shippingAddress')?.setValue('');
 
     if (this.shippingAddressList.length === 1)
       this.onSelectShippingAddress(this.shippingAddressList[0]);
@@ -453,33 +455,39 @@ export class NewFullEntryComponent implements OnInit {
   submitProductSelection() {
     this.selectedProductList = [];
     this.totalSum = 0;
+    let paymentSum = 0;
 
     for (const item of this.productList) {
       const rateElement = document.getElementById(`rate_${item.data.productId}`) as HTMLInputElement;
       const sentElement = document.getElementById(`sent_${item.data.productId}`) as HTMLInputElement;
       const recievedElement = document.getElementById(`recieved_${item.data.productId}`) as HTMLInputElement;
+      const paymentElement = document.getElementById(`payment_${item.data.productId}`) as HTMLInputElement;
 
       if (rateElement && sentElement && recievedElement) {
         const rate = parseInt(rateElement.value);
         const sentUnits = parseInt(sentElement.value);
         const recievedUnits = parseInt(recievedElement.value);
+        const paymentAmt = parseInt(paymentElement?.value || '0');
 
-        if (sentUnits && sentUnits > 0 || recievedUnits && recievedUnits > 0) {
+        if (sentUnits > 0 || recievedUnits > 0 || paymentAmt > 0) {
           this.selectedProductList.push({
             productData: {
               name: item.data.name,
-              rate: sentUnits > 0 ? rate : 0,
+              rate: rate,
               productId: item.data.productId,
               productReturnable: item.data.productReturnable || false
             },
             sentUnits: sentUnits,
-            recievedUnits: recievedUnits
+            recievedUnits: recievedUnits,
+            paymentAmt: paymentAmt
           })
           this.totalSum += rate * sentUnits;
+          paymentSum += paymentAmt;
         }
       }
     }
 
+    this.entryForm.get('paidAmt')?.setValue(paymentSum);
     this.focusedFormName = '';
     this.checkForDataValidation(this.entryForm.value);
   }
@@ -535,12 +543,16 @@ export class NewFullEntryComponent implements OnInit {
           const rateElement = document.getElementById(`rate_${item.productData.productId}`) as HTMLInputElement;
           const sentElement = document.getElementById(`sent_${item.productData.productId}`) as HTMLInputElement;
           const recievedElement = document.getElementById(`recieved_${item.productData.productId}`) as HTMLInputElement;
+          const paymentElement = document.getElementById(`payment_${item.productData.productId}`) as HTMLInputElement;
 
-          if (rateElement && sentElement && recievedElement) {
+          if (rateElement)
             rateElement.value = item.productData.rate.toString();
+          if (sentElement)
             sentElement.value = item.sentUnits.toString();
+          if (recievedElement)
             recievedElement.value = item.recievedUnits.toString();
-          }
+          if (paymentElement)
+            paymentElement.value = item.paymentAmt.toString();
         }
       }, 100);
     }

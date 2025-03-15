@@ -5,7 +5,6 @@ show description if space available in product list while making entry
 update version code and last update date at last
 
 CHANGES **********************************************
-let user select product for which payment is made
 
 In-Progress: *****************************************
 
@@ -33,8 +32,10 @@ notification comeing frol right
 
 Done: ************************************************
 **V1.2.3**
+DUPLICATE-ask for export type in customer profile table
+let user select product for which payment is made
 line of total wfter export
-format number as numbers so that its aligned properly in excel
+BUG-format number as numbers so that its aligned properly in excel
 export full or visible with filter applied
 **V1.1.2**
 date range in filter
