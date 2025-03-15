@@ -12,7 +12,7 @@ export interface DataForExportFormat {
         phoneNumber?: string,
         userId: string
     },
-    totamAmt: number;
+    totalAmt: number;
     paymentAmt: number;
     transactionId: string;
     shippingAddress: string;

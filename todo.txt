@@ -5,8 +5,10 @@ show description if space available in product list while making entry
 update version code and last update date at last
 
 CHANGES **********************************************
+let user select product for which payment is made
 
 In-Progress: *****************************************
+line of total wfter export
 
 ADVANCE **********************************************
 Export in Excel in which sheets are created for seperate customers and total added in the end 
@@ -31,6 +33,9 @@ make variables private
 notification comeing frol right
 
 Done: ************************************************
+**V1.2.2**
+format number as numbers so that its aligned properly in excel
+export full or visible with filter applied
 **V1.1.2**
 date range in filter
 rate not taking while making entry

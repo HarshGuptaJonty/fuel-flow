@@ -257,8 +257,9 @@
         }
 
         .footer-section {
-            width: 99.9vw;
+            width: -webkit-fill-available;
             margin-left: -20px;
+            margin-right: -20px;
             background-color: $border-light;
             padding: 10px 20px;
             min-width: 500px;

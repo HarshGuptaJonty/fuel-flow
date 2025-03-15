@@ -98,7 +98,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
       dataType: 'productDetail',
       isAmount: true
     }, {
-      key: 'totamAmt',
+      key: 'totalAmt',
       label: 'Total Amount',
       customClass: 'text-right',
       dataType: 'amountText'
@@ -206,20 +206,58 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
   }
 
   export(type: string) {
-    let forExport;
-    if (this.dataSource.data.length > 10) {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      const endIndex = startIndex + this.paginator.pageSize;
-      const displayedRows = this.dataSource.data.slice(startIndex, endIndex);
-      forExport = displayedRows;
-    } else {
-      forExport = this.dataSource.data;
-    }
+    let forExport = [];
 
-    if (type === 'excel')
-      this.exportService.exportToExcel(forExport);
-    else if (type === 'pdf')
-      this.exportService.exportToPdf(forExport);
+    const forAllTotal: any = {};
+
+    forAllTotal['Product'] = 'Total';
+    forAllTotal['Sent'] = this.getStat('sentSum');
+    forAllTotal['Receieved'] = this.getStat('recieveSum');
+    forAllTotal['Pending'] = this.getStat('pending');
+    forAllTotal['Total Amount'] = this.getStat('totAmt');
+    forAllTotal['Payment'] = this.getStat('paidAmt');
+    forAllTotal['Due Amount'] = this.getStat('dueAmt');
+
+    console.log(forAllTotal);
+
+    if ((this.paginator?.pageSize || 100) >= this.dataSource.data.length) {
+      //no need to ask for full data or visible data as the data is more than the page size
+      forExport = [...this.dataSource.data];
+
+      if (type === 'excel')
+        this.exportService.exportToExcel(forExport);
+      else if (type === 'pdf')
+        this.exportService.exportToPdf(forExport);
+    } else {
+      //ask for visble data or full data
+      this.confirmationModelService.showModel({
+        heading: 'Export Length?',
+        message: 'Please choose if you want to export full data or only the visible part?',
+        leftButton: {
+          text: 'Export Full Data',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE
+        },
+        rightButton: {
+          text: 'Only Visible Data',
+          customClass: this.confirmationModelService.CUSTOM_CLASS?.GREY_BLUE
+        }
+      }).subscribe(result => {
+        this.confirmationModelService.hideModel();
+        if (result === 'left')
+          forExport = [...this.dataSource.data];
+        else {
+          const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+          const endIndex = startIndex + this.paginator.pageSize;
+          const displayedRows = [...this.dataSource.data].slice(startIndex, endIndex);
+          forExport = displayedRows;
+        }
+
+        if (type === 'excel')
+          this.exportService.exportToExcel(forExport);
+        else if (type === 'pdf')
+          this.exportService.exportToPdf(forExport);
+      });
+    }
   }
 
   refreshData() {
@@ -282,7 +320,7 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
         phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      totamAmt: totalAmt,
+      totalAmt: totalAmt,
       paymentAmt: payment,
       dueAmt: totalAmt - payment,
       transactionId: item.data?.transactionId,
@@ -536,6 +574,12 @@ export class InventoryComponent implements OnInit, AfterViewChecked {
     } else if (type === 'dueAmt') {
       for (const obj of this.dataSource.data)
         result += parseInt(obj.dueAmt);
+    } else if (type === 'totAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.totalAmt);
+    } else if (type === 'paidAmt') {
+      for (const obj of this.dataSource.data)
+        result += parseInt(obj.paymentAmt);
     }
     return result || 0;
   }

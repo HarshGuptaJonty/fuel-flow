@@ -28,19 +28,33 @@ export class ExportService {
     const convertedFormat: any[] = [];
     data.reverse();
 
+    const exportTotal: any = {};
+    exportTotal['Date'] = '';
+    if (includeCustomerName) exportTotal['Customer'] = '';
+    exportTotal['Address'] = '';
+    exportTotal['Delivery Person'] = '';
+    exportTotal['Product'] = 'Total';
+    exportTotal['Sent'] = 0;
+    exportTotal['Receieved'] = 0;
+    exportTotal['Pending'] = 0;
+    exportTotal['Rate/Unit'] = '';
+    exportTotal['Total Amount'] = 0;
+    exportTotal['Paid Amount'] = 0;
+    exportTotal['Due Amount'] = 0;
+
     data.forEach((item: DataForExportFormat) => {
       if (item.productDetail && item.productDetail.length > 0) {
         let isFirstRow = true;
         for (const product of item.productDetail) {
           const newObject: any = {};
 
-          let recieve = product.recievedUnits.toString();
+          let recieve: any = product.recievedUnits;
           if (!product.productData.productReturnable)
-            recieve = '-';
+            recieve = '';
 
-          let pending = ((product.sentUnits || 0) - (product.recievedUnits || 0)).toString();
+          let pending: any = (product.sentUnits || 0) - (product.recievedUnits || 0);
           if (!product.productData.productReturnable)
-            pending = '-';
+            pending = '';
 
           if (isFirstRow) {
             newObject['Date'] = item.date || '';
@@ -56,21 +70,29 @@ export class ExportService {
 
           newObject['Product'] = product.productData.name || '';
           newObject['Sent'] = product.sentUnits || 0;
-          newObject['Receieved'] = recieve;
-          newObject['Pending'] = pending;
+          newObject['Receieved'] = recieve || 0;
+          newObject['Pending'] = pending || 0;
           newObject['Rate/Unit'] = product.productData.rate || 0;
 
           if (isFirstRow) {
-            newObject['Total Amount'] = item.totamAmt || 0;
-            newObject['Paid Amount'] = item.paymentAmt || 0;
-            newObject['Due Amount'] = (item.totamAmt || 0) - (item.paymentAmt || 0);
+            newObject['Total Amount'] = item.totalAmt || 0;
+            newObject['Paid Amount'] = 1 * (item.paymentAmt || 0);
+            newObject['Due Amount'] = (item.totalAmt || 0) - (item.paymentAmt || 0);
 
             isFirstRow = false;
+
+            exportTotal['Total Amount'] += newObject['Total Amount'];
+            exportTotal['Paid Amount'] += newObject['Paid Amount'];
+            exportTotal['Due Amount'] += newObject['Due Amount'];
           } else {
             newObject['Total Amount'] = '';
             newObject['Paid Amount'] = '';
             newObject['Due Amount'] = '';
           }
+
+          exportTotal['Sent'] += newObject['Sent'];
+          exportTotal['Receieved'] += recieve === '' ? 0 : newObject['Receieved'];
+          exportTotal['Pending'] += pending === '' ? 0 : newObject['Pending'];
 
           convertedFormat.push(newObject);
         }
@@ -86,12 +108,18 @@ export class ExportService {
         newObject['Pending'] = '';
         newObject['Rate/Unit'] = '';
         newObject['Total Amount'] = 0
-        newObject['Paid Amount'] = item.paymentAmt || 0
+        newObject['Paid Amount'] = 1 * (item.paymentAmt || 0);
         newObject['Due Amount'] = 0 - (item.paymentAmt || 0);
+
+        exportTotal['Paid Amount'] += newObject['Paid Amount'];
+        exportTotal['Due Amount'] += newObject['Due Amount'];
 
         convertedFormat.push(newObject);
       }
     });
+
+    convertedFormat.push({});
+    convertedFormat.push(exportTotal);
 
     return convertedFormat;
   }

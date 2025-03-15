@@ -88,7 +88,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
       dataType: 'productDetail',
       isAmount: true
     }, {
-      key: 'totamAmt',
+      key: 'totalAmt',
       label: 'Total Amount',
       customClass: 'text-right',
       dataType: 'amountText'
@@ -253,7 +253,7 @@ export class EntryDataTableComponent implements OnInit, OnChanges, AfterViewInit
         phoneNumber: item.data?.deliveryBoy?.phoneNumber,
         userId: item.data?.deliveryBoy?.userId
       },
-      totamAmt: totalAmt,
+      totalAmt: totalAmt,
       paymentAmt: payment,
       dueAmt: this.dueAmount,
       transactionId: item.data?.transactionId,
